@@ -38,7 +38,10 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
         levels = LevelLoader.loadAllLevels(context).filter { it.world == worldId }
     }
 
-    val worldNames = mapOf(1 to "Seedling Garden", 2 to "Blooming Meadow", 3 to "Ancient Grove")
+    val worldNames = mapOf(
+        1 to "Seedling Garden", 2 to "Blooming Meadow", 3 to "Ancient Grove",
+        4 to "Crystal Cavern", 5 to "Shattered Isles", 6 to "Void Fortress"
+    )
 
     Column(
         modifier = Modifier

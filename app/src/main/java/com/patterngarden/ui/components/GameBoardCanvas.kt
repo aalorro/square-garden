@@ -133,6 +133,7 @@ fun GameBoardCanvas(
         // Draw cell backgrounds first (so animated tiles slide over them)
         for (r in 0 until board.height) {
             for (c in 0 until board.width) {
+                if (board.isVoid(r, c)) continue
                 val x = c * cs
                 val y = r * cs
                 val inset = cs * 0.05f
@@ -155,6 +156,7 @@ fun GameBoardCanvas(
         for (r in 0 until board.height) {
             for (c in 0 until board.width) {
                 val pos = CellPos(r, c)
+                if (board.isVoid(r, c)) continue
                 if (pos == animFrom || pos == animTo) continue // drawn later
 
                 val tile = board.tileAt(r, c)
@@ -169,6 +171,32 @@ fun GameBoardCanvas(
 
                 drawEmbossedTile(tile.color, x, y, cs, cornerR)
                 drawTileMotif(tile.color, x, y, cs)
+
+                // Frozen overlay: semi-transparent ice blue + frost border
+                if (tile.frozen) {
+                    val tileInset = cs * 0.08f
+                    drawRoundRect(
+                        color = Color(0xFF81D4FA).copy(alpha = 0.35f),
+                        topLeft = Offset(x + tileInset, y + tileInset),
+                        size = Size(cs - tileInset * 2, cs - tileInset * 2),
+                        cornerRadius = CornerRadius(cornerR * 0.9f)
+                    )
+                    // Frost shine at top
+                    drawRoundRect(
+                        color = Color.White.copy(alpha = 0.25f),
+                        topLeft = Offset(x + tileInset * 2, y + tileInset),
+                        size = Size(cs - tileInset * 4, (cs - tileInset * 2) * 0.3f),
+                        cornerRadius = CornerRadius(cornerR * 0.6f)
+                    )
+                    // Ice border
+                    drawRoundRect(
+                        color = Color(0xFF29B6F6).copy(alpha = 0.6f),
+                        topLeft = Offset(x + tileInset, y + tileInset),
+                        size = Size(cs - tileInset * 2, cs - tileInset * 2),
+                        cornerRadius = CornerRadius(cornerR * 0.9f),
+                        style = Stroke(width = 2.dp.toPx())
+                    )
+                }
 
                 // Selection highlight
                 if (selectedCell == pos) {

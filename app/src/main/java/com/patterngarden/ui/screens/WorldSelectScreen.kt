@@ -3,7 +3,9 @@ package com.patterngarden.ui.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,7 +31,10 @@ data class WorldInfo(
 private val worlds = listOf(
     WorldInfo(1, "Seedling Garden", "Levels 1-8", 0, Sage),
     WorldInfo(2, "Blooming Meadow", "Levels 9-17", 8, TileBlue),
-    WorldInfo(3, "Ancient Grove", "Levels 18-25", 20, WarmBrown)
+    WorldInfo(3, "Ancient Grove", "Levels 18-25", 20, WarmBrown),
+    WorldInfo(4, "Crystal Cavern", "Levels 26-33", 40, androidx.compose.ui.graphics.Color(0xFF81D4FA)),
+    WorldInfo(5, "Shattered Isles", "Levels 34-41", 65, androidx.compose.ui.graphics.Color(0xFFCE93D8)),
+    WorldInfo(6, "Void Fortress", "Levels 42-49", 100, androidx.compose.ui.graphics.Color(0xFF78909C))
 )
 
 @Composable
@@ -63,6 +68,13 @@ fun WorldSelectScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
         worlds.forEach { world ->
             val unlocked = totalStars >= world.starsToUnlock
             Card(
@@ -109,8 +121,9 @@ fun WorldSelectScreen(navController: NavHostController) {
                 }
             }
         }
+        } // end scrollable column
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedButton(
             onClick = { navController.popBackStack() },
