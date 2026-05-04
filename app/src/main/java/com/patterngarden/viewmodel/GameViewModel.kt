@@ -12,11 +12,13 @@ import com.patterngarden.logic.HintSolver
 import com.patterngarden.logic.LevelLoader
 import com.patterngarden.logic.PatternMatcher
 import com.patterngarden.model.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -150,6 +152,7 @@ class GameViewModel(
             board = board,
             movesRemaining = adjustedMaxMoves,
             difficulty = difficulty,
+            initialBoard = board,
             phase = if (level.tutorialSteps != null) GamePhase.TUTORIAL_PAUSE
             else GamePhase.PLAYING
         )
@@ -347,6 +350,29 @@ class GameViewModel(
         }
     }
 
+    fun showSolution() {
+        val current = _state.value
+        val initBoard = current.initialBoard ?: return
+        viewModelScope.launch {
+            val steps = withContext(Dispatchers.Default) {
+                HintSolver.findSolution(initBoard, current.level.goals, current.level.maxMoves)
+            }
+            if (steps.isNotEmpty()) {
+                _state.value = _state.value.copy(
+                    solutionSteps = steps,
+                    phase = GamePhase.SHOWING_SOLUTION
+                )
+            }
+        }
+    }
+
+    fun dismissSolution() {
+        _state.value = _state.value.copy(
+            phase = GamePhase.LOST,
+            solutionSteps = null
+        )
+    }
+
     fun resetLevel() {
         val current = _state.value
         val hasTutorial = level.tutorialSteps != null
@@ -380,6 +406,7 @@ class GameViewModel(
             board = board,
             movesRemaining = moves,
             difficulty = difficulty,
+            initialBoard = board,
             phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )
     }

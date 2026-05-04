@@ -172,29 +172,44 @@ fun GameBoardCanvas(
                 drawEmbossedTile(tile.color, x, y, cs, cornerR)
                 drawTileMotif(tile.color, x, y, cs)
 
-                // Frozen overlay: semi-transparent ice blue + frost border
+                // Frozen overlay: light frost + diagonal lines + thick ice border
+                // Base tile color stays clearly visible
                 if (tile.frozen) {
                     val tileInset = cs * 0.08f
+                    val tx = x + tileInset
+                    val ty = y + tileInset
+                    val tw = cs - tileInset * 2
+                    val th = cs - tileInset * 2
+                    // Light frost wash — subtle so tile color stays vivid
                     drawRoundRect(
-                        color = Color(0xFF81D4FA).copy(alpha = 0.35f),
-                        topLeft = Offset(x + tileInset, y + tileInset),
-                        size = Size(cs - tileInset * 2, cs - tileInset * 2),
+                        color = Color.White.copy(alpha = 0.20f),
+                        topLeft = Offset(tx, ty),
+                        size = Size(tw, th),
                         cornerRadius = CornerRadius(cornerR * 0.9f)
                     )
-                    // Frost shine at top
+                    // Diagonal frost lines (subtle ice cracks)
+                    val lineColor = Color.White.copy(alpha = 0.55f)
+                    val lineWidth = 1.5f
+                    val step = cs * 0.22f
+                    for (i in 1..3) {
+                        val offset = step * i
+                        drawLine(lineColor, Offset(tx + offset, ty), Offset(tx, ty + offset), strokeWidth = lineWidth)
+                        drawLine(lineColor, Offset(tx + tw - offset, ty + th), Offset(tx + tw, ty + th - offset), strokeWidth = lineWidth)
+                    }
+                    // Small frost shine at top corner
                     drawRoundRect(
-                        color = Color.White.copy(alpha = 0.25f),
-                        topLeft = Offset(x + tileInset * 2, y + tileInset),
-                        size = Size(cs - tileInset * 4, (cs - tileInset * 2) * 0.3f),
-                        cornerRadius = CornerRadius(cornerR * 0.6f)
+                        color = Color.White.copy(alpha = 0.30f),
+                        topLeft = Offset(tx + tileInset, ty),
+                        size = Size(tw * 0.4f, th * 0.18f),
+                        cornerRadius = CornerRadius(cornerR * 0.5f)
                     )
-                    // Ice border
+                    // Thick ice border — primary frozen indicator
                     drawRoundRect(
-                        color = Color(0xFF29B6F6).copy(alpha = 0.6f),
-                        topLeft = Offset(x + tileInset, y + tileInset),
-                        size = Size(cs - tileInset * 2, cs - tileInset * 2),
+                        color = Color(0xFF0288D1).copy(alpha = 0.85f),
+                        topLeft = Offset(tx, ty),
+                        size = Size(tw, th),
                         cornerRadius = CornerRadius(cornerR * 0.9f),
-                        style = Stroke(width = 2.dp.toPx())
+                        style = Stroke(width = 3.5f.dp.toPx())
                     )
                 }
 

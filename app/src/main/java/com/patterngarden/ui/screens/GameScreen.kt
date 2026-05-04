@@ -23,13 +23,14 @@ import kotlinx.coroutines.delay
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.patterngarden.model.GamePhase
+import com.patterngarden.logic.BoardEngine
+import com.patterngarden.logic.PatternMatcher
+import com.patterngarden.model.*
 import com.patterngarden.ui.components.*
 import com.patterngarden.ui.navigation.Screen
 import com.patterngarden.ui.theme.*
 import com.patterngarden.viewmodel.GameViewModel
 import com.patterngarden.viewmodel.GameViewModelFactory
-import com.patterngarden.logic.BoardEngine
 
 @Composable
 fun GameScreen(
@@ -204,7 +205,21 @@ fun GameScreen(
     if (state.phase == GamePhase.LOST) {
         LoseDialog(
             onRetry = { viewModel.resetLevel() },
-            onMenu = { navController.popBackStack() }
+            onMenu = { navController.popBackStack() },
+            onShowSolution = { viewModel.showSolution() }
+        )
+    }
+
+    // Solution replay overlay
+    val solutionSteps = state.solutionSteps
+    val initialBoard = state.initialBoard
+    if (state.phase == GamePhase.SHOWING_SOLUTION && solutionSteps != null && initialBoard != null) {
+        SolutionReplayOverlay(
+            initialBoard = initialBoard,
+            steps = solutionSteps,
+            goals = state.level.goals,
+            onReplay = {},
+            onClose = { viewModel.dismissSolution() }
         )
     }
 
@@ -311,7 +326,7 @@ private fun WinOverlay(stars: Int, levelName: String, onStarLanded: () -> Unit =
 }
 
 @Composable
-private fun LoseDialog(onRetry: () -> Unit, onMenu: () -> Unit) {
+private fun LoseDialog(onRetry: () -> Unit, onMenu: () -> Unit, onShowSolution: () -> Unit) {
     Dialog(onDismissRequest = {}) {
         Card(
             shape = RoundedCornerShape(24.dp),
@@ -336,12 +351,166 @@ private fun LoseDialog(onRetry: () -> Unit, onMenu: () -> Unit) {
                     textAlign = TextAlign.Center
                 )
 
+                Button(
+                    onClick = onShowSolution,
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary
+                    )
+                ) {
+                    Text("Show Solution", color = MaterialTheme.colorScheme.onTertiary)
+                }
+
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {
                         Text("Menu")
                     }
                     Button(onClick = onRetry, shape = RoundedCornerShape(20.dp)) {
                         Text("Try Again")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SolutionReplayOverlay(
+    initialBoard: Board,
+    steps: List<Pair<CellPos, CellPos>>,
+    goals: List<Goal>,
+    onReplay: () -> Unit,
+    onClose: () -> Unit
+) {
+    var currentStep by remember { mutableIntStateOf(-1) }
+    var replayBoard by remember { mutableStateOf(initialBoard) }
+    var completedGoalIds by remember { mutableStateOf(emptySet<String>()) }
+    var completedGoalCells by remember { mutableStateOf<Map<String, Set<CellPos>>>(emptyMap()) }
+    var swapAnim by remember { mutableStateOf<SwapAnimation?>(null) }
+    var replayKey by remember { mutableIntStateOf(0) }
+    var finished by remember { mutableStateOf(false) }
+
+    // Reset state when replaying
+    LaunchedEffect(replayKey) {
+        currentStep = -1
+        replayBoard = initialBoard
+        completedGoalIds = emptySet()
+        completedGoalCells = emptyMap()
+        swapAnim = null
+        finished = false
+
+        delay(600)
+
+        for (i in steps.indices) {
+            currentStep = i
+            val from = steps[i].first
+            val to = steps[i].second
+
+            // Animate swap
+            val animSteps = 15
+            val stepDelay = 17L
+            for (frame in 1..animSteps) {
+                val t = frame.toFloat() / animSteps
+                val eased = 1f - (1f - t) * (1f - t) * (1f - t)
+                swapAnim = SwapAnimation(from, to, eased)
+                delay(stepDelay)
+            }
+
+            // Apply swap
+            replayBoard = BoardEngine.executeSwap(replayBoard, from, to)
+            swapAnim = null
+
+            // Evaluate goals cumulatively (once met, stays met — matches game behavior)
+            val metNow = BoardEngine.evaluateGoals(replayBoard, goals)
+            completedGoalIds = completedGoalIds + metNow
+            val updatedGoalCells = completedGoalCells.toMutableMap()
+            for (goal in goals) {
+                if (goal.id in completedGoalIds) {
+                    val cells = PatternMatcher.findGoalPositions(replayBoard, goal)
+                    if (cells != null) updatedGoalCells[goal.id] = cells
+                }
+            }
+            completedGoalCells = updatedGoalCells
+
+            // Check if all goals met
+            if (BoardEngine.checkWin(completedGoalIds, goals)) {
+                finished = true
+                break
+            }
+
+            delay(500)
+        }
+        if (!finished) finished = true
+    }
+
+    // Fullscreen overlay
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.6f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = SoftWhite),
+            modifier = Modifier
+                .fillMaxWidth(0.92f)
+                .padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = "Solution",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = DarkSage
+                )
+
+                val totalGoals = goals.size
+                val doneGoals = completedGoalIds.size
+                val allDone = BoardEngine.checkWin(completedGoalIds, goals)
+                Text(
+                    text = if (allDone)
+                        "Solved in ${currentStep + 1} moves!"
+                    else
+                        "Move ${(currentStep + 1).coerceAtLeast(0)} of ${steps.size}  |  Goals: $doneGoals/$totalGoals",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = if (allDone) Sage else WarmBrown,
+                    textAlign = TextAlign.Center
+                )
+
+                // Board replay
+                GameBoardCanvas(
+                    board = replayBoard,
+                    selectedCell = null,
+                    hintCells = emptySet(),
+                    swapAnim = swapAnim,
+                    completedGoalCells = completedGoalCells.values.flatten().toSet(),
+                    onDragSwap = { _, _ -> },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp)
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = { replayKey++ },
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
+                        Text("Replay")
+                    }
+                    Button(
+                        onClick = onClose,
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
+                        Text("Close")
                     }
                 }
             }

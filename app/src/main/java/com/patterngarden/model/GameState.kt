@@ -13,7 +13,9 @@ data class GameState(
     val swapAnim: SwapAnimation? = null,
     val starsAwarded: Int = 0,
     val difficulty: Difficulty = Difficulty.MEDIUM,
-    val winsToRestoreLife: Int = 0
+    val winsToRestoreLife: Int = 0,
+    val initialBoard: Board? = null,
+    val solutionSteps: List<Pair<CellPos, CellPos>>? = null
 )
 
 data class SwapAnimation(
@@ -23,5 +25,5 @@ data class SwapAnimation(
 )
 
 enum class GamePhase {
-    PLAYING, ANIMATING, WON, LOST, TUTORIAL_PAUSE
+    PLAYING, ANIMATING, WON, LOST, TUTORIAL_PAUSE, SHOWING_SOLUTION
 }
