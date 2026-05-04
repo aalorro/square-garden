@@ -42,16 +42,16 @@ data class WorldInfo(
 )
 
 private val worlds = listOf(
-    WorldInfo(1, "Seedling Garden", "Levels 1-8", 0, Sage),
-    WorldInfo(2, "Blooming Meadow", "Levels 9-17", 8, TileBlue),
-    WorldInfo(3, "Ancient Grove", "Levels 18-25", 20, WarmBrown),
-    WorldInfo(4, "Crystal Cavern", "Levels 26-33", 40, Color(0xFF81D4FA)),
-    WorldInfo(5, "Shattered Isles", "Levels 34-41", 65, Color(0xFFCE93D8)),
-    WorldInfo(6, "Void Fortress", "Levels 42-49", 100, Color(0xFF78909C)),
-    WorldInfo(7, "Molten Core", "Levels 50-57", 130, Color(0xFFFF6D00)),
-    WorldInfo(8, "Starfall Summit", "Levels 58-65", 165, Color(0xFF7C4DFF)),
-    WorldInfo(9, "Abyssal Depths", "Levels 66-73", 200, Color(0xFF00897B)),
-    WorldInfo(10, "Prism Citadel", "Levels 74-81", 240, Color(0xFFE91E63))
+    WorldInfo(1, "Seedling Garden", "Levels 1-9", 0, Sage),
+    WorldInfo(2, "Blooming Meadow", "Levels 10-18", 8, TileBlue),
+    WorldInfo(3, "Ancient Grove", "Levels 19-27", 20, WarmBrown),
+    WorldInfo(4, "Crystal Cavern", "Levels 28-36", 40, Color(0xFF81D4FA)),
+    WorldInfo(5, "Shattered Isles", "Levels 37-45", 65, Color(0xFFCE93D8)),
+    WorldInfo(6, "Void Fortress", "Levels 46-54", 100, Color(0xFF78909C)),
+    WorldInfo(7, "Molten Core", "Levels 55-63", 130, Color(0xFFFF6D00)),
+    WorldInfo(8, "Starfall Summit", "Levels 64-72", 165, Color(0xFF7C4DFF)),
+    WorldInfo(9, "Abyssal Depths", "Levels 73-81", 200, Color(0xFF00897B)),
+    WorldInfo(10, "Prism Citadel", "Levels 82-90", 240, Color(0xFFE91E63))
 )
 
 @Composable

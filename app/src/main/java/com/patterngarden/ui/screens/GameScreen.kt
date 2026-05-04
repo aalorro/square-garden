@@ -150,7 +150,7 @@ fun GameScreen(
             stars = stars,
             levelName = state.level.name,
             onStarLanded = { viewModel.playStarCollect() },
-            onNext = if (state.level.id < 49) {
+            onNext = if (state.level.id < 90) {
                 {
                     val nextId = state.level.id + 1
                     navController.navigate(Screen.Game.create(nextId)) {
