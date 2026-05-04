@@ -27,6 +27,7 @@ fun TileColor.toComposeColor(): Color = when (this) {
     TileColor.BLUE -> TileBlue
     TileColor.YELLOW -> TileYellow
     TileColor.GREEN -> TileGreen
+    TileColor.ORANGE -> TileOrange
 }
 
 fun TileColor.toLightColor(): Color = when (this) {
@@ -34,6 +35,7 @@ fun TileColor.toLightColor(): Color = when (this) {
     TileColor.BLUE -> TileBlueLight
     TileColor.YELLOW -> TileYellowLight
     TileColor.GREEN -> TileGreenLight
+    TileColor.ORANGE -> TileOrangeLight
 }
 
 fun TileColor.toDarkColor(): Color = when (this) {
@@ -41,6 +43,7 @@ fun TileColor.toDarkColor(): Color = when (this) {
     TileColor.BLUE -> TileBlueDark
     TileColor.YELLOW -> TileYellowDark
     TileColor.GREEN -> TileGreenDark
+    TileColor.ORANGE -> TileOrangeDark
 }
 
 @Composable
@@ -400,6 +403,17 @@ private fun DrawScope.drawTileMotif(color: TileColor, x: Float, y: Float, cs: Fl
                 end = Offset(cx + motifSize * 0.6f, cy),
                 strokeWidth = 1.5f
             )
+        }
+        TileColor.ORANGE -> {
+            // Citrus slice: circle with segment lines
+            drawCircle(color = motifColor, radius = motifSize * 0.9f, center = Offset(cx, cy))
+            for (i in 0 until 6) {
+                val angle = Math.toRadians(i * 60.0 + 30.0)
+                val ex = cx + (motifSize * 0.85f * Math.cos(angle)).toFloat()
+                val ey = cy + (motifSize * 0.85f * Math.sin(angle)).toFloat()
+                drawLine(motifColor, Offset(cx, cy), Offset(ex, ey), strokeWidth = 1.5f)
+            }
+            drawCircle(color = motifColor.copy(alpha = 0.4f), radius = motifSize * 0.3f, center = Offset(cx, cy))
         }
     }
 }

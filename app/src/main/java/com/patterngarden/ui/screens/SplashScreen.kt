@@ -53,7 +53,7 @@ fun SplashScreen(navController: NavHostController) {
                 .scale(scale.value)
         ) {
             Text(
-                text = "Pattern",
+                text = "Square",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary

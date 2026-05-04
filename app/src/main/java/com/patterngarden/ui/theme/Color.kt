@@ -16,18 +16,21 @@ val TileRed = Color(0xFFEF5350)
 val TileBlue = Color(0xFF42A5F5)
 val TileYellow = Color(0xFFFFCA28)
 val TileGreen = Color(0xFF66BB6A)
+val TileOrange = Color(0xFFFF9800)
 
 // Emboss highlight (lighter edge)
 val TileRedLight = Color(0xFFFF8A80)
 val TileBlueLight = Color(0xFF90CAF9)
 val TileYellowLight = Color(0xFFFFE082)
 val TileGreenLight = Color(0xFFA5D6A7)
+val TileOrangeLight = Color(0xFFFFCC80)
 
 // Emboss shadow (darker edge)
 val TileRedDark = Color(0xFFC62828)
 val TileBlueDark = Color(0xFF1565C0)
 val TileYellowDark = Color(0xFFF9A825)
 val TileGreenDark = Color(0xFF2E7D32)
+val TileOrangeDark = Color(0xFFE65100)
 
 // ── Theme color sets ──────────────────────────────────────────
 

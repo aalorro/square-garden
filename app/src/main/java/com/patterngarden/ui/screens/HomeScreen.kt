@@ -53,7 +53,7 @@ fun HomeScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Text(
-                text = "Pattern",
+                text = "Square",
                 fontSize = 38.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary

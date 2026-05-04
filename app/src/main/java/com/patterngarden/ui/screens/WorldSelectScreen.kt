@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,7 +47,11 @@ private val worlds = listOf(
     WorldInfo(3, "Ancient Grove", "Levels 18-25", 20, WarmBrown),
     WorldInfo(4, "Crystal Cavern", "Levels 26-33", 40, Color(0xFF81D4FA)),
     WorldInfo(5, "Shattered Isles", "Levels 34-41", 65, Color(0xFFCE93D8)),
-    WorldInfo(6, "Void Fortress", "Levels 42-49", 100, Color(0xFF78909C))
+    WorldInfo(6, "Void Fortress", "Levels 42-49", 100, Color(0xFF78909C)),
+    WorldInfo(7, "Molten Core", "Levels 50-57", 130, Color(0xFFFF6D00)),
+    WorldInfo(8, "Starfall Summit", "Levels 58-65", 165, Color(0xFF7C4DFF)),
+    WorldInfo(9, "Abyssal Depths", "Levels 66-73", 200, Color(0xFF00897B)),
+    WorldInfo(10, "Prism Citadel", "Levels 74-81", 240, Color(0xFFE91E63))
 )
 
 @Composable
@@ -130,6 +135,10 @@ fun WorldSelectScreen(navController: NavHostController) {
                                 4 -> drawCrystalCavern(size)
                                 5 -> drawShatteredIsles(size)
                                 6 -> drawVoidFortress(size)
+                                7 -> drawMoltenCore(size)
+                                8 -> drawStarfallSummit(size)
+                                9 -> drawAbyssalDepths(size)
+                                10 -> drawPrismCitadel(size)
                             }
                         }
 
@@ -453,6 +462,245 @@ private fun DrawScope.drawVoidFortress(sz: Size) {
     // Ground shadow
     drawRect(Color(0xFF0D0D1A), Offset(0f, sz.height * 0.9f), Size(sz.width, sz.height * 0.1f))
     drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.4f), Color.Transparent)), size = Size(sz.width * 0.55f, sz.height))
+}
+
+// ── World 7: Molten Core — lava, volcanoes, fire ──
+
+private fun DrawScope.drawMoltenCore(sz: Size) {
+    // Dark volcanic sky
+    drawRect(Brush.verticalGradient(listOf(Color(0xFF3E2723), Color(0xFFBF360C), Color(0xFFFF6F00))))
+    // Lava river at bottom
+    drawRect(
+        Brush.verticalGradient(listOf(Color(0xFFFF9100), Color(0xFFFF6D00), Color(0xFFDD2C00))),
+        topLeft = Offset(0f, sz.height * 0.78f),
+        size = Size(sz.width, sz.height * 0.22f)
+    )
+    // Lava bubbles
+    for ((bx, by) in listOf(0.2f to 0.82f, 0.5f to 0.85f, 0.75f to 0.8f, 0.35f to 0.88f)) {
+        drawCircle(Color(0xFFFFAB00).copy(0.7f), radius = sz.height * 0.03f, center = Offset(sz.width * bx, sz.height * by))
+    }
+    // Volcanoes
+    fun drawVolcano(cx: Float, baseW: Float, h: Float) {
+        val path = Path().apply {
+            moveTo(cx - baseW / 2, sz.height * 0.78f)
+            lineTo(cx - baseW * 0.12f, sz.height * 0.78f - h)
+            lineTo(cx + baseW * 0.12f, sz.height * 0.78f - h)
+            lineTo(cx + baseW / 2, sz.height * 0.78f)
+            close()
+        }
+        drawPath(path, Color(0xFF4E342E))
+        // Crater glow
+        drawRoundRect(
+            Color(0xFFFF6D00).copy(0.8f),
+            Offset(cx - baseW * 0.1f, sz.height * 0.78f - h - sz.height * 0.02f),
+            Size(baseW * 0.2f, sz.height * 0.04f),
+            CornerRadius(4f)
+        )
+    }
+    drawVolcano(sz.width * 0.75f, sz.width * 0.28f, sz.height * 0.5f)
+    drawVolcano(sz.width * 0.9f, sz.width * 0.18f, sz.height * 0.35f)
+    drawVolcano(sz.width * 0.6f, sz.width * 0.15f, sz.height * 0.3f)
+    // Ember particles
+    val emberColor = Color(0xFFFFD600)
+    for ((ex, ey) in listOf(0.7f to 0.15f, 0.78f to 0.22f, 0.82f to 0.1f, 0.65f to 0.3f, 0.88f to 0.28f)) {
+        drawCircle(emberColor.copy(0.6f), radius = 2.5f, center = Offset(sz.width * ex, sz.height * ey))
+    }
+    // Smoke wisps
+    drawCircle(Color.White.copy(0.15f), radius = sz.height * 0.06f, center = Offset(sz.width * 0.73f, sz.height * 0.18f))
+    drawCircle(Color.White.copy(0.1f), radius = sz.height * 0.04f, center = Offset(sz.width * 0.76f, sz.height * 0.12f))
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.4f), Color.Transparent)), size = Size(sz.width * 0.6f, sz.height))
+}
+
+// ── World 8: Starfall Summit — cosmic mountains, shooting stars ──
+
+private fun DrawScope.drawStarfallSummit(sz: Size) {
+    // Deep space gradient
+    drawRect(Brush.verticalGradient(listOf(Color(0xFF0D0221), Color(0xFF190A3A), Color(0xFF2D1B69))))
+    // Stars (tiny dots)
+    val starColor = Color.White
+    val starPositions = listOf(
+        0.1f to 0.1f, 0.2f to 0.25f, 0.35f to 0.08f, 0.45f to 0.3f,
+        0.6f to 0.12f, 0.75f to 0.05f, 0.85f to 0.2f, 0.92f to 0.15f,
+        0.15f to 0.4f, 0.5f to 0.18f, 0.68f to 0.28f, 0.38f to 0.35f
+    )
+    for ((sx, sy) in starPositions) {
+        val r = if ((sx * 100).toInt() % 3 == 0) 2.5f else 1.5f
+        drawCircle(starColor.copy(0.8f), radius = r, center = Offset(sz.width * sx, sz.height * sy))
+    }
+    // Shooting star trails
+    val trailColor = Color(0xFFB388FF)
+    drawLine(trailColor.copy(0.6f), Offset(sz.width * 0.3f, sz.height * 0.05f), Offset(sz.width * 0.5f, sz.height * 0.2f), strokeWidth = 2f)
+    drawLine(trailColor.copy(0.4f), Offset(sz.width * 0.7f, sz.height * 0.1f), Offset(sz.width * 0.85f, sz.height * 0.25f), strokeWidth = 1.5f)
+    // Mountain peaks
+    val mtColor = Color(0xFF311B92)
+    val mt1 = Path().apply {
+        moveTo(sz.width * 0.4f, sz.height)
+        lineTo(sz.width * 0.65f, sz.height * 0.35f)
+        lineTo(sz.width * 0.9f, sz.height)
+        close()
+    }
+    drawPath(mt1, mtColor)
+    val mt2 = Path().apply {
+        moveTo(sz.width * 0.6f, sz.height)
+        lineTo(sz.width * 0.8f, sz.height * 0.42f)
+        lineTo(sz.width, sz.height)
+        close()
+    }
+    drawPath(mt2, Color(0xFF4A148C))
+    val mt3 = Path().apply {
+        moveTo(0f, sz.height)
+        lineTo(sz.width * 0.25f, sz.height * 0.5f)
+        lineTo(sz.width * 0.5f, sz.height)
+        close()
+    }
+    drawPath(mt3, Color(0xFF4527A0))
+    // Snow caps
+    val snow = Path().apply {
+        moveTo(sz.width * 0.62f, sz.height * 0.35f)
+        lineTo(sz.width * 0.65f, sz.height * 0.35f)
+        lineTo(sz.width * 0.68f, sz.height * 0.42f)
+        lineTo(sz.width * 0.62f, sz.height * 0.42f)
+        close()
+    }
+    drawPath(snow, Color.White.copy(0.5f))
+    // Nebula glow
+    drawCircle(Color(0xFF7C4DFF).copy(0.15f), radius = sz.height * 0.3f, center = Offset(sz.width * 0.3f, sz.height * 0.2f))
+    drawCircle(Color(0xFFE040FB).copy(0.1f), radius = sz.height * 0.2f, center = Offset(sz.width * 0.7f, sz.height * 0.15f))
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.35f), Color.Transparent)), size = Size(sz.width * 0.6f, sz.height))
+}
+
+// ── World 9: Abyssal Depths — deep ocean, bioluminescent ──
+
+private fun DrawScope.drawAbyssalDepths(sz: Size) {
+    // Deep ocean gradient
+    drawRect(Brush.verticalGradient(listOf(Color(0xFF001F3F), Color(0xFF003366), Color(0xFF004D40))))
+    // Underwater light beams
+    val beamColor = Color(0xFF80CBC4).copy(0.08f)
+    for (frac in listOf(0.2f, 0.5f, 0.75f)) {
+        val path = Path().apply {
+            moveTo(sz.width * frac - sz.width * 0.02f, 0f)
+            lineTo(sz.width * frac + sz.width * 0.08f, sz.height)
+            lineTo(sz.width * frac - sz.width * 0.08f, sz.height)
+            lineTo(sz.width * frac + sz.width * 0.02f, 0f)
+            close()
+        }
+        drawPath(path, beamColor)
+    }
+    // Bioluminescent jellyfish
+    fun drawJellyfish(cx: Float, cy: Float, r: Float, color: Color) {
+        // Bell
+        val bell = Path().apply {
+            moveTo(cx - r, cy)
+            quadraticTo(cx - r, cy - r * 1.2f, cx, cy - r * 1.3f)
+            quadraticTo(cx + r, cy - r * 1.2f, cx + r, cy)
+            quadraticTo(cx + r * 0.5f, cy + r * 0.3f, cx, cy + r * 0.2f)
+            quadraticTo(cx - r * 0.5f, cy + r * 0.3f, cx - r, cy)
+            close()
+        }
+        drawPath(bell, color.copy(0.5f))
+        // Glow
+        drawCircle(color.copy(0.2f), radius = r * 1.5f, center = Offset(cx, cy))
+        // Tentacles
+        for (dx in listOf(-0.5f, 0f, 0.5f)) {
+            drawLine(color.copy(0.4f), Offset(cx + r * dx, cy + r * 0.2f), Offset(cx + r * dx * 0.8f, cy + r * 1.5f), strokeWidth = 1.5f)
+        }
+    }
+    drawJellyfish(sz.width * 0.75f, sz.height * 0.3f, sz.height * 0.1f, Color(0xFF00E5FF))
+    drawJellyfish(sz.width * 0.6f, sz.height * 0.55f, sz.height * 0.07f, Color(0xFF69F0AE))
+    drawJellyfish(sz.width * 0.88f, sz.height * 0.5f, sz.height * 0.06f, Color(0xFFB388FF))
+    // Sea floor
+    val floor = Path().apply {
+        moveTo(0f, sz.height * 0.88f)
+        quadraticTo(sz.width * 0.2f, sz.height * 0.82f, sz.width * 0.4f, sz.height * 0.87f)
+        quadraticTo(sz.width * 0.6f, sz.height * 0.84f, sz.width * 0.8f, sz.height * 0.86f)
+        quadraticTo(sz.width * 0.9f, sz.height * 0.83f, sz.width, sz.height * 0.85f)
+        lineTo(sz.width, sz.height)
+        lineTo(0f, sz.height)
+        close()
+    }
+    drawPath(floor, Color(0xFF1A3A3A))
+    // Coral
+    for ((cx, cColor) in listOf(0.65f to Color(0xFFFF6D00), 0.8f to Color(0xFFE91E63), 0.9f to Color(0xFF76FF03))) {
+        val baseY = sz.height * 0.85f
+        drawLine(cColor.copy(0.6f), Offset(sz.width * cx, baseY), Offset(sz.width * cx, baseY - sz.height * 0.08f), strokeWidth = 3f)
+        drawCircle(cColor.copy(0.5f), radius = sz.height * 0.025f, center = Offset(sz.width * cx - 4f, baseY - sz.height * 0.09f))
+        drawCircle(cColor.copy(0.5f), radius = sz.height * 0.025f, center = Offset(sz.width * cx + 4f, baseY - sz.height * 0.09f))
+    }
+    // Bubbles
+    for ((bx, by) in listOf(0.3f to 0.6f, 0.45f to 0.4f, 0.55f to 0.7f, 0.7f to 0.65f)) {
+        drawCircle(Color.White.copy(0.15f), radius = sz.height * 0.015f, center = Offset(sz.width * bx, sz.height * by))
+    }
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.4f), Color.Transparent)), size = Size(sz.width * 0.55f, sz.height))
+}
+
+// ── World 10: Prism Citadel — rainbow crystal palace ──
+
+private fun DrawScope.drawPrismCitadel(sz: Size) {
+    // Prismatic gradient sky
+    drawRect(Brush.verticalGradient(listOf(Color(0xFFF3E5F5), Color(0xFFE8EAF6), Color(0xFFE0F7FA))))
+    // Rainbow arc
+    val rainbowColors = listOf(
+        Color(0xFFE53935), Color(0xFFFF9800), Color(0xFFFFEB3B),
+        Color(0xFF4CAF50), Color(0xFF2196F3), Color(0xFF9C27B0)
+    )
+    for (i in rainbowColors.indices) {
+        val r = sz.height * 0.7f - i * sz.height * 0.03f
+        drawCircle(
+            rainbowColors[i].copy(0.3f), radius = r,
+            center = Offset(sz.width * 0.5f, sz.height * 0.9f),
+            style = Stroke(width = sz.height * 0.025f)
+        )
+    }
+    // Crystal palace towers
+    val crystalColors = listOf(Color(0xFFE91E63), Color(0xFF9C27B0), Color(0xFF3F51B5), Color(0xFF00BCD4))
+    fun drawCrystalTower(cx: Float, h: Float, w: Float, color: Color) {
+        // Tower body
+        val path = Path().apply {
+            moveTo(cx - w / 2, sz.height * 0.9f)
+            lineTo(cx - w * 0.3f, sz.height * 0.9f - h)
+            lineTo(cx, sz.height * 0.9f - h - sz.height * 0.06f)
+            lineTo(cx + w * 0.3f, sz.height * 0.9f - h)
+            lineTo(cx + w / 2, sz.height * 0.9f)
+            close()
+        }
+        drawPath(path, color.copy(0.7f))
+        // Shine
+        val shine = Path().apply {
+            moveTo(cx - w * 0.1f, sz.height * 0.9f - h - sz.height * 0.04f)
+            lineTo(cx + w * 0.05f, sz.height * 0.9f - h * 0.3f)
+            lineTo(cx - w * 0.05f, sz.height * 0.9f - h * 0.3f)
+            close()
+        }
+        drawPath(shine, Color.White.copy(0.3f))
+    }
+    drawCrystalTower(sz.width * 0.7f, sz.height * 0.5f, sz.width * 0.1f, crystalColors[0])
+    drawCrystalTower(sz.width * 0.78f, sz.height * 0.4f, sz.width * 0.08f, crystalColors[1])
+    drawCrystalTower(sz.width * 0.62f, sz.height * 0.35f, sz.width * 0.07f, crystalColors[2])
+    drawCrystalTower(sz.width * 0.86f, sz.height * 0.3f, sz.width * 0.06f, crystalColors[3])
+    // Floating prism shards
+    for ((px, py, color) in listOf(
+        Triple(0.55f, 0.25f, Color(0xFFFF4081)),
+        Triple(0.65f, 0.15f, Color(0xFF7C4DFF)),
+        Triple(0.8f, 0.2f, Color(0xFF00E5FF)),
+        Triple(0.9f, 0.12f, Color(0xFFFFD740))
+    )) {
+        val diamond = Path().apply {
+            val dx = sz.width * px; val dy = sz.height * py; val s = sz.height * 0.025f
+            moveTo(dx, dy - s)
+            lineTo(dx + s * 0.6f, dy)
+            lineTo(dx, dy + s)
+            lineTo(dx - s * 0.6f, dy)
+            close()
+        }
+        drawPath(diamond, color.copy(0.5f))
+    }
+    // Ground
+    drawRect(Color(0xFFCE93D8).copy(0.3f), Offset(0f, sz.height * 0.88f), Size(sz.width, sz.height * 0.12f))
+    // Sparkles
+    for ((sx, sy) in listOf(0.5f to 0.35f, 0.72f to 0.08f, 0.85f to 0.3f, 0.6f to 0.42f)) {
+        drawCircle(Color.White.copy(0.6f), radius = 2f, center = Offset(sz.width * sx, sz.height * sy))
+    }
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.3f), Color.Transparent)), size = Size(sz.width * 0.55f, sz.height))
 }
 
 // ── Shared: simple cloud shape ──

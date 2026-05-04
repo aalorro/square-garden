@@ -38,5 +38,11 @@ enum class ShapeType(val label: String, val offsets: List<CellPos>) {
     )),
     CROSS("Cross", listOf(
         CellPos(0, 1), CellPos(1, 0), CellPos(1, 1), CellPos(1, 2), CellPos(2, 1)
+    )),
+    Z_SHAPE("Z-shape", listOf(
+        CellPos(0, 0), CellPos(0, 1), CellPos(1, 1), CellPos(1, 2)
+    )),
+    U_SHAPE("U-shape", listOf(
+        CellPos(0, 0), CellPos(1, 0), CellPos(1, 1), CellPos(1, 2), CellPos(0, 2)
     ))
 }

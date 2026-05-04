@@ -40,7 +40,8 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
 
     val worldNames = mapOf(
         1 to "Seedling Garden", 2 to "Blooming Meadow", 3 to "Ancient Grove",
-        4 to "Crystal Cavern", 5 to "Shattered Isles", 6 to "Void Fortress"
+        4 to "Crystal Cavern", 5 to "Shattered Isles", 6 to "Void Fortress",
+        7 to "Molten Core", 8 to "Starfall Summit", 9 to "Abyssal Depths", 10 to "Prism Citadel"
     )
 
     Column(
