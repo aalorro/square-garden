@@ -498,7 +498,7 @@
     "name": "Garden Gate",
     "width": 5,
     "height": 5,
-    "maxMoves": 14,
+    "maxMoves": 10,
     "tiles": [
       [
         "GREEN",
@@ -1169,7 +1169,7 @@
     "name": "Meadow's End",
     "width": 6,
     "height": 6,
-    "maxMoves": 20,
+    "maxMoves": 14,
     "tiles": [
       [
         "RED",
@@ -2018,7 +2018,7 @@
     "name": "Elder Root",
     "width": 7,
     "height": 7,
-    "maxMoves": 22,
+    "maxMoves": 15,
     "tiles": [
       [
         "GREEN",
@@ -3183,7 +3183,7 @@
     "name": "Diamond Vein",
     "width": 8,
     "height": 8,
-    "maxMoves": 24,
+    "maxMoves": 17,
     "tiles": [
       [
         "BLUE",
@@ -4426,7 +4426,7 @@
     "name": "Rift Walker",
     "width": 8,
     "height": 8,
-    "maxMoves": 26,
+    "maxMoves": 18,
     "tiles": [
       [
         "RED",
@@ -5964,7 +5964,7 @@
     "name": "Void Eclipse",
     "width": 8,
     "height": 8,
-    "maxMoves": 30,
+    "maxMoves": 21,
     "tiles": [
       [
         "BLUE",
@@ -7283,7 +7283,7 @@
     "name": "Caldera",
     "width": 8,
     "height": 8,
-    "maxMoves": 28,
+    "maxMoves": 20,
     "tiles": [
       [
         "ORANGE",
@@ -8625,7 +8625,7 @@
     "name": "Black Hole",
     "width": 8,
     "height": 8,
-    "maxMoves": 30,
+    "maxMoves": 21,
     "tiles": [
       [
         "GREEN",
@@ -10342,7 +10342,7 @@
     "name": "Mariana",
     "width": 9,
     "height": 9,
-    "maxMoves": 34,
+    "maxMoves": 24,
     "tiles": [
       [
         "RED",
@@ -12230,7 +12230,7 @@
     "name": "Eternal Prism",
     "width": 9,
     "height": 9,
-    "maxMoves": 36,
+    "maxMoves": 25,
     "tiles": [
       [
         "BLUE",

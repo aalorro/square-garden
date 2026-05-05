@@ -1,6 +1,7 @@
 package com.patterngarden.ui.screens
 
 import androidx.compose.animation.core.*
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -149,6 +150,7 @@ fun GameScreen(
         WinOverlay(
             stars = stars,
             levelName = state.level.name,
+            unlockedWorldName = state.unlockedWorldName,
             onStarLanded = { viewModel.playStarCollect() },
             onNext = if (state.level.id < 90) {
                 {
@@ -235,7 +237,7 @@ fun GameScreen(
 }
 
 @Composable
-private fun WinOverlay(stars: Int, levelName: String, onStarLanded: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
+private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, onStarLanded: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
     // Pulsing scale animation for the star display
     val infiniteTransition = rememberInfiniteTransition(label = "starPulse")
     val starScale by infiniteTransition.animateFloat(
@@ -246,6 +248,13 @@ private fun WinOverlay(stars: Int, levelName: String, onStarLanded: () -> Unit =
             repeatMode = RepeatMode.Reverse
         ),
         label = "scale"
+    )
+
+    // World unlock banner bounce animation
+    val unlockScale by animateFloatAsState(
+        targetValue = if (unlockedWorldName != null) 1f else 0f,
+        animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f),
+        label = "unlockScale"
     )
 
     // Fullscreen overlay (same window layer — not a Dialog)
@@ -299,6 +308,36 @@ private fun WinOverlay(stars: Int, levelName: String, onStarLanded: () -> Unit =
                     color = WarmBrown,
                     textAlign = TextAlign.Center
                 )
+
+                // World unlock celebration
+                if (unlockedWorldName != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Sage.copy(alpha = 0.15f)
+                        ),
+                        modifier = Modifier.scale(unlockScale)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "New World Unlocked!",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Sage
+                            )
+                            Text(
+                                text = unlockedWorldName,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = DarkSage
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 

@@ -17,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
@@ -499,13 +500,15 @@ class GameViewModel(
 
             if ((newCompleted - current.completedGoalIds).isNotEmpty()) audioManager.playMatch()
 
-            var starsAwarded = 0; var winsNeeded = 0
+            var starsAwarded = 0; var winsNeeded = 0; var unlockedWorld: String? = null
             val phase = when {
                 won -> {
                     val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
                     starsAwarded = baseStars * difficulty.starMultiplier
                     audioManager.playWin(baseStars)
+                    val oldTotal = progressRepo.totalStarsFlow.first()
                     progressRepo.saveLevelResult(current.level.id, starsAwarded)
+                    unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
                     winsNeeded = progressRepo.recordWin(difficulty.ordinal)
                     profileRepo.incrementPlayerLevel()
                     GamePhase.WON
@@ -522,7 +525,8 @@ class GameViewModel(
                 board = newBoard, movesRemaining = newMoves,
                 completedGoalIds = newCompleted, completedGoalCells = newGoalCells,
                 selectedCell = null, hintCells = emptySet(), swapAnim = null,
-                phase = phase, starsAwarded = starsAwarded, winsToRestoreLife = winsNeeded
+                phase = phase, starsAwarded = starsAwarded, winsToRestoreLife = winsNeeded,
+                unlockedWorldName = unlockedWorld
             )
         }
     }
@@ -572,6 +576,24 @@ class GameViewModel(
 
     fun dismissSolution() {
         _state.value = _state.value.copy(phase = GamePhase.LOST, solutionSteps = null)
+    }
+
+    private fun detectNewWorldUnlock(oldStars: Int, newStars: Int): String? {
+        val worldThresholds = listOf(
+            8 to "Blooming Meadow",
+            20 to "Ancient Grove",
+            40 to "Crystal Cavern",
+            65 to "Shattered Isles",
+            100 to "Void Fortress",
+            130 to "Molten Core",
+            165 to "Starfall Summit",
+            200 to "Abyssal Depths",
+            240 to "Prism Citadel"
+        )
+        for ((threshold, name) in worldThresholds) {
+            if (oldStars < threshold && newStars >= threshold) return name
+        }
+        return null
     }
 
     override fun onCleared() { audioManager.release() }
