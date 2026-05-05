@@ -114,7 +114,7 @@
       {
         "type": "line",
         "color": "BLUE",
-        "length": 3
+        "length": 4
       }
     ],
     "stars": {
@@ -126,7 +126,7 @@
         "message": "Each swap uses one move.\nWatch your move counter!"
       },
       {
-        "message": "Use fewer moves to earn more stars!"
+        "message": "Now try a longer line — 4 BLUE tiles!\nUse fewer moves to earn more stars."
       }
     ]
   },
