@@ -89,7 +89,7 @@ fun WorldSelectScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 TextButton(onClick = { navController.popBackStack() }) {
-                    Text("\u2190", fontSize = 16.sp, fontWeight = FontWeight.Bold,
+                    Text("\u2190", fontSize = 48.sp, fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onBackground)
                 }
                 Text(

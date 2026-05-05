@@ -37,7 +37,7 @@ fun GoalPanel(
         ) {
             Text(
                 text = "GOALS",
-                fontSize = 10.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 letterSpacing = 0.8.sp
@@ -51,13 +51,13 @@ fun GoalPanel(
                     // Color swatch
                     Box(
                         modifier = Modifier
-                            .size(14.dp)
-                            .clip(RoundedCornerShape(4.dp))
+                            .size(35.dp)
+                            .clip(RoundedCornerShape(8.dp))
                             .background(goal.color.toComposeColor())
                     )
                     Text(
                         text = goal.description,
-                        fontSize = 13.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = if (completed)
                             MaterialTheme.colorScheme.onSurfaceVariant
@@ -69,7 +69,7 @@ fun GoalPanel(
                     if (completed) {
                         Text(
                             text = "DONE",
-                            fontSize = 11.sp,
+                            fontSize = 27.sp,
                             fontWeight = FontWeight.ExtraBold,
                             color = Color(0xFF43A047)
                         )

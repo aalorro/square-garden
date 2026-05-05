@@ -50,14 +50,14 @@ fun HomeScreen(navController: NavHostController) {
             Column {
                 Text(
                     text = "Welcome back,",
-                    fontSize = 13.sp,
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = "${profile.username.ifBlank { "Gardener" }}!",
                     fontFamily = DisplayFontFamily,
-                    fontSize = 26.sp,
+                    fontSize = 65.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )

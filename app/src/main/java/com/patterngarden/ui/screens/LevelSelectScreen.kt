@@ -104,22 +104,22 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                 TextButton(onClick = { navController.popBackStack() }) {
                     Text(
                         "\u2190",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontSize = 48.sp,
+                        fontWeight = FontWeight.ExtraBold,
                         color = Color.White.copy(alpha = 0.85f)
                     )
                 }
                 Column {
                     Text(
                         text = "WORLD $worldId",
-                        fontSize = 11.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White.copy(alpha = 0.85f),
                         letterSpacing = 1.sp
                     )
                     Text(
                         text = worldNames[worldId] ?: "World $worldId",
-                        fontSize = 24.sp,
+                        fontSize = 48.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White
                     )
@@ -182,7 +182,7 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                             )
                             Text(
                                 text = "Level ${levels.indexOf(level) + 1}",
-                                fontSize = 11.sp,
+                                fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = theme.textColor.copy(alpha = 0.7f)
                             )

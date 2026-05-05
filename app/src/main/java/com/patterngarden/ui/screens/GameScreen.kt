@@ -64,8 +64,8 @@ fun GameScreen(
             ) {
                 Text(
                     text = "\u2190 Menu",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontSize = 42.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     color = if (canGoBack) MaterialTheme.colorScheme.onBackground
                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                 )
@@ -86,7 +86,7 @@ fun GameScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 6.dp),
+                .padding(start = 16.dp, end = 70.dp, top = 6.dp, bottom = 6.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             GoalPanel(
