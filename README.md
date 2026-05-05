@@ -15,23 +15,33 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 
 | World | Name | Levels | Board | Features |
 |-------|------|--------|-------|----------|
-| 1 | Seedling Garden | 1-8 | 5x5 | Tutorial, basic goals |
-| 2 | Blooming Meadow | 9-17 | 6x6 | Multi-goal levels, shapes |
-| 3 | Ancient Grove | 18-25 | 7x7 | Complex shapes, 3-4 goals |
-| 4 | Crystal Cavern | 26-33 | 7x7 | Frozen tiles (immovable) |
-| 5 | Shattered Isles | 34-41 | 7x7 | Void cells (irregular boards) |
-| 6 | Void Fortress | 42-49 | 8x8 | Frozen tiles + void cells |
+| 1 | Seedling Garden | 1-9 | 5x5 | Tutorial, basic goals |
+| 2 | Blooming Meadow | 10-18 | 6x6 | Multi-goal levels, shapes |
+| 3 | Ancient Grove | 19-27 | 7x7 | Complex shapes, 3-4 goals |
+| 4 | Crystal Cavern | 28-36 | 7x7 | Frozen tiles (immovable) |
+| 5 | Shattered Isles | 37-45 | 7x7 | Void cells (irregular boards) |
+| 6 | Void Fortress | 46-54 | 8x8 | Frozen tiles + void cells |
+| 7 | Molten Core | 55-63 | — | — |
+| 8 | Starfall Summit | 64-72 | — | — |
+| 9 | Abyssal Depths | 73-81 | — | — |
+| 10 | Prism Citadel | 82-90 | — | — |
 
 ### Obstacles
 - **Frozen Tiles** - Cannot be swapped but their color counts toward patterns. Shown with an ice overlay.
 - **Void Cells** - Empty spaces on the board. Creates irregular board shapes. Lines cannot cross voids.
 
 ### Difficulty Modes
-- **Easy** - More moves, 1x star multiplier
-- **Medium** - Standard moves, 2x star multiplier
-- **Hard** - Fewer moves, 3x star multiplier, completed goals lock tiles
+
+| | Moves | Stars | Starting World | Border Behavior |
+|---|---|---|---|---|
+| **Easy** | 1.5x | 1x | World 1 | Cosmetic |
+| **Medium** | 1.0x | 2x | World 2 | Breaks on cross |
+| **Hard** | 0.7x | 3x | World 3 | Locks tiles |
+
+Players start at a world matching their skill level — no grinding through easy content. Difficulty can be changed anytime in the profile.
 
 ### Features
+- Difficulty-based starting worlds (skip easy content if you're experienced)
 - Drag-to-swap with animated sliding
 - Embossed tile rendering with unique motifs per color
 - Hint system (highlights quadrant containing best move)
@@ -48,7 +58,7 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 - **Architecture**: MVVM (ViewModel + StateFlow)
 - **Storage**: DataStore Preferences
 - **Navigation**: Navigation Compose
-- **Audio**: SoundPool (stub)
+- **Audio**: Procedural PCM via AudioTrack
 - **Min SDK**: 26 (Android 8.0)
 - **Target SDK**: 35
 

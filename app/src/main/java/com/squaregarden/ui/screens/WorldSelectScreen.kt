@@ -43,11 +43,11 @@ data class WorldInfo(
 
 private val worlds = listOf(
     WorldInfo(1, "Seedling Garden", "Levels 1-9", 0, Sage),
-    WorldInfo(2, "Blooming Meadow", "Levels 10-18", 8, TileBlue),
-    WorldInfo(3, "Ancient Grove", "Levels 19-27", 20, WarmBrown),
+    WorldInfo(2, "Blooming Meadow", "Levels 10-18", 9, TileBlue),
+    WorldInfo(3, "Ancient Grove", "Levels 19-27", 22, WarmBrown),
     WorldInfo(4, "Crystal Cavern", "Levels 28-36", 40, Color(0xFF81D4FA)),
     WorldInfo(5, "Shattered Isles", "Levels 37-45", 65, Color(0xFFCE93D8)),
-    WorldInfo(6, "Void Fortress", "Levels 46-54", 100, Color(0xFF78909C)),
+    WorldInfo(6, "Void Fortress", "Levels 46-54", 95, Color(0xFF78909C)),
     WorldInfo(7, "Molten Core", "Levels 55-63", 130, Color(0xFFFF6D00)),
     WorldInfo(8, "Starfall Summit", "Levels 64-72", 165, Color(0xFF7C4DFF)),
     WorldInfo(9, "Abyssal Depths", "Levels 73-81", 200, Color(0xFF00897B)),
@@ -124,8 +124,9 @@ fun WorldSelectScreen(navController: NavHostController) {
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+            val startingWorld = difficulty?.startingWorld ?: 1
             worlds.forEach { world ->
-                val unlocked = totalStars >= world.starsToUnlock
+                val unlocked = totalStars >= world.starsToUnlock || world.id <= startingWorld
                 val tooEasy = easyWorldsDisabled && world.id <= 2
                 val accessible = unlocked && !tooEasy
 

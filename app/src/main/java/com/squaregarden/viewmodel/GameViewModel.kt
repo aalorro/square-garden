@@ -32,6 +32,9 @@ class GameViewModel(
     private var difficulty: Difficulty = Difficulty.MEDIUM
     private var adjustedMaxMoves: Int = 0
     private var hasMovedSinceReset: Boolean = false
+    private var winResultCommitted: Boolean = false
+    private var pendingWinLevelId: Int = 0
+    private var pendingWinStars: Int = 0
     private var precomputedSolution: List<Pair<CellPos, CellPos>>? = null
     private val progressRepo = ProgressRepository(context)
     private val profileRepo = ProfileRepository(context)
@@ -507,10 +510,11 @@ class GameViewModel(
                     starsAwarded = baseStars * difficulty.starMultiplier
                     audioManager.playWin(baseStars)
                     val oldTotal = progressRepo.totalStarsFlow.first()
-                    progressRepo.saveLevelResult(current.level.id, starsAwarded)
                     unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
-                    winsNeeded = progressRepo.recordWin(difficulty.ordinal)
-                    profileRepo.incrementPlayerLevel()
+                    // Defer saveLevelResult/recordWin/incrementPlayerLevel until star trail finishes
+                    winResultCommitted = false
+                    pendingWinLevelId = current.level.id
+                    pendingWinStars = starsAwarded
                     GamePhase.WON
                 }
                 lost -> {
@@ -581,13 +585,23 @@ class GameViewModel(
         _state.value = _state.value.copy(phase = GamePhase.LOST, solutionSteps = null)
     }
 
+    fun commitWinResult() {
+        if (winResultCommitted) return
+        winResultCommitted = true
+        viewModelScope.launch {
+            progressRepo.saveLevelResult(pendingWinLevelId, pendingWinStars)
+            progressRepo.recordWin(difficulty.ordinal)
+            profileRepo.incrementPlayerLevel()
+        }
+    }
+
     private fun detectNewWorldUnlock(oldStars: Int, newStars: Int): String? {
         val worldThresholds = listOf(
-            8 to "Blooming Meadow",
-            20 to "Ancient Grove",
+            9 to "Blooming Meadow",
+            22 to "Ancient Grove",
             40 to "Crystal Cavern",
             65 to "Shattered Isles",
-            100 to "Void Fortress",
+            95 to "Void Fortress",
             130 to "Molten Core",
             165 to "Starfall Summit",
             200 to "Abyssal Depths",

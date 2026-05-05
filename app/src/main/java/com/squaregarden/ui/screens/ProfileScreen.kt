@@ -316,9 +316,9 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
             Difficulty.entries.forEach { diff ->
                 val selected = diff.id == difficulty
                 val description = when (diff) {
-                    Difficulty.EASY -> "More moves"
-                    Difficulty.MEDIUM -> "Standard"
-                    Difficulty.HARD -> "Fewer moves"
+                    Difficulty.EASY -> "More moves\nStart: World 1"
+                    Difficulty.MEDIUM -> "Standard\nStart: World 2"
+                    Difficulty.HARD -> "Fewer moves\nStart: World 3"
                 }
                 Card(
                     onClick = { difficulty = diff.id },

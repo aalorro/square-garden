@@ -2,6 +2,30 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.3.0] - 2026-05-05
+
+### Added
+- **Difficulty-based starting worlds** — Easy starts at World 1, Medium at World 2, Hard at World 3
+  - Experienced players jump straight into challenging content without grinding through easy levels
+  - `Difficulty` enum gains `startingLevel` and `startingWorld` properties
+  - `PlayerProgress.highestUnlockedLevel()` accepts a floor parameter to ensure starting levels are always accessible
+- Worlds at or below the starting world bypass star-gating requirements
+- Play button now navigates directly to the player's current world (based on progress and difficulty)
+- Difficulty picker in Profile screen shows which world each difficulty starts at
+
+### Changed
+- **Full project rename** from PatternGarden to SquareGarden
+  - Package: `com.patterngarden` → `com.squaregarden`
+  - Application class: `PatternGardenApp` → `SquareGardenApp`
+  - Theme/Typography/NavGraph identifiers renamed accordingly
+  - `applicationId`, `namespace`, `rootProject.name` all updated
+- HomeScreen Play button goes to LevelSelect (current world) instead of WorldSelect
+- Added CLAUDE.md project guide
+
+### Notes
+- Changing difficulty never revokes earned progress — uses `maxOf(earned, startingLevel)`
+- Players can adjust difficulty anytime in their profile
+
 ## [1.2.0] - 2026-05-04
 
 ### Added

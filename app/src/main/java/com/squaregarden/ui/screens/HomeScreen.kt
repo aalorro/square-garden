@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
+import com.squaregarden.model.Difficulty
+import com.squaregarden.model.PlayerProgress
 import com.squaregarden.model.UserProfile
 import com.squaregarden.ui.components.getAvatar
 import com.squaregarden.ui.components.LogoMark
@@ -29,9 +31,14 @@ fun HomeScreen(navController: NavHostController) {
     val profileRepo = remember { ProfileRepository(context) }
     val totalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
     var profile by remember { mutableStateOf(UserProfile()) }
+    var currentWorld by remember { mutableIntStateOf(1) }
 
     LaunchedEffect(Unit) {
         profile = profileRepo.loadProfile()
+        val progress = progressRepo.loadProgress()
+        val difficulty = Difficulty.fromId(profile.difficulty)
+        val highestUnlocked = progress.highestUnlockedLevel(difficulty.startingLevel)
+        currentWorld = ((highestUnlocked - 1) / 9) + 1
     }
 
     Column(
@@ -150,7 +157,7 @@ fun HomeScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Button(
-                onClick = { navController.navigate(Screen.WorldSelect.route) },
+                onClick = { navController.navigate(Screen.LevelSelect.create(currentWorld)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -165,6 +172,16 @@ fun HomeScreen(navController: NavHostController) {
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
+            }
+
+            OutlinedButton(
+                onClick = { navController.navigate(Screen.WorldSelect.route) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(50)
+            ) {
+                Text("Worlds", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
             OutlinedButton(

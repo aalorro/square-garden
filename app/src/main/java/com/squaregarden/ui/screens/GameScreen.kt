@@ -148,15 +148,20 @@ fun GameScreen(
             levelName = state.level.name,
             unlockedWorldName = state.unlockedWorldName,
             onStarLanded = { viewModel.playStarCollect() },
+            onAllStarsLanded = { viewModel.commitWinResult() },
             onNext = if (state.level.id < 90) {
                 {
+                    viewModel.commitWinResult()
                     val nextId = state.level.id + 1
                     navController.navigate(Screen.Game.create(nextId)) {
                         popUpTo(Screen.Game.route) { inclusive = true }
                     }
                 }
             } else null,
-            onMenu = { navController.popBackStack() }
+            onMenu = {
+                viewModel.commitWinResult()
+                navController.popBackStack()
+            }
         )
     }
 
@@ -236,7 +241,7 @@ fun GameScreen(
 }
 
 @Composable
-private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, onStarLanded: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
+private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
     // Pulsing scale animation for the star display
     val infiniteTransition = rememberInfiniteTransition(label = "starPulse")
     val starScale by infiniteTransition.animateFloat(
@@ -357,7 +362,7 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
         StarTrailOverlay(
             starCount = stars,
             targetOffset = Offset.Zero,
-            onComplete = {},
+            onComplete = onAllStarsLanded,
             onStarLanded = onStarLanded
         )
     }

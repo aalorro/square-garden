@@ -20,8 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.logic.LevelLoader
+import com.squaregarden.model.Difficulty
 import com.squaregarden.model.Level
 import com.squaregarden.model.PlayerProgress
 import com.squaregarden.ui.navigation.Screen
@@ -63,9 +65,12 @@ private val worldThemes = mapOf(
 fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
     val context = LocalContext.current
     val progressRepo = remember { ProgressRepository(context) }
+    val profileRepo = remember { ProfileRepository(context) }
     var progress by remember { mutableStateOf(PlayerProgress()) }
     var levels by remember { mutableStateOf<List<Level>>(emptyList()) }
     val lastWonLevel by progressRepo.lastWonLevelFlow.collectAsState(initial = -1)
+    val profile by profileRepo.profileFlow.collectAsState(initial = null)
+    val difficulty = profile?.let { Difficulty.fromId(it.difficulty) }
 
     LaunchedEffect(Unit) {
         progress = progressRepo.loadProgress()
@@ -138,7 +143,7 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
         ) {
             items(levels) { level ->
                 val stars = progress.levelStars[level.id] ?: 0
-                val unlocked = level.id <= progress.highestUnlockedLevel()
+                val unlocked = level.id <= progress.highestUnlockedLevel(difficulty?.startingLevel ?: 1)
                 val isLastWon = level.id == lastWonLevel
 
                 Card(
