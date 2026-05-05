@@ -82,7 +82,7 @@ class GameViewModel(
         }
 
         // Fill remaining cells, avoiding accidental runs of 3+
-        val allColors = TileColor.entries.toTypedArray()
+        val allColors = levelColors()
         for (r in 0 until h) {
             for (c in 0 until w) {
                 if (grid[r][c] != null || CellPos(r, c) in voids) continue
@@ -253,8 +253,16 @@ class GameViewModel(
 
     // ── Fallback: old random board (no guaranteed solution) ──
 
+    /** Colors actually used in this level (from initial tiles + goals). */
+    private fun levelColors(): Array<TileColor> {
+        val colors = mutableSetOf<TileColor>()
+        for (row in level.initialTiles) for (c in row) colors.add(c)
+        for (goal in level.goals) colors.add(goal.color)
+        return if (colors.isNotEmpty()) colors.toTypedArray() else TileColor.entries.toTypedArray()
+    }
+
     private fun generateValidBoard(): Board {
-        val colors = TileColor.entries.toTypedArray()
+        val colors = levelColors()
         val minRequired = mutableMapOf<TileColor, Int>()
         for (goal in level.goals) {
             val needed = when (goal) {

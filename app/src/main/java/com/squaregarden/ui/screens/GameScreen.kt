@@ -407,12 +407,23 @@ private fun LoseDialog(onRetry: () -> Unit, onMenu: () -> Unit, onShowSolution: 
                     }
                 }
 
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedButton(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {
-                        Text("Menu")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = onMenu,
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Menu", maxLines = 1)
                     }
-                    Button(onClick = onRetry, shape = RoundedCornerShape(20.dp)) {
-                        Text("Try Again")
+                    Button(
+                        onClick = onRetry,
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Try Again", maxLines = 1)
                     }
                 }
             }

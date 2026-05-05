@@ -95,6 +95,13 @@ fun InstructionsScreen(navController: NavHostController) {
                 "\u2022 Hard — fewer moves, for experts"
         )
 
+        InstructionSection(
+            title = "Tip: Lives",
+            body = "You start with 3 lives. Losing a level costs one life. " +
+                "To earn a life back, win levels at your current difficulty or higher. " +
+                "A win streak helps — keep winning and your lives refill faster!"
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

@@ -117,16 +117,17 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "WORLD $worldId",
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White.copy(alpha = 0.85f),
                         letterSpacing = 1.sp
                     )
                     Text(
                         text = worldNames[worldId] ?: "World $worldId",
-                        fontSize = 32.sp,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color.White
+                        color = Color.White,
+                        maxLines = 1
                     )
                 }
             }
@@ -139,7 +140,7 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
-            contentPadding = PaddingValues(vertical = 4.dp)
+            contentPadding = PaddingValues(top = 60.dp, bottom = 4.dp)
         ) {
             items(levels) { level ->
                 val stars = progress.levelStars[level.id] ?: 0
@@ -171,16 +172,15 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(6.dp),
+                            .padding(4.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
                         if (!unlocked) {
-                            Text("\uD83D\uDD12", fontSize = 26.sp, color = theme.textColor.copy(alpha = 0.6f))
-                            Spacer(modifier = Modifier.height(2.dp))
+                            Text("\uD83D\uDD12", fontSize = 22.sp, color = theme.textColor.copy(alpha = 0.6f))
                             Text(
                                 text = level.name,
-                                fontSize = 9.sp,
+                                fontSize = 8.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = theme.textColor.copy(alpha = 0.5f),
                                 textAlign = TextAlign.Center,
@@ -190,25 +190,23 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                             Text(
                                 text = "${level.id}",
                                 fontFamily = DisplayFontFamily,
-                                fontSize = 32.sp,
+                                fontSize = 26.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = theme.textColor
                             )
-                            Spacer(modifier = Modifier.height(2.dp))
                             Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                                 repeat(3) { i ->
                                     Text(
                                         text = "\u2605",
-                                        fontSize = 14.sp,
+                                        fontSize = 12.sp,
                                         color = if (i < stars) theme.starColor
                                         else theme.textColor.copy(alpha = 0.25f)
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = level.name,
-                                fontSize = 9.sp,
+                                fontSize = 8.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = theme.textColor.copy(alpha = 0.7f),
                                 textAlign = TextAlign.Center,
