@@ -186,6 +186,17 @@ fun SettingsScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // Privacy Policy
+        OutlinedButton(
+            onClick = { navController.navigate(Screen.Privacy.route) },
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            shape = RoundedCornerShape(50)
+        ) {
+            Text("Privacy Policy", fontWeight = FontWeight.Bold)
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         // Reset progress
         OutlinedButton(
             onClick = { showResetDialog = true },

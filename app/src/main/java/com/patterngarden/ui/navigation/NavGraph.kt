@@ -53,5 +53,8 @@ fun PatternGardenNavGraph(navController: NavHostController) {
         composable(Screen.About.route) {
             AboutScreen(navController = navController)
         }
+        composable(Screen.Privacy.route) {
+            PrivacyScreen(navController = navController)
+        }
     }
 }

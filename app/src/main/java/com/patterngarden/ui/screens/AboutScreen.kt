@@ -70,6 +70,21 @@ fun AboutScreen(navController: NavHostController) {
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Square Garden is a pattern-matching puzzle where you swap " +
+                    "colorful tiles to form lines, squares, and shapes before your " +
+                    "moves run out. Designed for all ages, it rewards patience and " +
+                    "spatial thinking rather than speed or reflexes. Unlike other " +
+                    "logic games that rush you with timers or punish mistakes, " +
+                    "Square Garden gives you space to think, experiment, and learn " +
+                    "at your own pace.",
+                fontSize = 14.sp,
+                lineHeight = 21.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 12.dp)
+            )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Created by",
