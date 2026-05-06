@@ -12,3 +12,8 @@ local.properties
 CLAUDE.md
 DESIGN_BRIEF.md
 /key
+*.jks
+*.keystore
+generate_icon.py
+icon_512x512.png
+feature_graphic_1024x500.png

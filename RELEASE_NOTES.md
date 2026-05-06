@@ -1,7 +1,7 @@
 # Google Play Store Release Notes
 
 ## Short Description (80 chars max)
-A calm tile-swap puzzle game. Slide, match, and garden your way through 90 levels.
+A calm tile-swap puzzle. Slide, match, and garden your way through 90 levels.
 
 ## Full Description (4000 chars max)
 
@@ -42,7 +42,7 @@ FEATURES
 
 ---
 
-## Release Notes — Version 1.0 (What's New)
+## Release Notes — Version 1.0.2 (What's New)
 
 Welcome to Square Garden! 🌱
 
