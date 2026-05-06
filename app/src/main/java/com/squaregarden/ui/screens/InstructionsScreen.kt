@@ -98,8 +98,8 @@ fun InstructionsScreen(navController: NavHostController) {
         InstructionSection(
             title = "Tip: Lives",
             body = "You start with 3 lives. Losing a level costs one life. " +
-                "To earn a life back, win levels at your current skill level or higher. " +
-                "A win streak helps — keep winning and your lives refill faster!"
+                "To earn a life back, win 3 levels in a row. Only levels within 5 of your " +
+                "highest completed level count toward the streak."
         )
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -119,32 +119,35 @@ class ProgressRepository(private val context: Context) {
 
     /**
      * @param difficultyOrdinal ordinal of the Difficulty enum (EASY=0, MEDIUM=1, HARD=2)
-     * @return wins still needed to restore a life: positive = needs more wins,
-     *         0 = lives already full, -1 = life was just restored
+     * @param levelId the level that was just won
+     * @return -1 if a life was just restored, 0 otherwise
      */
-    suspend fun recordWin(difficultyOrdinal: Int): Int {
-        var winsNeeded = 0
+    suspend fun recordWin(difficultyOrdinal: Int, levelId: Int): Int {
+        var result = 0
         context.dataStore.edit { prefs ->
             val currentLives = prefs[LIVES_KEY] ?: 3
+            if (currentLives >= 3) return@edit
+
             val lostAt = prefs[LIFE_LOST_DIFFICULTY_KEY] ?: 0
             // Only count toward streak if playing at the loss difficulty or harder
-            if (currentLives < 3 && difficultyOrdinal < lostAt) {
-                winsNeeded = 0
-                return@edit
-            }
+            if (difficultyOrdinal < lostAt) return@edit
+
+            // Only count wins within 5 levels of highest completed level
+            val highestLevel = prefs.asMap().entries
+                .filter { it.key.name.startsWith(LEVEL_STARS_PREFIX) && it.value is Int && (it.value as Int) > 0 }
+                .mapNotNull { it.key.name.removePrefix(LEVEL_STARS_PREFIX).toIntOrNull() }
+                .maxOrNull() ?: 0
+            if (levelId < highestLevel - 4) return@edit
+
             val streak = (prefs[WIN_STREAK_KEY] ?: 0) + 1
             prefs[WIN_STREAK_KEY] = streak
             if (streak >= 3) {
-                if (currentLives < 3) {
-                    prefs[LIVES_KEY] = currentLives + 1
-                    winsNeeded = -1 // life restored
-                }
+                prefs[LIVES_KEY] = currentLives + 1
                 prefs[WIN_STREAK_KEY] = 0
-            } else if (currentLives < 3) {
-                winsNeeded = 3 - streak
+                result = -1 // life restored
             }
         }
-        return winsNeeded
+        return result
     }
 
     suspend fun checkAndRestoreLives() {

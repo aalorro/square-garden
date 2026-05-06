@@ -11,14 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.PointerEventPass
 import kotlinx.coroutines.delay
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -230,45 +228,6 @@ fun GameScreen(
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-
-    // Life restore progress notification
-    if (state.phase == GamePhase.WON && !state.lifeRestored && state.winsToRestoreLife in 1..2) {
-        var showNotif by remember(state.winsToRestoreLife) { mutableStateOf(true) }
-        if (showNotif) {
-            LaunchedEffect(state.winsToRestoreLife) {
-                delay(10_000)
-                showNotif = false
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        awaitPointerEventScope {
-                            awaitPointerEvent()
-                            showNotif = false
-                        }
-                    },
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ),
-                    modifier = Modifier.padding(bottom = 80.dp)
-                ) {
-                    val diffLabel = state.difficulty.label
-                    Text(
-                        text = "${state.winsToRestoreLife} more ${if (state.winsToRestoreLife == 1) "win" else "wins"} in $diffLabel or harder to restore a life!",
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
                 }
             }
         }
