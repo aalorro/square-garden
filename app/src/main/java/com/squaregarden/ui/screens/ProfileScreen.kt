@@ -310,55 +310,79 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
             }
         }
 
-        // ── Difficulty ──
+        // ── Skill ──
         Text("Skill", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onBackground)
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Difficulty.entries.forEach { diff ->
-                val selected = diff.id == difficulty
-                val description = when (diff) {
-                    Difficulty.EASY -> "More moves\nStart: World 1"
-                    Difficulty.MEDIUM -> "Standard\nStart: World 2"
-                    Difficulty.HARD -> "Fewer moves\nStart: World 3"
-                }
-                Card(
-                    onClick = { difficulty = diff.id },
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .then(
-                            if (selected) Modifier.border(
-                                2.dp,
-                                MaterialTheme.colorScheme.primary,
-                                RoundedCornerShape(12.dp)
-                            ) else Modifier
-                        ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer
-                        else MaterialTheme.colorScheme.surface
+        if (!isFirstTime) {
+            // Locked — show current skill as read-only
+            val currentSkill = Difficulty.fromId(difficulty)
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        text = currentSkill.label,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                ) {
-                    Column(
+                    Text(
+                        text = "Skill is locked. Reset progress in Settings to change.",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Difficulty.entries.forEach { diff ->
+                    val selected = diff.id == difficulty
+                    val description = when (diff) {
+                        Difficulty.EASY -> "More moves\nStart: World 1"
+                        Difficulty.MEDIUM -> "Standard\nStart: World 2"
+                        Difficulty.HARD -> "Fewer moves\nStart: World 3"
+                    }
+                    Card(
+                        onClick = { difficulty = diff.id },
+                        shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .weight(1f)
+                            .then(
+                                if (selected) Modifier.border(
+                                    2.dp,
+                                    MaterialTheme.colorScheme.primary,
+                                    RoundedCornerShape(12.dp)
+                                ) else Modifier
+                            ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surface
+                        )
                     ) {
-                        Text(
-                            text = diff.label,
-                            fontSize = 14.sp,
-                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                            color = if (selected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = description,
-                            fontSize = 10.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = diff.label,
+                                fontSize = 14.sp,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                                color = if (selected) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = description,
+                                fontSize = 10.sp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        }
                     }
                 }
             }

@@ -229,8 +229,8 @@ fun SettingsScreen(navController: NavHostController) {
             text = {
                 Text(
                     "This will reset all your stars, level progress, and player level " +
-                    "back to zero. Your profile (name, avatar, theme, difficulty) " +
-                    "will be kept.\n\nThis action cannot be undone."
+                    "back to zero. You will be able to choose a new skill level.\n\n" +
+                    "This action cannot be undone."
                 )
             },
             confirmButton = {
@@ -240,7 +240,8 @@ fun SettingsScreen(navController: NavHostController) {
                         scope.launch {
                             progressRepo.clearAll()
                             profileRepo.resetPlayerLevel()
-                            navController.navigate(Screen.Home.route) {
+                            settingsRepo.setShapesExplainerDismissed(false)
+                            navController.navigate(Screen.ProfileSetup.route) {
                                 popUpTo(0) { inclusive = true }
                             }
                         }

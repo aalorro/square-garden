@@ -62,14 +62,6 @@ fun WorldSelectScreen(navController: NavHostController) {
     val totalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
     val profile by profileRepo.profileFlow.collectAsState(initial = null)
     val difficulty = profile?.let { Difficulty.fromId(it.difficulty) }
-    val playerLevel = profile?.playerLevel ?: 0
-
-    val easyWorldsDisabled = when (difficulty) {
-        Difficulty.HARD -> playerLevel >= 30
-        Difficulty.MEDIUM -> playerLevel >= 40
-        else -> false
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -126,9 +118,9 @@ fun WorldSelectScreen(navController: NavHostController) {
         ) {
             val startingWorld = difficulty?.startingWorld ?: 1
             worlds.forEach { world ->
-                val unlocked = totalStars >= world.starsToUnlock || world.id <= startingWorld
-                val tooEasy = easyWorldsDisabled && world.id <= 2
-                val accessible = unlocked && !tooEasy
+                val belowSkill = world.id < startingWorld
+                val unlocked = !belowSkill && (totalStars >= world.starsToUnlock || world.id <= startingWorld)
+                val accessible = unlocked
 
                 Card(
                     onClick = {
@@ -210,9 +202,9 @@ fun WorldSelectScreen(navController: NavHostController) {
                                     color = Color.White.copy(alpha = 0.85f)
                                 )
                             }
-                            if (tooEasy) {
+                            if (belowSkill) {
                                 Text(
-                                    text = "Too easy",
+                                    text = "Below skill",
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFFFFCDD2)
