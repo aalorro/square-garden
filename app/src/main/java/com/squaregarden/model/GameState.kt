@@ -22,6 +22,7 @@ data class GameState(
     val unlockedWorldName: String? = null,
     val shuffleTokens: Int = 0,
     val shuffleTokenAwarded: Boolean = false,
+    val shuffleReady: Boolean = false,
     val passthroughTokens: Int = 0,
     val passthroughTokenAwarded: Boolean = false,
     val passthroughActive: Boolean = false,

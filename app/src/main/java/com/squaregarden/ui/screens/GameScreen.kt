@@ -122,14 +122,16 @@ fun GameScreen(
             )
             ActionCircle(
                 icon = "\uD83D\uDD00",
-                label = "\u00D7${state.shuffleTokens}",
-                onClick = { viewModel.shuffleBoard() },
-                enabled = state.shuffleTokens > 0 && state.phase == GamePhase.PLAYING
+                label = if (state.shuffleReady) "Tap" else "\u00D7${state.shuffleTokens}",
+                onClick = { viewModel.toggleShuffle() },
+                enabled = state.shuffleReady || (state.shuffleTokens > 0 && state.phase == GamePhase.PLAYING),
+                containerColor = if (state.shuffleReady) TileYellow else null,
+                contentColor = if (state.shuffleReady) DarkSage else null
             )
             ActionCircle(
                 icon = "\uD83D\uDEE1\uFE0F",
                 label = if (state.passthroughActive) "On" else "\u00D7${state.passthroughTokens}",
-                onClick = { if (!state.passthroughActive) viewModel.activatePassthrough() },
+                onClick = { viewModel.togglePassthrough() },
                 enabled = state.passthroughActive || (state.passthroughTokens > 0 && state.phase == GamePhase.PLAYING),
                 containerColor = if (state.passthroughActive) Sage else null,
                 contentColor = if (state.passthroughActive) SoftWhite else null
@@ -137,7 +139,7 @@ fun GameScreen(
             ActionCircle(
                 icon = "\u2744\uFE0F",
                 label = if (state.unfreezeMode) "Tap" else "\u00D7${state.unfreezeTokens}",
-                onClick = { if (state.unfreezeMode) viewModel.cancelUnfreezeMode() else viewModel.enterUnfreezeMode() },
+                onClick = { viewModel.toggleUnfreeze() },
                 enabled = state.unfreezeMode || (state.unfreezeTokens > 0 && state.phase == GamePhase.PLAYING),
                 containerColor = if (state.unfreezeMode) TileBlue else null,
                 contentColor = if (state.unfreezeMode) SoftWhite else null

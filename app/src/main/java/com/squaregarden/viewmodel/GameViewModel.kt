@@ -439,7 +439,7 @@ class GameViewModel(
             movesRemaining = moves, difficulty = difficulty,
             gameDifficulty = computeGameDifficulty(board),
             initialBoard = board, hasSolution = solution != null,
-            shuffleTokens = shuffleTokens,
+            shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens,
             phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )
         if (solution == null) computeSolutionAsync(board)
@@ -454,16 +454,17 @@ class GameViewModel(
         executeSwap(from, to)
     }
 
-    fun enterUnfreezeMode() {
+    fun toggleUnfreeze() {
         val current = _state.value
-        if (current.phase != GamePhase.PLAYING || current.unfreezeTokens <= 0 || current.unfreezeMode) return
-        _state.value = current.copy(unfreezeMode = true, selectedCell = null, hintCells = emptySet())
-    }
-
-    fun cancelUnfreezeMode() {
-        val current = _state.value
-        if (!current.unfreezeMode) return
-        _state.value = current.copy(unfreezeMode = false)
+        if (current.phase != GamePhase.PLAYING) return
+        if (current.unfreezeMode) {
+            _state.value = current.copy(unfreezeMode = false)
+        } else if (current.unfreezeTokens > 0) {
+            _state.value = current.copy(
+                unfreezeMode = true, shuffleReady = false, passthroughActive = false,
+                selectedCell = null, hintCells = emptySet()
+            )
+        }
     }
 
     private fun unfreezeCell(row: Int, col: Int) {
@@ -491,6 +492,12 @@ class GameViewModel(
         val current = _state.value
         if (current.phase != GamePhase.PLAYING) return
         if (current.board.isVoid(row, col)) return
+
+        // Shuffle mode: tap the board to execute shuffle
+        if (current.shuffleReady) {
+            executeShuffle()
+            return
+        }
 
         // Unfreeze mode: tap a frozen cell to unfreeze it
         if (current.unfreezeMode) {
@@ -545,9 +552,13 @@ class GameViewModel(
                 delay(stepDelay)
             }
 
-            // Deactivate passthrough after use
+            // Consume passthrough token and deactivate after use
             if (usePassthrough) {
-                _state.value = _state.value.copy(passthroughActive = false)
+                progressRepo.usePassthroughToken()
+                passthroughTokens--
+                _state.value = _state.value.copy(
+                    passthroughActive = false, passthroughTokens = passthroughTokens
+                )
             }
 
             val newBoard = BoardEngine.executeSwap(current.board, from, to)
@@ -640,9 +651,22 @@ class GameViewModel(
         }
     }
 
-    fun shuffleBoard() {
+    fun toggleShuffle() {
         val current = _state.value
-        if (current.phase != GamePhase.PLAYING || current.shuffleTokens <= 0) return
+        if (current.phase != GamePhase.PLAYING) return
+        if (current.shuffleReady) {
+            _state.value = current.copy(shuffleReady = false)
+        } else if (current.shuffleTokens > 0) {
+            _state.value = current.copy(
+                shuffleReady = true, passthroughActive = false, unfreezeMode = false,
+                selectedCell = null, hintCells = emptySet()
+            )
+        }
+    }
+
+    private fun executeShuffle() {
+        val current = _state.value
+        if (!current.shuffleReady || current.shuffleTokens <= 0) return
         viewModelScope.launch {
             val success = progressRepo.useShuffleToken()
             if (!success) return@launch
@@ -651,7 +675,7 @@ class GameViewModel(
             val (shuffled, _) = scrambleBoard(current.board, numSwaps)
             audioManager.playShuffle()
             _state.value = current.copy(
-                board = shuffled,
+                board = shuffled, shuffleReady = false,
                 shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens,
                 gameDifficulty = computeGameDifficulty(shuffled),
                 hintCells = emptySet(),
@@ -661,16 +685,15 @@ class GameViewModel(
         }
     }
 
-    fun activatePassthrough() {
+    fun togglePassthrough() {
         val current = _state.value
-        if (current.phase != GamePhase.PLAYING || current.passthroughTokens <= 0 || current.passthroughActive) return
-        viewModelScope.launch {
-            val success = progressRepo.usePassthroughToken()
-            if (!success) return@launch
-            passthroughTokens--
+        if (current.phase != GamePhase.PLAYING) return
+        if (current.passthroughActive) {
+            _state.value = current.copy(passthroughActive = false)
+        } else if (current.passthroughTokens > 0) {
             _state.value = current.copy(
-                passthroughTokens = passthroughTokens,
-                passthroughActive = true
+                passthroughActive = true, shuffleReady = false, unfreezeMode = false,
+                selectedCell = null, hintCells = emptySet()
             )
         }
     }

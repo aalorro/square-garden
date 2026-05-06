@@ -6237,25 +6237,490 @@
     "name": "Magma Flow",
     "width": 8,
     "height": 8,
-    "maxMoves": 18,
+    "maxMoves": 14,
+    "tiles": [
+      [
+        "GREEN",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "YELLOW"
+      ],
+      [
+        "YELLOW",
+        "GREEN",
+        "ORANGE",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "BLUE",
+        "ORANGE",
+        "GREEN",
+        "BLUE"
+      ],
+      [
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "ORANGE"
+      ],
+      [
+        "ORANGE",
+        "GREEN",
+        "ORANGE",
+        "RED",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "BLUE",
+        "BLUE",
+        "ORANGE",
+        "YELLOW",
+        "RED",
+        "RED",
+        "RED",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "ORANGE",
+        "GREEN",
+        "ORANGE",
+        "RED",
+        "RED",
+        "ORANGE",
+        "GREEN"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "BLUE",
+        "length": 6
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "T_SHAPE"
+      }
+    ],
+    "stars": {
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 6,
+        "col": 5
+      },
+      {
+        "row": 1,
+        "col": 1
+      }
+    ],
+    "voids": [
+      {
+        "row": 6,
+        "col": 0
+      },
+      {
+        "row": 4,
+        "col": 3
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "world": 7,
+    "name": "Ember Dance",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 14,
+    "tiles": [
+      [
+        "ORANGE",
+        "ORANGE",
+        "YELLOW",
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "RED",
+        "RED"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "YELLOW",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "RED",
+        "ORANGE",
+        "RED",
+        "RED"
+      ],
+      [
+        "BLUE",
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "YELLOW",
+        "RED"
+      ],
+      [
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
+        "GREEN",
+        "YELLOW"
+      ],
+      [
+        "ORANGE",
+        "YELLOW",
+        "BLUE",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "BLUE",
+        "RED"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "square",
+        "color": "RED"
+      }
+    ],
+    "stars": {
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 2,
+        "col": 3
+      },
+      {
+        "row": 2,
+        "col": 1
+      }
+    ],
+    "voids": [
+      {
+        "row": 7,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 3
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "world": 7,
+    "name": "Lava Bridge",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 13,
     "tiles": [
       [
         "RED",
         "ORANGE",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "RED",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "RED",
+        "RED",
+        "GREEN",
         "BLUE",
         "GREEN",
+        "BLUE",
         "YELLOW",
-        "RED",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
         "ORANGE",
+        "RED",
+        "RED",
+        "RED",
+        "BLUE",
+        "ORANGE",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "YELLOW",
+        "BLUE",
+        "RED",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "GREEN",
+        "RED",
+        "RED",
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "BLUE",
         "BLUE"
       ],
       [
-        "ORANGE",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "YELLOW",
+        "BLUE",
+        "GREEN",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "BLUE",
+        "BLUE",
+        "YELLOW",
+        "GREEN"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "RED",
+        "length": 5
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "T_SHAPE"
+      }
+    ],
+    "stars": {
+      "twoStar": 4,
+      "threeStar": 7
+    },
+    "frozen": [
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 5,
+        "col": 2
+      },
+      {
+        "row": 4,
+        "col": 1
+      }
+    ],
+    "voids": [
+      {
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 3,
+        "col": 7
+      },
+      {
+        "row": 4,
+        "col": 3
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "world": 7,
+    "name": "Crater Edge",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 16,
+    "tiles": [
+      [
         "RED",
         "GREEN",
+        "ORANGE",
+        "ORANGE",
+        "GREEN",
+        "RED",
+        "BLUE",
+        "GREEN"
+      ],
+      [
+        "BLUE",
+        "BLUE",
         "BLUE",
         "RED",
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "ORANGE"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "RED",
         "ORANGE",
+        "BLUE",
+        "YELLOW",
+        "YELLOW"
+      ],
+      [
+        "YELLOW",
+        "BLUE",
+        "BLUE",
+        "RED",
+        "RED",
+        "YELLOW",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "BLUE",
+        "ORANGE",
+        "YELLOW",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "RED",
+        "YELLOW"
+      ],
+      [
+        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE",
+        "GREEN",
+        "YELLOW",
+        "ORANGE"
+      ],
+      [
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "BLUE",
+        "YELLOW",
         "YELLOW",
         "GREEN"
       ],
@@ -6264,72 +6729,1584 @@
         "GREEN",
         "ORANGE",
         "RED",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED"
-      ],
-      [
         "YELLOW",
-        "ORANGE",
         "BLUE",
         "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
         "YELLOW"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "YELLOW",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "YELLOW",
-        "RED",
-        "ORANGE"
       ]
     ],
     "goals": [
       {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "GREEN",
+        "length": 6
+      },
+      {
+        "type": "square",
+        "color": "RED"
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 3,
+        "col": 5
+      },
+      {
+        "row": 1,
+        "col": 3
+      }
+    ],
+    "voids": [
+      {
+        "row": 3,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 3
+      },
+      {
+        "row": 2,
+        "col": 3
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "world": 7,
+    "name": "Obsidian Path",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 15,
+    "tiles": [
+      [
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "ORANGE"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "GREEN",
+        "GREEN",
+        "BLUE",
+        "ORANGE",
+        "ORANGE"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "RED",
+        "GREEN"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "ORANGE",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "RED",
+        "ORANGE",
+        "GREEN",
+        "RED",
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "RED"
+      ],
+      [
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
+        "BLUE",
+        "YELLOW",
+        "BLUE",
+        "ORANGE",
+        "GREEN"
+      ],
+      [
+        "ORANGE",
+        "ORANGE",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "GREEN"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "BLUE",
+        "length": 5
+      },
+      {
+        "type": "line",
+        "color": "GREEN",
+        "length": 5
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 4,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 1
+      }
+    ],
+    "voids": [
+      {
+        "row": 7,
+        "col": 6
+      },
+      {
+        "row": 1,
+        "col": 0
+      },
+      {
+        "row": 5,
+        "col": 3
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "world": 7,
+    "name": "Pyroclast",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 15,
+    "tiles": [
+      [
+        "RED",
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "GREEN",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "YELLOW",
+        "RED",
+        "RED",
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "BLUE",
+        "BLUE",
+        "ORANGE",
+        "GREEN",
+        "RED",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "RED",
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE",
+        "BLUE"
+      ],
+      [
+        "ORANGE",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "ORANGE",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "ORANGE",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "RED",
+        "BLUE",
+        "BLUE",
+        "GREEN"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "ORANGE",
+        "RED",
+        "BLUE",
+        "RED"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "T_SHAPE"
+      },
+      {
         "type": "line",
         "color": "ORANGE",
-        "length": 4
+        "length": 5
+      },
+      {
+        "type": "line",
+        "color": "YELLOW",
+        "length": 5
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 6,
+        "col": 6
+      },
+      {
+        "row": 6,
+        "col": 3
+      },
+      {
+        "row": 5,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 4
+      }
+    ],
+    "voids": [
+      {
+        "row": 4,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 2
+      },
+      {
+        "row": 2,
+        "col": 2
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "world": 7,
+    "name": "Inferno Ring",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 14,
+    "tiles": [
+      [
+        "GREEN",
+        "GREEN",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "RED",
+        "ORANGE",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "YELLOW",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "ORANGE",
+        "GREEN",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "ORANGE",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "YELLOW",
+        "YELLOW",
+        "RED",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "GREEN",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "RED",
+        "YELLOW",
+        "RED",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "RED",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "GREEN",
+        "ORANGE"
+      ],
+      [
+        "GREEN",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "BLUE"
+      ],
+      [
+        "YELLOW",
+        "BLUE",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "RED",
+        "GREEN",
+        "YELLOW"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "GREEN",
+        "length": 7
+      }
+    ],
+    "stars": {
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 1,
+        "col": 5
+      },
+      {
+        "row": 5,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 1
+      }
+    ],
+    "voids": [
+      {
+        "row": 0,
+        "col": 5
+      },
+      {
+        "row": 2,
+        "col": 7
+      },
+      {
+        "row": 5,
+        "col": 0
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "world": 7,
+    "name": "Core Breach",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 17,
+    "tiles": [
+      [
+        "GREEN",
+        "GREEN",
+        "RED",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "RED",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "ORANGE",
+        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "YELLOW"
+      ],
+      [
+        "GREEN",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "ORANGE"
+      ],
+      [
+        "BLUE",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "ORANGE",
+        "GREEN",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "YELLOW",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "YELLOW"
+      ],
+      [
+        "ORANGE",
+        "GREEN",
+        "ORANGE",
+        "GREEN",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "RED",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "YELLOW",
+        "RED",
+        "GREEN",
+        "BLUE"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "ORANGE",
+        "length": 5
+      },
+      {
+        "type": "line",
+        "color": "BLUE",
+        "length": 5
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 10
+    },
+    "frozen": [
+      {
+        "row": 5,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 4
+      },
+      {
+        "row": 3,
+        "col": 6
+      },
+      {
+        "row": 1,
+        "col": 5
+      }
+    ],
+    "voids": [
+      {
+        "row": 0,
+        "col": 4
+      },
+      {
+        "row": 0,
+        "col": 2
+      },
+      {
+        "row": 7,
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 4
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "world": 7,
+    "name": "Caldera",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 14,
+    "tiles": [
+      [
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "GREEN"
+      ],
+      [
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "GREEN",
+        "ORANGE"
+      ],
+      [
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "BLUE",
+        "RED",
+        "YELLOW",
+        "RED"
+      ],
+      [
+        "BLUE",
+        "ORANGE",
+        "RED",
+        "RED",
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "ORANGE"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "ORANGE",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "GREEN",
+        "BLUE",
+        "ORANGE",
+        "RED",
+        "RED",
+        "GREEN",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "ORANGE",
+        "GREEN",
+        "BLUE",
+        "RED",
+        "RED",
+        "BLUE",
+        "RED",
+        "GREEN"
+      ],
+      [
+        "BLUE",
+        "RED",
+        "ORANGE",
+        "GREEN",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "RED"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "BLUE",
+        "length": 5
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "Z_SHAPE"
+      }
+    ],
+    "stars": {
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 2,
+        "col": 6
+      },
+      {
+        "row": 1,
+        "col": 1
+      },
+      {
+        "row": 1,
+        "col": 6
+      },
+      {
+        "row": 5,
+        "col": 3
+      }
+    ],
+    "voids": [
+      {
+        "row": 7,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 0
+      },
+      {
+        "row": 5,
+        "col": 4
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "world": 8,
+    "name": "Stellar Dawn",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 15,
+    "tiles": [
+      [
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "RED",
+        "GREEN",
+        "ORANGE",
+        "GREEN"
+      ],
+      [
+        "GREEN",
+        "RED",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "YELLOW",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "GREEN",
+        "ORANGE",
+        "GREEN",
+        "RED",
+        "GREEN",
+        "ORANGE",
+        "BLUE"
+      ],
+      [
+        "YELLOW",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "GREEN"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "GREEN",
+        "GREEN",
+        "GREEN",
+        "GREEN",
+        "RED",
+        "BLUE"
+      ],
+      [
+        "BLUE",
+        "ORANGE",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "RED",
+        "RED",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "BLUE",
+        "GREEN"
+      ],
+      [
+        "GREEN",
+        "GREEN",
+        "ORANGE",
+        "ORANGE",
+        "RED",
+        "RED",
+        "RED",
+        "BLUE"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "Z_SHAPE"
       },
       {
         "type": "line",
         "color": "RED",
-        "length": 4
+        "length": 5
+      },
+      {
+        "type": "line",
+        "color": "BLUE",
+        "length": 5
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 5,
+        "col": 2
+      },
+      {
+        "row": 2,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 4
+      }
+    ],
+    "voids": [
+      {
+        "row": 7,
+        "col": 5
+      },
+      {
+        "row": 0,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 5
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "world": 8,
+    "name": "Nebula Drift",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 14,
+    "tiles": [
+      [
+        "GREEN",
+        "BLUE",
+        "GREEN",
+        "BLUE",
+        "RED",
+        "RED",
+        "ORANGE",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "GREEN",
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "BLUE",
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "ORANGE",
+        "BLUE",
+        "RED",
+        "BLUE"
+      ],
+      [
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
+        "ORANGE"
+      ],
+      [
+        "GREEN",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "GREEN",
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "YELLOW"
+      ],
+      [
+        "YELLOW",
+        "RED",
+        "RED",
+        "GREEN",
+        "GREEN",
+        "RED",
+        "RED",
+        "ORANGE"
+      ],
+      [
+        "ORANGE",
+        "ORANGE",
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
+        "ORANGE",
+        "RED"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "RED",
+        "length": 5
+      }
+    ],
+    "stars": {
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 4,
+        "col": 3
+      },
+      {
+        "row": 1,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 5
+      }
+    ],
+    "voids": [
+      {
+        "row": 7,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 2
+      },
+      {
+        "row": 0,
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 3
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "world": 8,
+    "name": "Cosmic Weave",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 14,
+    "tiles": [
+      [
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "GREEN"
+      ],
+      [
+        "YELLOW",
+        "BLUE",
+        "ORANGE",
+        "BLUE",
+        "GREEN",
+        "YELLOW",
+        "BLUE",
+        "GREEN"
+      ],
+      [
+        "ORANGE",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
+        "ORANGE",
+        "ORANGE",
+        "YELLOW"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "BLUE",
+        "ORANGE",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "YELLOW"
+      ],
+      [
+        "GREEN",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "RED",
+        "BLUE"
+      ],
+      [
+        "GREEN",
+        "YELLOW",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "GREEN",
+        "BLUE",
+        "RED"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "RED",
+        "length": 5
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "T_SHAPE"
+      }
+    ],
+    "stars": {
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 4,
+        "col": 6
+      },
+      {
+        "row": 4,
+        "col": 3
+      },
+      {
+        "row": 6,
+        "col": 2
+      },
+      {
+        "row": 6,
+        "col": 6
+      }
+    ],
+    "voids": [
+      {
+        "row": 3,
+        "col": 0
+      },
+      {
+        "row": 6,
+        "col": 0
+      },
+      {
+        "row": 6,
+        "col": 7
+      },
+      {
+        "row": 5,
+        "col": 2
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "world": 8,
+    "name": "Meteor Shower",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 13,
+    "tiles": [
+      [
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "BLUE",
+        "RED",
+        "YELLOW",
+        "RED",
+        "GREEN"
+      ],
+      [
+        "BLUE",
+        "RED",
+        "BLUE",
+        "RED",
+        "GREEN",
+        "GREEN",
+        "ORANGE",
+        "RED"
+      ],
+      [
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "GREEN"
+      ],
+      [
+        "RED",
+        "GREEN",
+        "GREEN",
+        "RED",
+        "RED",
+        "GREEN",
+        "YELLOW",
+        "YELLOW"
+      ],
+      [
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "ORANGE"
+      ],
+      [
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "ORANGE",
+        "BLUE",
+        "ORANGE"
+      ],
+      [
+        "GREEN",
+        "GREEN",
+        "RED",
+        "RED",
+        "GREEN",
+        "GREEN",
+        "GREEN",
+        "YELLOW"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "GREEN",
+        "YELLOW"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "RED",
+        "length": 5
+      }
+    ],
+    "stars": {
+      "twoStar": 4,
+      "threeStar": 7
+    },
+    "frozen": [
+      {
+        "row": 2,
+        "col": 4
+      },
+      {
+        "row": 2,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 5
+      },
+      {
+        "row": 5,
+        "col": 2
+      }
+    ],
+    "voids": [
+      {
+        "row": 1,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 1
+      },
+      {
+        "row": 7,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 3
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "world": 8,
+    "name": "Pulsar Beat",
+    "width": 8,
+    "height": 8,
+    "maxMoves": 16,
+    "tiles": [
+      [
+        "GREEN",
+        "ORANGE",
+        "ORANGE",
+        "GREEN",
+        "YELLOW",
+        "ORANGE",
+        "BLUE",
+        "ORANGE"
+      ],
+      [
+        "RED",
+        "RED",
+        "RED",
+        "GREEN",
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW"
+      ],
+      [
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "YELLOW"
+      ],
+      [
+        "ORANGE",
+        "GREEN",
+        "BLUE",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "GREEN",
+        "BLUE"
+      ],
+      [
+        "BLUE",
+        "GREEN",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "ORANGE",
+        "GREEN",
+        "RED"
+      ],
+      [
+        "RED",
+        "GREEN",
+        "BLUE",
+        "ORANGE",
+        "GREEN",
+        "BLUE",
+        "GREEN",
+        "ORANGE"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "BLUE"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "ORANGE",
+        "length": 5
       },
       {
         "type": "square",
@@ -6338,1799 +8315,44 @@
     ],
     "stars": {
       "twoStar": 5,
-      "threeStar": 10
-    }
-  },
-  {
-    "id": 56,
-    "world": 7,
-    "name": "Ember Dance",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 20,
-    "tiles": [
-      [
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "YELLOW",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "YELLOW"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "YELLOW",
-        "ORANGE"
-      ],
-      [
-        "YELLOW",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "YELLOW",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED"
-      ]
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "GREEN",
-        "length": 4
-      },
-      {
-        "type": "square",
-        "color": "RED"
-      }
-    ],
-    "stars": {
-      "twoStar": 6,
-      "threeStar": 11
-    }
-  },
-  {
-    "id": 57,
-    "world": 7,
-    "name": "Lava Bridge",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 22,
-    "tiles": [
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "YELLOW",
-        "RED",
-        "GREEN",
-        "ORANGE"
-      ]
-    ],
-    "frozen": [
-      {
-        "row": 3,
-        "col": 3
-      },
-      {
-        "row": 3,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 3
-      },
-      {
-        "row": 4,
-        "col": 4
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "L_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "BLUE",
-        "length": 5
-      }
-    ],
-    "stars": {
-      "twoStar": 6,
-      "threeStar": 12
-    }
-  },
-  {
-    "id": 58,
-    "world": 7,
-    "name": "Crater Edge",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 22,
-    "tiles": [
-      [
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "YELLOW",
-        "RED",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "YELLOW",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "YELLOW"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "YELLOW",
-        "ORANGE",
-        "RED"
-      ]
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "RED",
-        "length": 4
-      },
-      {
-        "type": "square",
-        "color": "GREEN"
-      }
-    ],
-    "stars": {
-      "twoStar": 6,
-      "threeStar": 12
-    }
-  },
-  {
-    "id": 59,
-    "world": 7,
-    "name": "Obsidian Path",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 24,
-    "tiles": [
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "YELLOW"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "YELLOW",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "YELLOW"
-      ],
-      [
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ]
-    ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "line",
-        "color": "RED",
-        "length": 5
-      },
-      {
-        "type": "square",
-        "color": "GREEN"
-      }
-    ],
-    "stars": {
-      "twoStar": 7,
-      "threeStar": 13
-    }
-  },
-  {
-    "id": 60,
-    "world": 7,
-    "name": "Pyroclast",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 24,
-    "tiles": [
-      [
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "YELLOW",
-        "RED",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "YELLOW",
-        "GREEN",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "YELLOW"
-      ]
-    ],
-    "voids": [
-      {
-        "row": 3,
-        "col": 0
-      },
-      {
-        "row": 4,
-        "col": 0
-      },
-      {
-        "row": 3,
-        "col": 7
-      },
-      {
-        "row": 4,
-        "col": 7
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "T_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "BLUE",
-        "length": 4
-      },
-      {
-        "type": "square",
-        "color": "GREEN"
-      }
-    ],
-    "stars": {
-      "twoStar": 7,
-      "threeStar": 13
-    }
-  },
-  {
-    "id": 61,
-    "world": 7,
-    "name": "Inferno Ring",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 26,
-    "tiles": [
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED"
-      ]
-    ],
-    "frozen": [
-      {
-        "row": 3,
-        "col": 3
-      },
-      {
-        "row": 3,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 3
-      },
-      {
-        "row": 4,
-        "col": 4
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "GREEN",
-        "length": 5
-      }
-    ],
-    "stars": {
-      "twoStar": 8,
-      "threeStar": 14
-    }
-  },
-  {
-    "id": 62,
-    "world": 7,
-    "name": "Core Breach",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 28,
-    "tiles": [
-      [
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ]
-    ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 3
-      },
-      {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 7,
-        "col": 3
-      },
-      {
-        "row": 7,
-        "col": 4
-      },
-      {
-        "row": 3,
-        "col": 0
-      },
-      {
-        "row": 4,
-        "col": 0
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 1,
-        "col": 7
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 6,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 6
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "T_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "GREEN",
-        "length": 5
-      }
-    ],
-    "stars": {
-      "twoStar": 8,
-      "threeStar": 16
-    }
-  },
-  {
-    "name": "Caldera",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 20,
-    "tiles": [
-      [
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE"
-      ]
-    ],
-    "frozen": [
-      {
-        "row": 2,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 5
-      },
-      {
-        "row": 5,
-        "col": 2
-      },
-      {
-        "row": 5,
-        "col": 5
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "GREEN",
-        "length": 5
-      }
-    ],
-    "stars": {
-      "twoStar": 8,
-      "threeStar": 15
+      "threeStar": 9
     },
-    "id": 63,
-    "world": 7
-  },
-  {
-    "id": 64,
-    "world": 8,
-    "name": "Stellar Dawn",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 20,
-    "tiles": [
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "YELLOW",
-        "BLUE",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "YELLOW",
-        "BLUE"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "YELLOW",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "YELLOW"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ]
-    ],
-    "goals": [
-      {
-        "type": "line",
-        "color": "ORANGE",
-        "length": 5
-      },
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "square",
-        "color": "RED"
-      }
-    ],
-    "stars": {
-      "twoStar": 6,
-      "threeStar": 11
-    }
-  },
-  {
-    "id": 65,
-    "world": 8,
-    "name": "Nebula Drift",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 22,
-    "tiles": [
-      [
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "YELLOW",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "YELLOW",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ]
-    ],
     "frozen": [
       {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "RED",
-        "length": 4
-      },
-      {
-        "type": "square",
-        "color": "BLUE"
-      }
-    ],
-    "stars": {
-      "twoStar": 7,
-      "threeStar": 12
-    }
-  },
-  {
-    "id": 66,
-    "world": 8,
-    "name": "Cosmic Weave",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 24,
-    "tiles": [
-      [
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "YELLOW",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "YELLOW",
-        "RED",
-        "ORANGE"
-      ]
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 3
-      },
-      {
-        "row": 0,
+        "row": 3,
         "col": 4
       },
       {
-        "row": 7,
-        "col": 3
+        "row": 6,
+        "col": 2
       },
-      {
-        "row": 7,
-        "col": 4
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "GREEN",
-        "length": 5
-      },
-      {
-        "type": "square",
-        "color": "BLUE"
-      }
-    ],
-    "stars": {
-      "twoStar": 7,
-      "threeStar": 13
-    }
-  },
-  {
-    "id": 67,
-    "world": 8,
-    "name": "Meteor Shower",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 24,
-    "tiles": [
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "YELLOW",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "YELLOW",
-        "BLUE"
-      ]
-    ],
-    "frozen": [
       {
         "row": 2,
         "col": 2
       },
       {
-        "row": 2,
-        "col": 5
-      },
-      {
-        "row": 5,
-        "col": 2
-      },
-      {
-        "row": 5,
-        "col": 5
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "T_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "GREEN",
-        "length": 4
-      }
-    ],
-    "stars": {
-      "twoStar": 7,
-      "threeStar": 13
-    }
-  },
-  {
-    "id": 68,
-    "world": 8,
-    "name": "Pulsar Beat",
-    "width": 8,
-    "height": 8,
-    "maxMoves": 26,
-    "tiles": [
-      [
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "YELLOW",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "YELLOW",
-        "GREEN"
-      ]
-    ],
-    "frozen": [
-      {
-        "row": 3,
-        "col": 3
-      },
-      {
-        "row": 3,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 3
-      },
-      {
-        "row": 4,
-        "col": 4
+        "row": 6,
+        "col": 6
       }
     ],
     "voids": [
       {
-        "row": 0,
+        "row": 6,
         "col": 0
       },
       {
-        "row": 7,
+        "row": 1,
         "col": 0
       },
       {
-        "row": 0,
+        "row": 3,
         "col": 7
       },
       {
-        "row": 7,
-        "col": 7
+        "row": 5,
+        "col": 4
       }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "L_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "BLUE",
-        "length": 5
-      }
-    ],
-    "stars": {
-      "twoStar": 8,
-      "threeStar": 14
-    }
+    ]
   },
   {
     "id": 69,
@@ -8138,143 +8360,104 @@
     "name": "Dark Matter",
     "width": 8,
     "height": 8,
-    "maxMoves": 26,
+    "maxMoves": 15,
     "tiles": [
       [
-        "RED",
+        "GREEN",
+        "YELLOW",
         "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "BLUE",
+        "YELLOW",
         "GREEN",
         "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
         "ORANGE",
         "RED"
       ],
       [
         "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
         "YELLOW",
-        "ORANGE",
+        "BLUE",
         "GREEN",
-        "BLUE"
+        "GREEN",
+        "YELLOW",
+        "GREEN",
+        "RED"
       ],
       [
-        "BLUE",
-        "GREEN",
+        "RED",
+        "YELLOW",
         "RED",
         "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
         "ORANGE",
         "RED",
         "BLUE",
         "GREEN"
       ],
       [
+        "ORANGE",
         "GREEN",
-        "BLUE",
+        "RED",
+        "YELLOW",
         "ORANGE",
         "YELLOW",
+        "ORANGE",
+        "GREEN"
+      ],
+      [
+        "RED",
+        "ORANGE",
+        "ORANGE",
+        "RED",
+        "BLUE",
+        "RED",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "GREEN",
+        "ORANGE",
         "GREEN",
         "BLUE",
+        "BLUE",
+        "ORANGE",
+        "ORANGE",
+        "YELLOW"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "RED",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "YELLOW",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "BLUE",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "GREEN",
         "ORANGE",
         "RED"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 1,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 6
-      },
-      {
-        "row": 6,
-        "col": 1
-      },
-      {
-        "row": 6,
-        "col": 6
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 6,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 6
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
     ],
     "goals": [
       {
         "type": "shape",
         "color": "RED",
-        "shape": "CROSS"
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "L_SHAPE"
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
@@ -8284,13 +8467,58 @@
       {
         "type": "line",
         "color": "GREEN",
+        "length": 6
+      },
+      {
+        "type": "line",
+        "color": "RED",
         "length": 5
       }
     ],
     "stars": {
-      "twoStar": 8,
-      "threeStar": 14
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 6,
+        "col": 5
+      },
+      {
+        "row": 6,
+        "col": 1
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 1,
+        "col": 3
+      }
+    ],
+    "voids": [
+      {
+        "row": 4,
+        "col": 0
+      },
+      {
+        "row": 2,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 5
+      },
+      {
+        "row": 7,
+        "col": 7
+      },
+      {
+        "row": 2,
+        "col": 5
+      }
+    ]
   },
   {
     "id": 70,
@@ -8298,26 +8526,26 @@
     "name": "Supernova",
     "width": 8,
     "height": 8,
-    "maxMoves": 28,
+    "maxMoves": 15,
     "tiles": [
       [
         "ORANGE",
-        "BLUE",
+        "ORANGE",
+        "YELLOW",
+        "YELLOW",
         "RED",
         "GREEN",
-        "ORANGE",
         "BLUE",
-        "RED",
         "GREEN"
       ],
       [
+        "RED",
         "GREEN",
         "RED",
-        "ORANGE",
-        "BLUE",
         "GREEN",
-        "RED",
-        "ORANGE",
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
         "BLUE"
       ],
       [
@@ -8325,113 +8553,61 @@
         "ORANGE",
         "GREEN",
         "RED",
-        "BLUE",
         "ORANGE",
         "GREEN",
+        "BLUE",
         "RED"
       ],
       [
-        "RED",
-        "GREEN",
-        "BLUE",
         "ORANGE",
-        "RED",
-        "GREEN",
+        "ORANGE",
         "BLUE",
-        "ORANGE"
+        "BLUE",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "RED"
       ],
       [
         "ORANGE",
         "BLUE",
-        "RED",
-        "GREEN",
+        "YELLOW",
+        "YELLOW",
         "YELLOW",
         "BLUE",
-        "RED",
+        "GREEN",
         "GREEN"
       ],
       [
         "GREEN",
         "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
         "RED",
         "ORANGE",
-        "BLUE"
-      ],
-      [
         "BLUE",
         "ORANGE",
-        "GREEN",
         "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
         "RED"
       ],
       [
-        "RED",
-        "GREEN",
         "BLUE",
-        "ORANGE",
-        "RED",
         "YELLOW",
         "BLUE",
-        "ORANGE"
+        "RED",
+        "RED",
+        "RED",
+        "YELLOW",
+        "YELLOW"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 3
-      },
-      {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 7,
-        "col": 3
-      },
-      {
-        "row": 7,
-        "col": 4
-      },
-      {
-        "row": 3,
-        "col": 0
-      },
-      {
-        "row": 4,
-        "col": 7
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 7
-      },
-      {
-        "row": 3,
-        "col": 3
-      },
-      {
-        "row": 4,
-        "col": 4
-      }
     ],
     "goals": [
       {
@@ -8441,24 +8617,77 @@
       },
       {
         "type": "shape",
-        "color": "RED",
+        "color": "YELLOW",
         "shape": "U_SHAPE"
       },
       {
         "type": "shape",
+        "color": "RED",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "square",
+        "color": "GREEN"
+      },
+      {
+        "type": "shape",
         "color": "BLUE",
-        "shape": "Z_SHAPE"
+        "shape": "CROSS"
       },
       {
         "type": "line",
-        "color": "GREEN",
-        "length": 5
+        "color": "ORANGE",
+        "length": 6
       }
     ],
     "stars": {
-      "twoStar": 8,
-      "threeStar": 16
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 1,
+        "col": 1
+      },
+      {
+        "row": 1,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 4
+      },
+      {
+        "row": 5,
+        "col": 2
+      }
+    ],
+    "voids": [
+      {
+        "row": 0,
+        "col": 4
+      },
+      {
+        "row": 7,
+        "col": 4
+      },
+      {
+        "row": 7,
+        "col": 3
+      },
+      {
+        "row": 6,
+        "col": 7
+      },
+      {
+        "row": 2,
+        "col": 3
+      }
+    ]
   },
   {
     "id": 71,
@@ -8466,377 +8695,260 @@
     "name": "Event Horizon",
     "width": 8,
     "height": 8,
-    "maxMoves": 30,
+    "maxMoves": 14,
     "tiles": [
       [
-        "RED",
-        "GREEN",
-        "BLUE",
         "ORANGE",
         "RED",
+        "YELLOW",
+        "ORANGE",
         "GREEN",
-        "BLUE",
-        "ORANGE"
+        "RED",
+        "ORANGE",
+        "RED"
       ],
       [
-        "ORANGE",
-        "BLUE",
         "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "GREEN",
         "RED",
         "ORANGE",
+        "ORANGE",
         "BLUE",
-        "GREEN",
-        "RED",
+        "ORANGE",
         "ORANGE",
         "BLUE"
       ],
       [
         "BLUE",
-        "ORANGE",
         "GREEN",
+        "ORANGE",
+        "RED",
+        "YELLOW",
         "RED",
         "BLUE",
-        "ORANGE",
-        "GREEN",
         "RED"
       ],
       [
-        "RED",
-        "GREEN",
-        "BLUE",
         "ORANGE",
         "YELLOW",
-        "GREEN",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "GREEN",
         "RED",
         "ORANGE",
-        "BLUE",
-        "GREEN",
+        "YELLOW",
         "RED",
-        "ORANGE",
+        "YELLOW",
         "BLUE"
       ],
       [
-        "BLUE",
         "ORANGE",
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "YELLOW",
+        "GREEN"
+      ],
+      [
+        "RED",
+        "YELLOW",
         "GREEN",
         "RED",
         "BLUE",
+        "ORANGE",
+        "RED",
+        "RED"
+      ],
+      [
+        "RED",
         "YELLOW",
         "GREEN",
-        "RED"
+        "RED",
+        "ORANGE",
+        "RED",
+        "RED",
+        "YELLOW"
+      ],
+      [
+        "RED",
+        "GREEN",
+        "YELLOW",
+        "BLUE",
+        "BLUE",
+        "YELLOW",
+        "GREEN",
+        "YELLOW"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 1,
-        "col": 3
-      },
-      {
-        "row": 1,
-        "col": 4
-      },
-      {
-        "row": 3,
-        "col": 1
-      },
-      {
-        "row": 3,
-        "col": 6
-      },
-      {
-        "row": 4,
-        "col": 1
-      },
-      {
-        "row": 4,
-        "col": 6
-      },
-      {
-        "row": 6,
-        "col": 3
-      },
-      {
-        "row": 6,
-        "col": 4
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 1,
-        "col": 7
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 6,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 6
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
     ],
     "goals": [
       {
         "type": "shape",
+        "color": "GREEN",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
         "color": "RED",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
         "shape": "CROSS"
       },
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "CROSS"
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "YELLOW",
+        "length": 6
       },
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
+        "color": "ORANGE",
         "shape": "Z_SHAPE"
       }
     ],
     "stars": {
-      "twoStar": 9,
-      "threeStar": 17
-    }
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 4,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 1
+      },
+      {
+        "row": 3,
+        "col": 3
+      },
+      {
+        "row": 2,
+        "col": 6
+      },
+      {
+        "row": 1,
+        "col": 2
+      }
+    ],
+    "voids": [
+      {
+        "row": 0,
+        "col": 1
+      },
+      {
+        "row": 0,
+        "col": 7
+      },
+      {
+        "row": 5,
+        "col": 7
+      },
+      {
+        "row": 2,
+        "col": 7
+      },
+      {
+        "row": 2,
+        "col": 3
+      }
+    ]
   },
   {
+    "id": 72,
+    "world": 8,
     "name": "Black Hole",
     "width": 8,
     "height": 8,
-    "maxMoves": 21,
+    "maxMoves": 13,
     "tiles": [
       [
-        "GREEN",
-        "RED",
-        "ORANGE",
+        "YELLOW",
         "BLUE",
         "GREEN",
-        "RED",
+        "YELLOW",
+        "BLUE",
         "ORANGE",
+        "YELLOW",
         "BLUE"
       ],
       [
         "BLUE",
-        "ORANGE",
         "GREEN",
-        "RED",
         "BLUE",
+        "YELLOW",
+        "RED",
         "ORANGE",
-        "GREEN",
-        "RED"
+        "YELLOW",
+        "YELLOW"
       ],
       [
         "RED",
-        "GREEN",
+        "ORANGE",
+        "ORANGE",
         "BLUE",
+        "YELLOW",
+        "BLUE",
+        "GREEN",
+        "BLUE"
+      ],
+      [
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "YELLOW",
+        "ORANGE",
         "ORANGE",
         "RED",
-        "GREEN",
+        "RED",
         "BLUE",
         "ORANGE"
       ],
       [
         "ORANGE",
         "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
+        "YELLOW",
         "BLUE",
         "RED",
-        "GREEN"
-      ],
-      [
         "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
         "GREEN",
         "RED"
       ],
       [
         "RED",
-        "GREEN",
+        "BLUE",
+        "BLUE",
+        "RED",
+        "YELLOW",
         "BLUE",
         "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE"
+        "RED"
       ],
       [
-        "ORANGE",
         "BLUE",
         "RED",
+        "YELLOW",
+        "BLUE",
+        "ORANGE",
         "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
+        "GREEN",
+        "YELLOW"
       ]
     ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 3
-      },
-      {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 7,
-        "col": 3
-      },
-      {
-        "row": 7,
-        "col": 4
-      },
-      {
-        "row": 3,
-        "col": 0
-      },
-      {
-        "row": 4,
-        "col": 0
-      },
-      {
-        "row": 3,
-        "col": 7
-      },
-      {
-        "row": 4,
-        "col": 7
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 1,
-        "col": 7
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 6,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 6
-      },
-      {
-        "row": 7,
-        "col": 7
-      }
-    ],
     "goals": [
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "CROSS"
-      },
       {
         "type": "shape",
         "color": "RED",
@@ -8844,21 +8956,77 @@
       },
       {
         "type": "shape",
-        "color": "GREEN",
-        "shape": "CROSS"
+        "color": "ORANGE",
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
         "color": "BLUE",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "GREEN",
+        "length": 7
+      },
+      {
+        "type": "square",
+        "color": "YELLOW"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
         "shape": "Z_SHAPE"
       }
     ],
     "stars": {
-      "twoStar": 9,
-      "threeStar": 17
+      "twoStar": 4,
+      "threeStar": 7
     },
-    "id": 72,
-    "world": 8
+    "frozen": [
+      {
+        "row": 6,
+        "col": 2
+      },
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 5
+      },
+      {
+        "row": 1,
+        "col": 6
+      },
+      {
+        "row": 1,
+        "col": 4
+      }
+    ],
+    "voids": [
+      {
+        "row": 2,
+        "col": 0
+      },
+      {
+        "row": 6,
+        "col": 0
+      },
+      {
+        "row": 6,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 1
+      },
+      {
+        "row": 5,
+        "col": 4
+      }
+    ]
   },
   {
     "id": 73,
@@ -8866,132 +9034,174 @@
     "name": "Tidal Surge",
     "width": 9,
     "height": 9,
-    "maxMoves": 22,
+    "maxMoves": 15,
     "tiles": [
       [
-        "BLUE",
-        "GREEN",
         "RED",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
         "ORANGE",
         "YELLOW",
+        "RED",
+        "RED",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "RED",
+        "BLUE"
+      ],
+      [
         "BLUE",
+        "ORANGE",
+        "YELLOW",
         "GREEN",
         "RED",
+        "RED",
+        "GREEN",
+        "ORANGE",
         "ORANGE"
       ],
       [
         "RED",
-        "ORANGE",
         "BLUE",
         "GREEN",
         "RED",
+        "BLUE",
         "ORANGE",
         "BLUE",
-        "GREEN",
+        "YELLOW",
         "RED"
       ],
       [
         "GREEN",
         "BLUE",
         "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "GREEN",
         "BLUE",
         "ORANGE",
-        "RED",
+        "YELLOW",
+        "ORANGE",
         "GREEN",
-        "BLUE",
-        "GREEN"
+        "YELLOW"
       ],
       [
         "BLUE",
-        "GREEN",
         "RED",
         "ORANGE",
+        "GREEN",
+        "RED",
+        "RED",
+        "YELLOW",
         "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
         "RED"
       ],
       [
-        "RED",
+        "GREEN",
         "ORANGE",
-        "BLUE",
+        "ORANGE",
+        "ORANGE",
+        "YELLOW",
+        "RED",
         "GREEN",
         "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "ORANGE"
+        "GREEN"
       ],
       [
-        "GREEN",
-        "BLUE",
-        "ORANGE",
         "RED",
-        "GREEN",
+        "YELLOW",
+        "YELLOW",
         "BLUE",
+        "GREEN",
         "ORANGE",
-        "RED",
+        "YELLOW",
+        "YELLOW",
         "BLUE"
       ],
       [
         "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
         "YELLOW",
-        "GREEN",
+        "RED",
         "RED",
         "ORANGE",
+        "RED",
+        "GREEN",
+        "BLUE",
         "RED"
       ]
     ],
     "goals": [
       {
-        "type": "line",
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
         "color": "BLUE",
-        "length": 5
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "CROSS"
       },
       {
         "type": "line",
-        "color": "ORANGE",
-        "length": 4
+        "color": "GREEN",
+        "length": 5
       },
       {
         "type": "square",
         "color": "RED"
-      },
-      {
-        "type": "square",
-        "color": "GREEN"
       }
     ],
     "stars": {
-      "twoStar": 6,
-      "threeStar": 12
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 2,
+        "col": 3
+      },
+      {
+        "row": 5,
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 7,
+        "col": 1
+      }
+    ],
+    "voids": [
+      {
+        "row": 8,
+        "col": 5
+      },
+      {
+        "row": 8,
+        "col": 2
+      },
+      {
+        "row": 7,
+        "col": 0
+      },
+      {
+        "row": 6,
+        "col": 5
+      }
+    ]
   },
   {
     "id": 74,
@@ -8999,157 +9209,179 @@
     "name": "Coral Maze",
     "width": 9,
     "height": 9,
-    "maxMoves": 24,
+    "maxMoves": 14,
     "tiles": [
       [
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "ORANGE",
+        "YELLOW",
         "GREEN",
         "RED",
+        "YELLOW",
+        "YELLOW",
         "BLUE",
-        "ORANGE",
         "GREEN",
         "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
         "BLUE"
       ],
       [
         "GREEN",
-        "ORANGE",
         "BLUE",
+        "YELLOW",
+        "YELLOW",
         "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "GREEN",
+        "YELLOW",
         "ORANGE",
         "YELLOW",
-        "BLUE",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "ORANGE",
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
+        "RED",
         "GREEN",
         "ORANGE",
         "RED"
       ],
       [
         "ORANGE",
-        "GREEN",
+        "RED",
         "RED",
         "BLUE",
-        "ORANGE",
         "GREEN",
+        "BLUE",
+        "ORANGE",
         "RED",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
+        "RED",
+        "RED",
+        "RED",
+        "GREEN",
         "BLUE",
         "ORANGE"
       ],
       [
-        "BLUE",
+        "ORANGE",
+        "ORANGE",
         "RED",
         "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
         "ORANGE",
+        "BLUE",
+        "YELLOW",
         "GREEN",
-        "BLUE"
+        "YELLOW"
       ],
       [
-        "GREEN",
+        "YELLOW",
+        "ORANGE",
         "ORANGE",
         "BLUE",
+        "GREEN",
         "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
+        "YELLOW",
         "RED",
         "GREEN"
       ],
       [
+        "YELLOW",
+        "RED",
         "RED",
         "BLUE",
         "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
+        "GREEN",
         "GREEN",
         "YELLOW",
-        "RED"
+        "BLUE"
+      ],
+      [
+        "ORANGE",
+        "YELLOW",
+        "RED",
+        "GREEN",
+        "YELLOW",
+        "RED",
+        "RED",
+        "YELLOW",
+        "YELLOW"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 4,
-        "col": 4
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "Z_SHAPE"
+        "color": "ORANGE",
+        "shape": "L_SHAPE"
       },
       {
         "type": "shape",
-        "color": "ORANGE",
-        "shape": "U_SHAPE"
+        "color": "YELLOW",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "CROSS"
       },
       {
         "type": "line",
         "color": "RED",
-        "length": 5
+        "length": 6
       },
       {
-        "type": "square",
-        "color": "GREEN"
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "T_SHAPE"
       }
     ],
     "stars": {
-      "twoStar": 7,
-      "threeStar": 13
-    }
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 6,
+        "col": 1
+      },
+      {
+        "row": 2,
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 5,
+        "col": 6
+      }
+    ],
+    "voids": [
+      {
+        "row": 8,
+        "col": 6
+      },
+      {
+        "row": 2,
+        "col": 8
+      },
+      {
+        "row": 0,
+        "col": 7
+      },
+      {
+        "row": 8,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 2
+      }
+    ]
   },
   {
     "id": 75,
@@ -9157,202 +9389,188 @@
     "name": "Kraken's Lair",
     "width": 9,
     "height": 9,
-    "maxMoves": 26,
+    "maxMoves": 17,
     "tiles": [
       [
-        "GREEN",
-        "RED",
         "BLUE",
         "ORANGE",
+        "RED",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "ORANGE"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "ORANGE",
+        "GREEN",
+        "ORANGE",
+        "RED"
+      ],
+      [
+        "YELLOW",
+        "ORANGE",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "BLUE",
         "GREEN",
         "RED",
+        "YELLOW"
+      ],
+      [
+        "GREEN",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "RED",
+        "BLUE",
         "BLUE",
         "ORANGE",
         "GREEN"
       ],
       [
-        "BLUE",
-        "ORANGE",
-        "GREEN",
         "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE"
-      ],
-      [
-        "GREEN",
-        "RED",
-        "BLUE",
         "ORANGE",
         "YELLOW",
         "RED",
         "BLUE",
         "ORANGE",
-        "GREEN"
-      ],
-      [
         "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
         "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
         "BLUE"
       ],
       [
         "RED",
+        "ORANGE",
         "GREEN",
         "ORANGE",
+        "GREEN",
+        "ORANGE",
+        "ORANGE",
         "BLUE",
+        "GREEN"
+      ],
+      [
+        "GREEN",
+        "GREEN",
+        "ORANGE",
+        "GREEN",
+        "ORANGE",
         "RED",
-        "GREEN",
-        "ORANGE",
         "BLUE",
+        "YELLOW",
         "RED"
       ],
       [
-        "ORANGE",
-        "BLUE",
-        "RED",
         "GREEN",
-        "ORANGE",
         "BLUE",
-        "RED",
+        "BLUE",
+        "BLUE",
+        "BLUE",
         "GREEN",
-        "ORANGE"
+        "BLUE",
+        "YELLOW",
+        "RED"
       ],
       [
-        "GREEN",
+        "YELLOW",
         "RED",
         "BLUE",
         "ORANGE",
         "GREEN",
         "YELLOW",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
+        "YELLOW",
+        "YELLOW",
+        "RED"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 2,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 6
-      },
-      {
-        "row": 6,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
-        "color": "RED",
+        "color": "ORANGE",
         "shape": "CROSS"
       },
       {
         "type": "shape",
         "color": "BLUE",
-        "shape": "U_SHAPE"
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "YELLOW",
+        "length": 5
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "L_SHAPE"
       },
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "L_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "GREEN",
-        "length": 5
+        "shape": "Z_SHAPE"
       }
     ],
     "stars": {
-      "twoStar": 7,
-      "threeStar": 14
-    }
+      "twoStar": 5,
+      "threeStar": 10
+    },
+    "frozen": [
+      {
+        "row": 1,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 2
+      },
+      {
+        "row": 6,
+        "col": 7
+      },
+      {
+        "row": 5,
+        "col": 4
+      }
+    ],
+    "voids": [
+      {
+        "row": 7,
+        "col": 8
+      },
+      {
+        "row": 0,
+        "col": 2
+      },
+      {
+        "row": 4,
+        "col": 0
+      },
+      {
+        "row": 8,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 3
+      }
+    ]
   },
   {
     "id": 76,
@@ -9360,133 +9578,176 @@
     "name": "Whirlpool",
     "width": 9,
     "height": 9,
-    "maxMoves": 26,
+    "maxMoves": 16,
     "tiles": [
       [
-        "ORANGE",
         "BLUE",
         "RED",
-        "GREEN",
-        "ORANGE",
+        "RED",
         "BLUE",
         "RED",
+        "ORANGE",
+        "YELLOW",
         "GREEN",
+        "YELLOW"
+      ],
+      [
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "BLUE",
+        "ORANGE",
+        "ORANGE",
         "ORANGE"
       ],
       [
+        "ORANGE",
+        "GREEN",
         "RED",
         "GREEN",
-        "ORANGE",
         "BLUE",
-        "RED",
-        "GREEN",
         "ORANGE",
-        "BLUE",
-        "RED"
+        "ORANGE",
+        "ORANGE",
+        "BLUE"
       ],
       [
-        "BLUE",
-        "ORANGE",
+        "YELLOW",
         "GREEN",
         "RED",
         "BLUE",
-        "ORANGE",
-        "GREEN",
+        "RED",
+        "YELLOW",
+        "YELLOW",
         "RED",
         "BLUE"
       ],
       [
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
         "YELLOW",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE"
-      ],
-      [
-        "RED",
-        "GREEN",
         "ORANGE",
-        "BLUE",
+        "RED",
+        "ORANGE",
         "RED",
         "GREEN",
-        "ORANGE",
+        "GREEN",
         "BLUE",
         "RED"
       ],
       [
-        "BLUE",
+        "YELLOW",
         "ORANGE",
+        "YELLOW",
         "GREEN",
-        "RED",
-        "BLUE",
         "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "RED",
         "BLUE",
-        "ORANGE",
-        "GREEN",
+        "YELLOW",
         "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
+        "RED"
       ],
       [
         "ORANGE",
+        "RED",
+        "RED",
+        "GREEN",
         "BLUE",
         "RED",
+        "RED",
+        "YELLOW",
+        "ORANGE"
+      ],
+      [
         "GREEN",
         "ORANGE",
         "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "RED",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE"
+      ],
+      [
+        "RED",
+        "RED",
+        "BLUE",
+        "GREEN",
         "RED",
         "GREEN",
+        "RED",
+        "RED",
         "ORANGE"
       ]
     ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "ORANGE",
+        "length": 6
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "square",
+        "color": "RED"
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 9
+    },
     "frozen": [
       {
         "row": 3,
-        "col": 3
+        "col": 6
       },
       {
         "row": 3,
-        "col": 5
-      },
-      {
-        "row": 5,
         "col": 3
       },
       {
-        "row": 5,
-        "col": 5
+        "row": 6,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 6
+      },
+      {
+        "row": 7,
+        "col": 6
       }
     ],
     "voids": [
       {
-        "row": 0,
-        "col": 4
+        "row": 8,
+        "col": 6
       },
       {
-        "row": 4,
+        "row": 8,
+        "col": 1
+      },
+      {
+        "row": 8,
         "col": 0
       },
       {
@@ -9494,36 +9755,10 @@
         "col": 8
       },
       {
-        "row": 8,
+        "row": 3,
         "col": 4
       }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "BLUE",
-        "length": 5
-      }
-    ],
-    "stars": {
-      "twoStar": 8,
-      "threeStar": 14
-    }
+    ]
   },
   {
     "id": 77,
@@ -9531,202 +9766,192 @@
     "name": "Leviathan",
     "width": 9,
     "height": 9,
-    "maxMoves": 28,
+    "maxMoves": 15,
     "tiles": [
       [
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "RED",
         "ORANGE",
         "BLUE",
+        "YELLOW",
         "GREEN",
-        "RED",
         "ORANGE",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
+        "YELLOW",
         "RED",
-        "ORANGE",
         "BLUE",
-        "GREEN",
-        "RED",
         "ORANGE"
       ],
       [
+        "BLUE",
+        "BLUE",
+        "RED",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "ORANGE",
+        "GREEN",
+        "RED"
+      ],
+      [
         "RED",
         "GREEN",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "RED",
         "BLUE",
+        "ORANGE"
+      ],
+      [
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "RED",
+        "BLUE"
+      ],
+      [
         "ORANGE",
         "YELLOW",
         "GREEN",
-        "BLUE",
+        "YELLOW",
+        "RED",
+        "ORANGE",
+        "RED",
         "ORANGE",
         "RED"
       ],
       [
         "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
+        "YELLOW",
         "RED",
         "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "BLUE",
         "ORANGE",
         "RED",
         "YELLOW",
         "BLUE",
+        "BLUE"
+      ],
+      [
+        "GREEN",
+        "GREEN",
+        "GREEN",
+        "YELLOW",
+        "GREEN",
+        "GREEN",
+        "YELLOW",
+        "GREEN",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "BLUE",
         "ORANGE",
-        "RED"
+        "RED",
+        "BLUE",
+        "RED",
+        "BLUE",
+        "YELLOW"
+      ],
+      [
+        "YELLOW",
+        "RED",
+        "RED",
+        "GREEN",
+        "YELLOW",
+        "RED",
+        "ORANGE",
+        "GREEN",
+        "BLUE"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 1,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 1
-      },
-      {
-        "row": 4,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 4
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "CROSS"
+        "color": "RED",
+        "shape": "L_SHAPE"
       },
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "Z_SHAPE"
+        "shape": "L_SHAPE"
       },
       {
         "type": "shape",
-        "color": "RED",
+        "color": "BLUE",
         "shape": "T_SHAPE"
       },
       {
-        "type": "line",
+        "type": "shape",
         "color": "GREEN",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "RED",
         "length": 6
       }
     ],
     "stars": {
-      "twoStar": 8,
-      "threeStar": 15
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 1,
+        "col": 7
+      },
+      {
+        "row": 5,
+        "col": 3
+      },
+      {
+        "row": 4,
+        "col": 6
+      },
+      {
+        "row": 2,
+        "col": 4
+      },
+      {
+        "row": 6,
+        "col": 7
+      }
+    ],
+    "voids": [
+      {
+        "row": 8,
+        "col": 2
+      },
+      {
+        "row": 0,
+        "col": 6
+      },
+      {
+        "row": 8,
+        "col": 1
+      },
+      {
+        "row": 1,
+        "col": 8
+      },
+      {
+        "row": 4,
+        "col": 8
+      },
+      {
+        "row": 2,
+        "col": 5
+      }
+    ]
   },
   {
     "id": 78,
@@ -9734,145 +9959,172 @@
     "name": "Pressure Crush",
     "width": 9,
     "height": 9,
-    "maxMoves": 28,
+    "maxMoves": 15,
     "tiles": [
       [
-        "BLUE",
         "RED",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "ORANGE",
         "GREEN",
         "ORANGE",
         "BLUE",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "BLUE",
+        "GREEN",
+        "ORANGE",
+        "RED",
+        "BLUE",
+        "ORANGE",
+        "YELLOW"
+      ],
+      [
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "ORANGE",
+        "GREEN",
+        "GREEN",
+        "ORANGE",
+        "RED"
+      ],
+      [
         "RED",
         "GREEN",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "ORANGE",
+        "BLUE",
+        "YELLOW",
+        "ORANGE"
+      ],
+      [
+        "GREEN",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "RED",
+        "RED",
+        "BLUE",
         "ORANGE",
         "BLUE"
       ],
       [
-        "ORANGE",
-        "GREEN",
-        "BLUE",
         "RED",
         "ORANGE",
-        "GREEN",
-        "BLUE",
         "RED",
-        "ORANGE"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
         "YELLOW",
         "RED",
         "GREEN",
         "ORANGE",
+        "BLUE",
         "BLUE"
       ],
       [
-        "ORANGE",
+        "RED",
         "GREEN",
         "BLUE",
-        "RED",
-        "ORANGE",
         "GREEN",
-        "BLUE",
         "RED",
-        "ORANGE"
+        "RED",
+        "BLUE",
+        "ORANGE",
+        "BLUE"
       ],
       [
         "RED",
-        "BLUE",
         "ORANGE",
         "GREEN",
         "RED",
-        "BLUE",
-        "ORANGE",
         "GREEN",
-        "RED"
-      ],
-      [
-        "GREEN",
+        "YELLOW",
         "ORANGE",
         "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
         "GREEN"
       ],
       [
+        "GREEN",
+        "GREEN",
         "BLUE",
         "RED",
-        "GREEN",
-        "ORANGE",
         "BLUE",
         "YELLOW",
-        "GREEN",
-        "ORANGE",
-        "BLUE"
+        "YELLOW",
+        "RED",
+        "RED"
       ]
     ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "GREEN",
+        "length": 6
+      },
+      {
+        "type": "square",
+        "color": "RED"
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 9
+    },
     "frozen": [
       {
         "row": 2,
         "col": 4
       },
       {
-        "row": 4,
-        "col": 2
-      },
-      {
-        "row": 4,
+        "row": 5,
         "col": 6
       },
       {
-        "row": 6,
+        "row": 1,
         "col": 4
       },
       {
-        "row": 3,
-        "col": 3
+        "row": 4,
+        "col": 5
+      },
+      {
+        "row": 6,
+        "col": 1
       },
       {
         "row": 5,
-        "col": 5
+        "col": 7
       }
     ],
     "voids": [
       {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 8,
+        "row": 6,
         "col": 0
       },
       {
@@ -9880,40 +10132,22 @@
         "col": 8
       },
       {
-        "row": 0,
-        "col": 4
+        "row": 8,
+        "col": 7
       },
       {
         "row": 8,
-        "col": 4
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 0
+      },
+      {
+        "row": 5,
+        "col": 2
       }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "L_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "Z_SHAPE"
-      }
-    ],
-    "stars": {
-      "twoStar": 8,
-      "threeStar": 15
-    }
+    ]
   },
   {
     "id": 79,
@@ -9921,189 +10155,118 @@
     "name": "Trench Run",
     "width": 9,
     "height": 9,
-    "maxMoves": 30,
+    "maxMoves": 18,
     "tiles": [
       [
-        "GREEN",
-        "ORANGE",
         "BLUE",
         "RED",
         "GREEN",
-        "ORANGE",
-        "BLUE",
         "RED",
-        "GREEN"
-      ],
-      [
+        "YELLOW",
         "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
         "GREEN",
         "ORANGE",
         "RED"
       ],
       [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
         "YELLOW",
-        "ORANGE",
         "BLUE",
+        "RED",
+        "RED",
+        "BLUE",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "YELLOW"
+      ],
+      [
+        "RED",
+        "GREEN",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "ORANGE",
+        "YELLOW"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "GREEN",
+        "YELLOW",
+        "GREEN",
+        "BLUE",
+        "YELLOW",
         "RED",
         "GREEN"
       ],
       [
-        "RED",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
         "BLUE",
         "GREEN",
         "ORANGE",
         "RED",
         "BLUE",
-        "GREEN",
-        "ORANGE",
         "RED"
       ],
       [
-        "ORANGE",
+        "RED",
+        "RED",
         "GREEN",
         "RED",
-        "BLUE",
         "ORANGE",
-        "GREEN",
-        "RED",
+        "YELLOW",
+        "ORANGE",
         "BLUE",
         "ORANGE"
       ],
       [
-        "BLUE",
         "RED",
+        "YELLOW",
         "ORANGE",
-        "GREEN",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
         "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
+        "RED"
       ],
       [
+        "YELLOW",
         "GREEN",
+        "RED",
+        "YELLOW",
+        "RED",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE"
+      ],
+      [
         "ORANGE",
         "BLUE",
         "RED",
-        "GREEN",
         "YELLOW",
         "BLUE",
-        "RED",
-        "GREEN"
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "RED"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 2,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 6
-      },
-      {
-        "row": 6,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
-      },
-      {
-        "row": 8,
-        "col": 4
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "CROSS"
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
@@ -10113,18 +10276,80 @@
       {
         "type": "shape",
         "color": "RED",
-        "shape": "U_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "line",
         "color": "BLUE",
-        "length": 6
+        "length": 7
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "L_SHAPE"
       }
     ],
     "stars": {
-      "twoStar": 9,
-      "threeStar": 16
-    }
+      "twoStar": 6,
+      "threeStar": 10
+    },
+    "frozen": [
+      {
+        "row": 2,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 3
+      },
+      {
+        "row": 7,
+        "col": 4
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 5,
+        "col": 5
+      },
+      {
+        "row": 4,
+        "col": 5
+      }
+    ],
+    "voids": [
+      {
+        "row": 4,
+        "col": 8
+      },
+      {
+        "row": 6,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 8
+      },
+      {
+        "row": 3,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 8
+      },
+      {
+        "row": 5,
+        "col": 3
+      }
+    ]
   },
   {
     "id": 80,
@@ -10132,182 +10357,389 @@
     "name": "Abyss Gate",
     "width": 9,
     "height": 9,
-    "maxMoves": 32,
+    "maxMoves": 17,
     "tiles": [
       [
-        "BLUE",
-        "RED",
-        "ORANGE",
         "GREEN",
         "BLUE",
+        "GREEN",
+        "GREEN",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
         "RED",
+        "RED"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "GREEN",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "BLUE",
+        "YELLOW",
+        "ORANGE"
+      ],
+      [
         "ORANGE",
         "GREEN",
+        "GREEN",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "GREEN",
+        "RED",
+        "YELLOW"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "GREEN",
+        "YELLOW"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "RED",
+        "YELLOW",
+        "BLUE",
+        "BLUE",
+        "ORANGE",
+        "RED",
         "BLUE"
       ],
       [
         "GREEN",
         "ORANGE",
-        "BLUE",
-        "RED",
         "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
+        "GREEN",
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
         "GREEN"
       ],
       [
-        "RED",
         "BLUE",
+        "YELLOW",
         "GREEN",
         "ORANGE",
+        "ORANGE",
+        "YELLOW",
         "RED",
-        "BLUE",
-        "GREEN",
         "ORANGE",
         "RED"
       ],
       [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
         "RED",
         "ORANGE",
         "GREEN",
-        "YELLOW",
-        "RED",
+        "ORANGE",
+        "ORANGE",
         "ORANGE",
         "GREEN",
-        "BLUE"
-      ],
-      [
         "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
         "RED"
       ],
       [
-        "ORANGE",
-        "GREEN",
         "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
         "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
         "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
         "YELLOW",
-        "ORANGE",
+        "RED",
+        "RED",
         "GREEN",
-        "BLUE"
+        "GREEN",
+        "RED"
       ]
     ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "YELLOW",
+        "length": 6
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 10
+    },
     "frozen": [
       {
-        "row": 1,
+        "row": 4,
+        "col": 2
+      },
+      {
+        "row": 2,
         "col": 1
       },
       {
         "row": 1,
-        "col": 7
+        "col": 5
+      },
+      {
+        "row": 6,
+        "col": 4
       },
       {
         "row": 7,
-        "col": 1
+        "col": 6
       },
       {
+        "row": 2,
+        "col": 4
+      }
+    ],
+    "voids": [
+      {
         "row": 7,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 2
+      },
+      {
+        "row": 8,
+        "col": 4
+      },
+      {
+        "row": 8,
+        "col": 0
+      },
+      {
+        "row": 0,
         "col": 7
+      },
+      {
+        "row": 6,
+        "col": 6
+      }
+    ]
+  },
+  {
+    "id": 81,
+    "world": 9,
+    "name": "Mariana",
+    "width": 9,
+    "height": 9,
+    "maxMoves": 15,
+    "tiles": [
+      [
+        "YELLOW",
+        "RED",
+        "RED",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "GREEN",
+        "RED",
+        "GREEN"
+      ],
+      [
+        "ORANGE",
+        "BLUE",
+        "RED",
+        "RED",
+        "BLUE",
+        "BLUE",
+        "GREEN",
+        "GREEN",
+        "BLUE"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "GREEN",
+        "BLUE",
+        "RED",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "GREEN",
+        "YELLOW",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE",
+        "GREEN",
+        "YELLOW",
+        "BLUE"
+      ],
+      [
+        "GREEN",
+        "YELLOW",
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "YELLOW",
+        "RED",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "BLUE",
+        "BLUE",
+        "RED",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "RED",
+        "GREEN",
+        "RED"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "ORANGE",
+        "ORANGE",
+        "RED",
+        "ORANGE",
+        "RED",
+        "RED"
+      ],
+      [
+        "RED",
+        "RED",
+        "RED",
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
+        "RED",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "YELLOW",
+        "BLUE",
+        "BLUE",
+        "RED",
+        "RED",
+        "GREEN"
+      ]
+    ],
+    "goals": [
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "ORANGE",
+        "length": 7
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "U_SHAPE"
+      }
+    ],
+    "stars": {
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 3,
+        "col": 6
+      },
+      {
+        "row": 2,
+        "col": 6
       },
       {
         "row": 3,
         "col": 4
       },
       {
-        "row": 5,
-        "col": 4
+        "row": 7,
+        "col": 1
       },
       {
-        "row": 4,
-        "col": 3
+        "row": 6,
+        "col": 1
       },
       {
-        "row": 4,
+        "row": 6,
         "col": 5
       }
     ],
     "voids": [
       {
-        "row": 0,
-        "col": 0
+        "row": 7,
+        "col": 8
       },
       {
-        "row": 0,
+        "row": 8,
         "col": 1
-      },
-      {
-        "row": 0,
-        "col": 2
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 2,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 2,
-        "col": 8
       },
       {
         "row": 6,
@@ -10318,331 +10750,18 @@
         "col": 0
       },
       {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 8
+        "row": 0,
+        "col": 3
       },
       {
         "row": 8,
         "col": 6
       },
       {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
+        "row": 2,
+        "col": 3
       }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "Z_SHAPE"
-      }
-    ],
-    "stars": {
-      "twoStar": 9,
-      "threeStar": 18
-    }
-  },
-  {
-    "name": "Mariana",
-    "width": 9,
-    "height": 9,
-    "maxMoves": 24,
-    "tiles": [
-      [
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED"
-      ]
-    ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 0
-      },
-      {
-        "row": 4,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 4
-      },
-      {
-        "row": 2,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 6
-      },
-      {
-        "row": 6,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 0,
-        "col": 2
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 1,
-        "col": 1
-      },
-      {
-        "row": 2,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 7
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 2,
-        "col": 8
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 6
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
-    ],
-    "goals": [
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "CROSS"
-      }
-    ],
-    "stars": {
-      "twoStar": 10,
-      "threeStar": 19
-    },
-    "id": 81,
-    "world": 9
+    ]
   },
   {
     "id": 82,
@@ -10650,133 +10769,187 @@
     "name": "Prism Spark",
     "width": 9,
     "height": 9,
-    "maxMoves": 24,
+    "maxMoves": 16,
     "tiles": [
       [
+        "YELLOW",
+        "YELLOW",
         "RED",
+        "RED",
+        "RED",
+        "RED",
+        "GREEN",
+        "GREEN",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "ORANGE",
+        "ORANGE",
         "BLUE",
         "GREEN",
         "ORANGE",
+        "ORANGE",
+        "ORANGE",
+        "RED"
+      ],
+      [
         "YELLOW",
+        "BLUE",
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
+        "BLUE",
+        "ORANGE",
+        "ORANGE",
+        "RED"
+      ],
+      [
         "RED",
         "BLUE",
+        "ORANGE",
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "RED",
+        "YELLOW",
+        "RED"
+      ],
+      [
+        "GREEN",
+        "BLUE",
+        "GREEN",
+        "GREEN",
+        "RED",
+        "RED",
+        "ORANGE",
+        "BLUE",
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "RED"
+      ],
+      [
+        "YELLOW",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "RED",
+        "RED",
+        "YELLOW",
+        "YELLOW"
+      ],
+      [
+        "RED",
+        "ORANGE",
+        "ORANGE",
+        "RED",
+        "RED",
+        "ORANGE",
+        "ORANGE",
         "GREEN",
         "ORANGE"
       ],
       [
         "ORANGE",
-        "GREEN",
-        "RED",
         "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED"
-      ],
-      [
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN"
-      ],
-      [
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
         "YELLOW",
-        "BLUE",
+        "RED",
         "GREEN",
-        "ORANGE",
-        "RED"
+        "GREEN",
+        "RED",
+        "BLUE",
+        "YELLOW"
       ]
     ],
     "goals": [
-      {
-        "type": "line",
-        "color": "ORANGE",
-        "length": 5
-      },
-      {
-        "type": "line",
-        "color": "BLUE",
-        "length": 5
-      },
       {
         "type": "shape",
         "color": "RED",
         "shape": "Z_SHAPE"
       },
       {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "T_SHAPE"
+      },
+      {
         "type": "square",
         "color": "GREEN"
+      },
+      {
+        "type": "line",
+        "color": "RED",
+        "length": 6
       }
     ],
     "stars": {
-      "twoStar": 7,
-      "threeStar": 13
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 6,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 4
+      },
+      {
+        "row": 6,
+        "col": 7
+      },
+      {
+        "row": 3,
+        "col": 6
+      }
+    ],
+    "voids": [
+      {
+        "row": 3,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 3
+      },
+      {
+        "row": 0,
+        "col": 2
+      },
+      {
+        "row": 0,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ]
   },
   {
     "id": 83,
@@ -10784,152 +10957,192 @@
     "name": "Refraction",
     "width": 9,
     "height": 9,
-    "maxMoves": 26,
+    "maxMoves": 15,
     "tiles": [
       [
-        "GREEN",
+        "BLUE",
+        "RED",
+        "RED",
         "RED",
         "BLUE",
-        "ORANGE",
         "GREEN",
-        "RED",
         "BLUE",
-        "ORANGE",
+        "GREEN",
         "GREEN"
       ],
       [
-        "ORANGE",
+        "RED",
         "BLUE",
+        "RED",
         "GREEN",
+        "BLUE",
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "YELLOW"
+      ],
+      [
+        "RED",
         "RED",
         "ORANGE",
+        "ORANGE",
         "BLUE",
-        "GREEN",
-        "RED",
+        "ORANGE",
+        "YELLOW",
+        "BLUE",
         "ORANGE"
       ],
       [
+        "GREEN",
         "RED",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
         "GREEN",
         "ORANGE",
-        "BLUE",
         "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
         "RED"
+      ],
+      [
+        "GREEN",
+        "BLUE",
+        "ORANGE",
+        "YELLOW",
+        "BLUE",
+        "GREEN",
+        "ORANGE",
+        "ORANGE",
+        "ORANGE"
+      ],
+      [
+        "BLUE",
+        "BLUE",
+        "GREEN",
+        "YELLOW",
+        "BLUE",
+        "RED",
+        "RED",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "ORANGE",
+        "GREEN",
+        "BLUE"
       ],
       [
         "BLUE",
         "ORANGE",
+        "GREEN",
         "RED",
         "GREEN",
+        "YELLOW",
         "BLUE",
-        "ORANGE",
         "RED",
-        "GREEN",
         "BLUE"
       ],
       [
         "GREEN",
         "RED",
-        "BLUE",
+        "RED",
         "ORANGE",
+        "RED",
+        "ORANGE",
+        "GREEN",
         "YELLOW",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
         "ORANGE"
-      ],
-      [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE",
-        "GREEN",
-        "YELLOW",
-        "BLUE",
-        "ORANGE",
-        "GREEN"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 0
-      },
-      {
-        "row": 4,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 4
-      }
     ],
     "goals": [
       {
         "type": "shape",
-        "color": "ORANGE",
+        "color": "YELLOW",
         "shape": "U_SHAPE"
       },
       {
         "type": "shape",
-        "color": "RED",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "line",
         "color": "BLUE",
-        "length": 5
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "U_SHAPE"
       },
       {
         "type": "line",
-        "color": "GREEN",
-        "length": 5
+        "color": "ORANGE",
+        "length": 6
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "Z_SHAPE"
       }
     ],
     "stars": {
-      "twoStar": 8,
-      "threeStar": 14
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 1,
+        "col": 3
+      },
+      {
+        "row": 1,
+        "col": 2
+      },
+      {
+        "row": 4,
+        "col": 4
+      },
+      {
+        "row": 6,
+        "col": 2
+      },
+      {
+        "row": 1,
+        "col": 1
+      }
+    ],
+    "voids": [
+      {
+        "row": 2,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 2
+      },
+      {
+        "row": 1,
+        "col": 0
+      },
+      {
+        "row": 8,
+        "col": 1
+      },
+      {
+        "row": 8,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 6
+      }
+    ]
   },
   {
     "id": 84,
@@ -10937,170 +11150,196 @@
     "name": "Spectrum Shift",
     "width": 9,
     "height": 9,
-    "maxMoves": 28,
+    "maxMoves": 15,
     "tiles": [
       [
-        "BLUE",
         "ORANGE",
         "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
         "RED",
         "GREEN",
-        "BLUE"
-      ],
-      [
         "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW",
         "RED"
       ],
       [
+        "RED",
+        "YELLOW",
+        "BLUE",
         "ORANGE",
         "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
         "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "GREEN",
-        "RED",
+        "YELLOW",
         "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
         "GREEN"
       ],
       [
         "BLUE",
-        "ORANGE",
-        "RED",
         "GREEN",
-        "YELLOW",
-        "ORANGE",
-        "RED",
         "GREEN",
-        "BLUE"
+        "RED",
+        "ORANGE",
+        "ORANGE",
+        "BLUE",
+        "RED",
+        "RED"
       ],
       [
         "RED",
-        "GREEN",
-        "BLUE",
+        "RED",
         "ORANGE",
         "RED",
-        "GREEN",
-        "BLUE",
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
         "ORANGE",
         "RED"
       ],
       [
-        "ORANGE",
+        "GREEN",
         "BLUE",
         "GREEN",
+        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "BLUE",
+        "ORANGE",
+        "GREEN",
+        "BLUE",
         "RED",
-        "ORANGE",
         "BLUE",
-        "GREEN",
+        "ORANGE",
         "RED",
         "ORANGE"
       ],
       [
+        "YELLOW",
+        "ORANGE",
+        "RED",
         "GREEN",
         "RED",
-        "ORANGE",
-        "BLUE",
         "GREEN",
         "RED",
-        "ORANGE",
         "BLUE",
-        "GREEN"
+        "ORANGE"
+      ],
+      [
+        "YELLOW",
+        "GREEN",
+        "GREEN",
+        "BLUE",
+        "BLUE",
+        "RED",
+        "GREEN",
+        "ORANGE",
+        "RED"
       ],
       [
         "BLUE",
-        "ORANGE",
-        "RED",
         "GREEN",
-        "BLUE",
         "YELLOW",
         "RED",
+        "YELLOW",
         "GREEN",
-        "BLUE"
+        "ORANGE",
+        "GREEN",
+        "ORANGE"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 2,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 6
-      },
-      {
-        "row": 6,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
-        "color": "BLUE",
+        "color": "RED",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
         "shape": "CROSS"
       },
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
         "shape": "U_SHAPE"
       },
       {
-        "type": "line",
+        "type": "shape",
         "color": "GREEN",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "RED",
         "length": 6
       }
     ],
     "stars": {
-      "twoStar": 8,
-      "threeStar": 15
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 1,
+        "col": 4
+      },
+      {
+        "row": 6,
+        "col": 4
+      },
+      {
+        "row": 6,
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 5
+      },
+      {
+        "row": 4,
+        "col": 3
+      }
+    ],
+    "voids": [
+      {
+        "row": 0,
+        "col": 4
+      },
+      {
+        "row": 8,
+        "col": 3
+      },
+      {
+        "row": 0,
+        "col": 1
+      },
+      {
+        "row": 2,
+        "col": 8
+      },
+      {
+        "row": 0,
+        "col": 8
+      },
+      {
+        "row": 3,
+        "col": 3
+      }
+    ]
   },
   {
     "id": 85,
@@ -11108,206 +11347,195 @@
     "name": "Kaleidoscope",
     "width": 9,
     "height": 9,
-    "maxMoves": 28,
+    "maxMoves": 14,
     "tiles": [
       [
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED",
-        "GREEN",
-        "ORANGE",
-        "BLUE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE"
-      ],
-      [
-        "GREEN",
-        "RED",
-        "BLUE",
         "ORANGE",
         "GREEN",
-        "RED",
+        "YELLOW",
         "BLUE",
         "ORANGE",
+        "YELLOW",
+        "GREEN",
+        "RED",
         "GREEN"
       ],
       [
+        "YELLOW",
+        "YELLOW",
         "ORANGE",
-        "BLUE",
-        "GREEN",
         "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE"
-      ],
-      [
-        "RED",
-        "GREEN",
         "ORANGE",
         "BLUE",
         "YELLOW",
-        "GREEN",
-        "ORANGE",
         "BLUE",
-        "RED"
-      ],
-      [
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
         "BLUE"
       ],
       [
-        "GREEN",
         "RED",
-        "BLUE",
         "ORANGE",
         "GREEN",
-        "RED",
         "BLUE",
-        "ORANGE",
-        "GREEN"
+        "BLUE",
+        "BLUE",
+        "BLUE",
+        "GREEN",
+        "RED"
       ],
       [
         "ORANGE",
+        "RED",
         "BLUE",
+        "YELLOW",
         "GREEN",
         "RED",
+        "YELLOW",
+        "YELLOW",
+        "YELLOW"
+      ],
+      [
+        "BLUE",
         "ORANGE",
         "BLUE",
-        "GREEN",
+        "YELLOW",
         "RED",
+        "BLUE",
+        "RED",
+        "BLUE",
         "ORANGE"
       ],
       [
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "ORANGE",
         "RED",
-        "GREEN",
         "ORANGE",
         "BLUE",
         "RED",
+        "RED"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "GREEN",
+        "BLUE",
+        "RED",
+        "ORANGE",
+        "YELLOW",
+        "ORANGE",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "GREEN",
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "YELLOW",
+        "YELLOW"
+      ],
+      [
+        "BLUE",
+        "BLUE",
         "YELLOW",
         "ORANGE",
         "BLUE",
-        "RED"
+        "ORANGE",
+        "BLUE",
+        "ORANGE",
+        "ORANGE"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 3,
-        "col": 3
-      },
-      {
-        "row": 3,
-        "col": 5
-      },
-      {
-        "row": 5,
-        "col": 3
-      },
-      {
-        "row": 5,
-        "col": 5
-      },
-      {
-        "row": 4,
-        "col": 4
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
         "color": "RED",
-        "shape": "CROSS"
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
-        "color": "ORANGE",
-        "shape": "T_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "BLUE",
+        "color": "YELLOW",
         "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
-        "color": "GREEN",
-        "shape": "U_SHAPE"
+        "color": "ORANGE",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "CROSS"
+      },
+      {
+        "type": "square",
+        "color": "GREEN"
+      },
+      {
+        "type": "line",
+        "color": "RED",
+        "length": 5
       }
     ],
     "stars": {
-      "twoStar": 8,
-      "threeStar": 15
-    }
+      "twoStar": 4,
+      "threeStar": 8
+    },
+    "frozen": [
+      {
+        "row": 3,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 1
+      },
+      {
+        "row": 4,
+        "col": 5
+      },
+      {
+        "row": 4,
+        "col": 7
+      },
+      {
+        "row": 4,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 6
+      }
+    ],
+    "voids": [
+      {
+        "row": 2,
+        "col": 8
+      },
+      {
+        "row": 0,
+        "col": 7
+      },
+      {
+        "row": 5,
+        "col": 8
+      },
+      {
+        "row": 6,
+        "col": 8
+      },
+      {
+        "row": 6,
+        "col": 0
+      },
+      {
+        "row": 6,
+        "col": 4
+      }
+    ]
   },
   {
     "id": 86,
@@ -11315,210 +11543,205 @@
     "name": "Light Weaver",
     "width": 9,
     "height": 9,
-    "maxMoves": 30,
+    "maxMoves": 17,
     "tiles": [
       [
+        "GREEN",
+        "ORANGE",
         "ORANGE",
         "RED",
         "BLUE",
-        "GREEN",
-        "ORANGE",
+        "YELLOW",
         "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE"
+        "RED",
+        "BLUE"
       ],
       [
-        "GREEN",
-        "BLUE",
+        "YELLOW",
         "ORANGE",
+        "YELLOW",
+        "RED",
         "RED",
         "GREEN",
         "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN"
+        "GREEN",
+        "RED"
       ],
       [
         "RED",
         "ORANGE",
-        "GREEN",
-        "BLUE",
         "RED",
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
         "ORANGE",
         "GREEN",
+        "RED"
+      ],
+      [
+        "ORANGE",
+        "RED",
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "RED",
         "BLUE",
         "RED"
       ],
       [
-        "BLUE",
+        "ORANGE",
         "GREEN",
+        "BLUE",
         "RED",
         "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
         "ORANGE",
-        "BLUE"
-      ],
-      [
         "ORANGE",
-        "RED",
         "BLUE",
-        "GREEN",
-        "YELLOW",
-        "RED",
-        "BLUE",
-        "GREEN",
         "ORANGE"
       ],
       [
-        "GREEN",
         "BLUE",
-        "ORANGE",
         "RED",
         "GREEN",
         "BLUE",
-        "ORANGE",
         "RED",
-        "GREEN"
+        "BLUE",
+        "RED",
+        "GREEN",
+        "YELLOW"
       ],
       [
-        "RED",
-        "ORANGE",
         "GREEN",
-        "BLUE",
-        "RED",
+        "YELLOW",
+        "YELLOW",
         "ORANGE",
-        "GREEN",
         "BLUE",
+        "ORANGE",
+        "RED",
+        "RED",
         "RED"
       ],
       [
-        "BLUE",
-        "GREEN",
         "RED",
         "ORANGE",
-        "BLUE",
         "GREEN",
-        "RED",
         "ORANGE",
+        "ORANGE",
+        "GREEN",
+        "GREEN",
+        "GREEN",
         "BLUE"
       ],
       [
         "ORANGE",
+        "BLUE",
         "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
+        "RED",
         "YELLOW",
-        "BLUE",
-        "GREEN",
-        "ORANGE"
+        "YELLOW",
+        "ORANGE",
+        "RED",
+        "GREEN"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 1,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 1
-      },
-      {
-        "row": 4,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 4
-      },
-      {
-        "row": 2,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "CROSS"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
         "color": "RED",
-        "shape": "L_SHAPE"
+        "shape": "CROSS"
       },
       {
         "type": "shape",
         "color": "GREEN",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
         "shape": "U_SHAPE"
       },
       {
         "type": "line",
-        "color": "BLUE",
-        "length": 6
+        "color": "ORANGE",
+        "length": 7
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "U_SHAPE"
       }
     ],
     "stars": {
-      "twoStar": 9,
-      "threeStar": 16
-    }
+      "twoStar": 5,
+      "threeStar": 10
+    },
+    "frozen": [
+      {
+        "row": 2,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 6
+      },
+      {
+        "row": 6,
+        "col": 2
+      },
+      {
+        "row": 4,
+        "col": 3
+      }
+    ],
+    "voids": [
+      {
+        "row": 8,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 2
+      },
+      {
+        "row": 2,
+        "col": 8
+      },
+      {
+        "row": 2,
+        "col": 0
+      },
+      {
+        "row": 6,
+        "col": 8
+      },
+      {
+        "row": 3,
+        "col": 2
+      }
+    ]
   },
   {
     "id": 87,
@@ -11526,202 +11749,113 @@
     "name": "Chromatic Storm",
     "width": 9,
     "height": 9,
-    "maxMoves": 30,
+    "maxMoves": 16,
     "tiles": [
       [
-        "BLUE",
+        "YELLOW",
+        "ORANGE",
+        "RED",
         "GREEN",
         "RED",
-        "ORANGE",
-        "BLUE",
         "GREEN",
-        "RED",
         "ORANGE",
+        "GREEN",
         "BLUE"
       ],
       [
         "RED",
         "ORANGE",
+        "GREEN",
         "BLUE",
         "GREEN",
-        "RED",
+        "YELLOW",
         "ORANGE",
-        "BLUE",
         "GREEN",
-        "RED"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
         "GREEN"
       ],
       [
-        "ORANGE",
-        "RED",
-        "GREEN",
         "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
+        "YELLOW",
+        "YELLOW",
         "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "RED",
-        "ORANGE",
         "YELLOW",
         "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
         "GREEN",
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED"
-      ],
-      [
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE",
-        "RED",
+        "YELLOW",
         "GREEN"
       ],
       [
-        "ORANGE",
-        "RED",
-        "GREEN",
+        "YELLOW",
         "BLUE",
         "ORANGE",
+        "BLUE",
+        "ORANGE",
+        "BLUE",
         "RED",
         "GREEN",
+        "BLUE"
+      ],
+      [
+        "ORANGE",
+        "YELLOW",
+        "YELLOW",
+        "RED",
         "BLUE",
-        "ORANGE"
+        "BLUE",
+        "BLUE",
+        "YELLOW",
+        "RED"
+      ],
+      [
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "ORANGE",
+        "ORANGE",
+        "GREEN",
+        "YELLOW"
+      ],
+      [
+        "RED",
+        "GREEN",
+        "GREEN",
+        "ORANGE",
+        "ORANGE",
+        "RED",
+        "YELLOW",
+        "RED",
+        "RED"
       ],
       [
         "BLUE",
+        "RED",
+        "BLUE",
+        "GREEN",
+        "YELLOW",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "GREEN"
+      ],
+      [
+        "GREEN",
         "GREEN",
         "RED",
         "ORANGE",
-        "BLUE",
-        "YELLOW",
-        "RED",
         "ORANGE",
-        "BLUE"
+        "GREEN",
+        "GREEN",
+        "RED",
+        "YELLOW"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 0
-      },
-      {
-        "row": 4,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 4
-      },
-      {
-        "row": 2,
-        "col": 4
-      },
-      {
-        "row": 6,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 2
-      },
-      {
-        "row": 4,
-        "col": 6
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
-        "color": "RED",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
         "color": "BLUE",
-        "shape": "U_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
@@ -11730,14 +11864,94 @@
       },
       {
         "type": "shape",
+        "color": "YELLOW",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
         "color": "GREEN",
-        "shape": "T_SHAPE"
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "BLUE",
+        "length": 7
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "CROSS"
       }
     ],
     "stars": {
-      "twoStar": 9,
-      "threeStar": 16
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 7,
+        "col": 3
+      },
+      {
+        "row": 1,
+        "col": 4
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 7,
+        "col": 4
+      },
+      {
+        "row": 6,
+        "col": 5
+      },
+      {
+        "row": 5,
+        "col": 3
+      },
+      {
+        "row": 6,
+        "col": 4
+      }
+    ],
+    "voids": [
+      {
+        "row": 1,
+        "col": 0
+      },
+      {
+        "row": 6,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 2
+      },
+      {
+        "row": 6,
+        "col": 0
+      },
+      {
+        "row": 5,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 3
+      }
+    ]
   },
   {
     "id": 88,
@@ -11745,229 +11959,128 @@
     "name": "Prismatic Core",
     "width": 9,
     "height": 9,
-    "maxMoves": 32,
+    "maxMoves": 16,
     "tiles": [
       [
         "RED",
-        "ORANGE",
-        "BLUE",
         "GREEN",
-        "RED",
-        "ORANGE",
+        "GREEN",
+        "YELLOW",
+        "GREEN",
         "BLUE",
+        "RED",
         "GREEN",
         "RED"
       ],
       [
-        "GREEN",
-        "BLUE",
         "RED",
         "ORANGE",
-        "GREEN",
         "BLUE",
-        "RED",
+        "GREEN",
+        "GREEN",
+        "YELLOW",
         "ORANGE",
-        "GREEN"
+        "RED",
+        "YELLOW"
+      ],
+      [
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "RED",
+        "YELLOW",
+        "GREEN",
+        "ORANGE",
+        "BLUE",
+        "RED"
       ],
       [
         "ORANGE",
-        "RED",
         "GREEN",
         "BLUE",
+        "YELLOW",
         "ORANGE",
-        "RED",
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
+        "BLUE"
+      ],
+      [
+        "YELLOW",
+        "YELLOW",
+        "BLUE",
         "GREEN",
+        "RED",
+        "RED",
+        "YELLOW",
         "BLUE",
         "ORANGE"
       ],
       [
-        "BLUE",
+        "ORANGE",
+        "GREEN",
         "GREEN",
         "ORANGE",
-        "RED",
-        "BLUE",
         "GREEN",
-        "ORANGE",
+        "YELLOW",
+        "BLUE",
         "RED",
         "BLUE"
       ],
       [
-        "RED",
-        "ORANGE",
         "BLUE",
         "GREEN",
+        "RED",
         "YELLOW",
         "ORANGE",
+        "YELLOW",
+        "GREEN",
+        "ORANGE",
+        "YELLOW"
+      ],
+      [
         "BLUE",
         "GREEN",
+        "RED",
+        "BLUE",
+        "RED",
+        "ORANGE",
+        "RED",
+        "BLUE",
         "RED"
       ],
       [
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
         "RED",
         "GREEN",
+        "GREEN",
         "BLUE",
-        "ORANGE",
+        "YELLOW",
         "RED",
-        "GREEN",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
-        "GREEN",
-        "ORANGE",
         "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
         "RED",
         "BLUE"
-      ],
-      [
-        "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
-        "RED",
-        "YELLOW",
-        "BLUE",
-        "GREEN",
-        "RED"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 1,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 7,
-        "col": 7
-      },
-      {
-        "row": 3,
-        "col": 4
-      },
-      {
-        "row": 5,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 3
-      },
-      {
-        "row": 4,
-        "col": 5
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 0,
-        "col": 2
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 2,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 2,
-        "col": 8
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 6
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
-        "color": "ORANGE",
+        "color": "GREEN",
         "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
@@ -11976,19 +12089,79 @@
       },
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "L_SHAPE"
-      },
-      {
-        "type": "shape",
         "color": "GREEN",
         "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "YELLOW",
+        "length": 7
       }
     ],
     "stars": {
-      "twoStar": 9,
-      "threeStar": 17
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 6,
+        "col": 4
+      },
+      {
+        "row": 4,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 5,
+        "col": 3
+      },
+      {
+        "row": 2,
+        "col": 6
+      },
+      {
+        "row": 1,
+        "col": 4
+      },
+      {
+        "row": 1,
+        "col": 3
+      }
+    ],
+    "voids": [
+      {
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 7,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 5
+      },
+      {
+        "row": 8,
+        "col": 7
+      },
+      {
+        "row": 0,
+        "col": 6
+      },
+      {
+        "row": 2,
+        "col": 0
+      },
+      {
+        "row": 4,
+        "col": 4
+      }
+    ]
   },
   {
     "id": 89,
@@ -11996,257 +12169,112 @@
     "name": "Infinite Light",
     "width": 9,
     "height": 9,
-    "maxMoves": 34,
+    "maxMoves": 15,
     "tiles": [
       [
+        "YELLOW",
         "ORANGE",
-        "RED",
         "GREEN",
+        "ORANGE",
+        "YELLOW",
         "BLUE",
         "ORANGE",
-        "RED",
-        "GREEN",
         "BLUE",
         "ORANGE"
       ],
       [
-        "BLUE",
+        "RED",
+        "GREEN",
+        "GREEN",
+        "YELLOW",
         "GREEN",
         "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
         "ORANGE",
-        "RED",
-        "BLUE"
+        "BLUE",
+        "RED"
       ],
       [
         "RED",
         "ORANGE",
         "BLUE",
+        "YELLOW",
         "GREEN",
+        "GREEN",
+        "ORANGE",
+        "GREEN",
+        "YELLOW"
+      ],
+      [
         "RED",
         "ORANGE",
+        "YELLOW",
+        "RED",
         "BLUE",
+        "RED",
+        "ORANGE",
         "GREEN",
         "RED"
       ],
       [
-        "GREEN",
+        "ORANGE",
         "BLUE",
+        "GREEN",
         "RED",
         "ORANGE",
-        "GREEN",
-        "BLUE",
-        "RED",
-        "ORANGE",
-        "GREEN"
-      ],
-      [
-        "ORANGE",
-        "RED",
-        "GREEN",
-        "BLUE",
         "YELLOW",
-        "RED",
-        "GREEN",
         "BLUE",
-        "ORANGE"
+        "ORANGE",
+        "YELLOW"
       ],
       [
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE",
-        "GREEN",
-        "ORANGE",
-        "RED",
-        "BLUE"
-      ],
-      [
-        "RED",
         "ORANGE",
         "BLUE",
+        "ORANGE",
+        "GREEN",
+        "GREEN",
+        "YELLOW",
         "GREEN",
         "RED",
-        "ORANGE",
-        "BLUE",
-        "GREEN",
         "RED"
       ],
       [
-        "GREEN",
-        "BLUE",
         "RED",
         "ORANGE",
-        "GREEN",
+        "RED",
+        "RED",
+        "BLUE",
         "BLUE",
         "RED",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "YELLOW",
+        "BLUE",
+        "RED",
+        "RED",
         "ORANGE",
-        "GREEN"
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
+        "RED"
       ],
       [
         "ORANGE",
+        "ORANGE",
+        "GREEN",
+        "RED",
         "RED",
         "GREEN",
         "BLUE",
         "ORANGE",
-        "YELLOW",
-        "GREEN",
-        "BLUE",
-        "ORANGE"
+        "RED"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 8,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 0
-      },
-      {
-        "row": 4,
-        "col": 8
-      },
-      {
-        "row": 2,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 6
-      },
-      {
-        "row": 6,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
-      },
-      {
-        "row": 3,
-        "col": 4
-      },
-      {
-        "row": 5,
-        "col": 4
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 0,
-        "col": 2
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 1,
-        "col": 1
-      },
-      {
-        "row": 2,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 7
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 2,
-        "col": 8
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 6
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
-        "color": "ORANGE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
+        "color": "GREEN",
         "shape": "CROSS"
       },
       {
@@ -12256,279 +12284,227 @@
       },
       {
         "type": "shape",
-        "color": "GREEN",
+        "color": "YELLOW",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "CROSS"
+      },
+      {
+        "type": "shape",
+        "color": "RED",
         "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "BLUE",
+        "length": 7
       }
     ],
     "stars": {
-      "twoStar": 10,
-      "threeStar": 19
-    }
+      "twoStar": 5,
+      "threeStar": 9
+    },
+    "frozen": [
+      {
+        "row": 6,
+        "col": 7
+      },
+      {
+        "row": 3,
+        "col": 6
+      },
+      {
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 2,
+        "col": 7
+      },
+      {
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 6,
+        "col": 3
+      },
+      {
+        "row": 7,
+        "col": 1
+      }
+    ],
+    "voids": [
+      {
+        "row": 8,
+        "col": 4
+      },
+      {
+        "row": 7,
+        "col": 8
+      },
+      {
+        "row": 6,
+        "col": 0
+      },
+      {
+        "row": 1,
+        "col": 8
+      },
+      {
+        "row": 1,
+        "col": 0
+      },
+      {
+        "row": 8,
+        "col": 8
+      },
+      {
+        "row": 3,
+        "col": 8
+      },
+      {
+        "row": 3,
+        "col": 3
+      }
+    ]
   },
   {
+    "id": 90,
+    "world": 10,
     "name": "Eternal Prism",
     "width": 9,
     "height": 9,
-    "maxMoves": 25,
+    "maxMoves": 14,
     "tiles": [
       [
-        "BLUE",
-        "ORANGE",
+        "RED",
         "RED",
         "GREEN",
-        "BLUE",
-        "ORANGE",
+        "YELLOW",
         "RED",
-        "GREEN",
-        "BLUE"
+        "RED",
+        "BLUE",
+        "YELLOW",
+        "ORANGE"
       ],
       [
-        "GREEN",
         "RED",
-        "BLUE",
         "ORANGE",
         "GREEN",
         "RED",
-        "BLUE",
         "ORANGE",
+        "YELLOW",
+        "RED",
+        "RED",
         "GREEN"
       ],
       [
         "RED",
-        "BLUE",
-        "ORANGE",
         "GREEN",
+        "RED",
+        "YELLOW",
+        "YELLOW",
         "RED",
         "BLUE",
         "ORANGE",
-        "GREEN",
         "RED"
       ],
       [
-        "ORANGE",
-        "GREEN",
+        "YELLOW",
         "RED",
-        "BLUE",
-        "ORANGE",
         "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
         "ORANGE",
         "RED",
         "GREEN",
-        "BLUE",
         "ORANGE",
-        "RED",
-        "GREEN",
+        "ORANGE",
         "BLUE"
       ],
       [
         "GREEN",
+        "ORANGE",
+        "BLUE",
+        "BLUE",
+        "RED",
+        "YELLOW",
+        "YELLOW",
+        "ORANGE",
+        "ORANGE"
+      ],
+      [
+        "ORANGE",
         "RED",
         "BLUE",
-        "ORANGE",
+        "YELLOW",
+        "GREEN",
+        "YELLOW",
+        "BLUE",
+        "BLUE",
+        "RED"
+      ],
+      [
+        "RED",
         "GREEN",
         "RED",
-        "BLUE",
+        "YELLOW",
         "ORANGE",
+        "RED",
+        "ORANGE",
+        "YELLOW",
         "GREEN"
       ],
       [
         "RED",
-        "BLUE",
+        "YELLOW",
         "ORANGE",
-        "GREEN",
-        "RED",
+        "YELLOW",
         "BLUE",
+        "BLUE",
+        "YELLOW",
         "ORANGE",
-        "GREEN",
-        "RED"
+        "BLUE"
       ],
       [
+        "YELLOW",
+        "YELLOW",
         "ORANGE",
-        "GREEN",
-        "RED",
         "BLUE",
         "ORANGE",
-        "GREEN",
-        "RED",
-        "BLUE",
-        "ORANGE"
-      ],
-      [
-        "BLUE",
         "ORANGE",
         "RED",
-        "GREEN",
-        "BLUE",
         "ORANGE",
-        "RED",
-        "GREEN",
         "BLUE"
       ]
-    ],
-    "frozen": [
-      {
-        "row": 1,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 1
-      },
-      {
-        "row": 4,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 4
-      },
-      {
-        "row": 2,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 6
-      },
-      {
-        "row": 6,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
-      },
-      {
-        "row": 3,
-        "col": 3
-      },
-      {
-        "row": 3,
-        "col": 5
-      },
-      {
-        "row": 5,
-        "col": 3
-      },
-      {
-        "row": 5,
-        "col": 5
-      }
-    ],
-    "voids": [
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 0,
-        "col": 2
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 1,
-        "col": 1
-      },
-      {
-        "row": 2,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 0,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 7
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 2,
-        "col": 8
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 0
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 8,
-        "col": 0
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 8
-      },
-      {
-        "row": 7,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 6
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 8
-      }
     ],
     "goals": [
       {
         "type": "shape",
+        "color": "YELLOW",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "shape",
         "color": "ORANGE",
-        "shape": "CROSS"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
         "color": "RED",
-        "shape": "U_SHAPE"
+        "shape": "CROSS"
       },
       {
         "type": "shape",
@@ -12537,15 +12513,86 @@
       },
       {
         "type": "shape",
+        "color": "YELLOW",
+        "shape": "Z_SHAPE"
+      },
+      {
+        "type": "line",
         "color": "GREEN",
-        "shape": "U_SHAPE"
+        "length": 5
       }
     ],
     "stars": {
-      "twoStar": 10,
-      "threeStar": 20
+      "twoStar": 4,
+      "threeStar": 8
     },
-    "id": 90,
-    "world": 10
+    "frozen": [
+      {
+        "row": 7,
+        "col": 6
+      },
+      {
+        "row": 7,
+        "col": 2
+      },
+      {
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 3,
+        "col": 2
+      },
+      {
+        "row": 6,
+        "col": 6
+      },
+      {
+        "row": 7,
+        "col": 5
+      },
+      {
+        "row": 2,
+        "col": 6
+      },
+      {
+        "row": 4,
+        "col": 2
+      }
+    ],
+    "voids": [
+      {
+        "row": 6,
+        "col": 0
+      },
+      {
+        "row": 8,
+        "col": 6
+      },
+      {
+        "row": 5,
+        "col": 8
+      },
+      {
+        "row": 2,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 4
+      },
+      {
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 5
+      },
+      {
+        "row": 2,
+        "col": 2
+      }
+    ]
   }
 ]
