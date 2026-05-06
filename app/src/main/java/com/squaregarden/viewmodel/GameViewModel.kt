@@ -334,6 +334,18 @@ class GameViewModel(
 
     // ── Level lifecycle ──
 
+    private fun computeGameDifficulty(solutionMoves: Int): GameDifficulty {
+        return GameDifficulty.calculate(
+            solutionMoves = solutionMoves,
+            maxMoves = adjustedMaxMoves,
+            goals = level.goals,
+            frozenCount = level.frozenCells.size,
+            voidCount = level.voidCells.size,
+            boardArea = level.boardWidth * level.boardHeight,
+            colorCount = levelColors().size
+        )
+    }
+
     private fun initLevel() {
         val hasTutorial = level.tutorialSteps != null
 
@@ -353,6 +365,7 @@ class GameViewModel(
             _state.value = GameState(
                 level = adjustedLevel, board = board,
                 movesRemaining = adjustedMaxMoves, difficulty = difficulty,
+                gameDifficulty = computeGameDifficulty(adjustedMaxMoves),
                 initialBoard = board,
                 phase = GamePhase.TUTORIAL_PAUSE
             )
@@ -360,10 +373,12 @@ class GameViewModel(
         } else {
             val (board, solution) = generateBoardWithSolution(adjustedMaxMoves)
             precomputedSolution = solution
+            val solutionMoves = solution?.size ?: adjustedMaxMoves
             val adjustedLevel = level.copy(maxMoves = adjustedMaxMoves)
             _state.value = GameState(
                 level = adjustedLevel, board = board,
                 movesRemaining = adjustedMaxMoves, difficulty = difficulty,
+                gameDifficulty = computeGameDifficulty(solutionMoves),
                 initialBoard = board, hasSolution = solution != null,
                 phase = GamePhase.PLAYING
             )
@@ -405,6 +420,7 @@ class GameViewModel(
         }
 
         precomputedSolution = solution
+        val solutionMoves = solution?.size ?: adjustedMaxMoves
         val moves = when (difficulty) {
             Difficulty.EASY -> adjustedMaxMoves
             Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
@@ -415,6 +431,7 @@ class GameViewModel(
         _state.value = GameState(
             level = adjustedLevel, board = board,
             movesRemaining = moves, difficulty = difficulty,
+            gameDifficulty = computeGameDifficulty(solutionMoves),
             initialBoard = board, hasSolution = solution != null,
             phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )
@@ -515,7 +532,8 @@ class GameViewModel(
             val phase = when {
                 won -> {
                     val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
-                    starsAwarded = baseStars * difficulty.starMultiplier
+                    val gameDiff = _state.value.gameDifficulty
+                    starsAwarded = (baseStars * difficulty.starMultiplier * gameDiff.starMultiplier).roundToInt()
                     audioManager.playWin(baseStars)
                     val oldTotal = progressRepo.totalStarsFlow.first()
                     unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)

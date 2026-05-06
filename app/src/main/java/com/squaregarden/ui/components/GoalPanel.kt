@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.squaregarden.model.GameDifficulty
 import com.squaregarden.model.Goal
 import com.squaregarden.model.TileColor
 import com.squaregarden.ui.theme.*
@@ -25,7 +26,7 @@ fun GoalPanel(
     completedIds: Set<String>,
     movesRemaining: Int = -1,
     movesMax: Int = -1,
-    difficultyLabel: String = "",
+    gameDifficulty: GameDifficulty? = null,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -109,18 +110,20 @@ fun GoalPanel(
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    if (difficultyLabel.isNotEmpty()) {
+                    if (gameDifficulty != null) {
                         Spacer(modifier = Modifier.weight(1f))
+                        val diffColor = when (gameDifficulty) {
+                            GameDifficulty.EASY -> Color(0xFF43A047)
+                            GameDifficulty.MEDIUM -> Color(0xFF1E88E5)
+                            GameDifficulty.HARD -> Color(0xFFEF6C00)
+                            GameDifficulty.VERY_HARD -> Color(0xFFC62828)
+                            GameDifficulty.EXTREMELY_HARD -> Color(0xFF6A1B9A)
+                        }
                         Text(
-                            text = "Skill:",
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = difficultyLabel,
+                            text = gameDifficulty.label,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = diffColor
                         )
                     }
                 }

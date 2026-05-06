@@ -86,7 +86,7 @@ fun GameScreen(
             completedIds = state.completedGoalIds,
             movesRemaining = state.movesRemaining,
             movesMax = state.level.maxMoves,
-            difficultyLabel = state.difficulty.label.replaceFirstChar { it.uppercase() },
+            gameDifficulty = state.gameDifficulty,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 6.dp)
