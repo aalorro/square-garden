@@ -39,10 +39,12 @@ fun PlayerBadge(
     LaunchedEffect(totalStars) {
         if (totalStars > displayedStars) {
             val diff = totalStars - displayedStars
-            val stepDelay = (5000L / diff).coerceIn(50, 100)
+            val frameDelay = 50L
+            val maxFrames = (5000L / frameDelay).toInt() // 100 frames in 5s
+            val increment = maxOf(1, diff / maxFrames)
             while (displayedStars < totalStars) {
-                delay(stepDelay)
-                displayedStars++
+                delay(frameDelay)
+                displayedStars = minOf(displayedStars + increment, totalStars)
             }
         } else {
             displayedStars = totalStars
