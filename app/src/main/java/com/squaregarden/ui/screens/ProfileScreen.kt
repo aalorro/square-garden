@@ -311,7 +311,7 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
         }
 
         // ── Difficulty ──
-        Text("Difficulty", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onBackground)
+        Text("Skill", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onBackground)
 
         Row(
             modifier = Modifier.fillMaxWidth(),

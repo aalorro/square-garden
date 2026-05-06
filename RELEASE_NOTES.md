@@ -23,12 +23,12 @@ Swipe to swap tiles with their neighbors. Arrange same-colored tiles into patter
 Red, Blue, Yellow, Green — and Orange debuts in World 4 to keep things fresh.
 
 PLAY YOUR WAY
-Choose your difficulty:
-- Easy — More moves, start at World 1, great for casual play
-- Medium — Standard challenge, start at World 2
-- Hard — Fewer moves, start at World 3, for puzzle veterans
+Choose your skill level:
+- Casual — More moves, start at World 1, great for relaxed play
+- Standard — Balanced challenge, start at World 2
+- Pro — Fewer moves, start at World 3, for puzzle veterans
 
-No grinding through easy content if you're experienced — jump right in at your level. Change difficulty anytime.
+No grinding through easy content if you're experienced — jump right in at your level. Change skill anytime.
 
 FEATURES
 - 90 handcrafted levels with progressive difficulty
@@ -50,7 +50,7 @@ Slide tiles, match colors, and complete puzzles across 10 beautiful worlds.
 
 - 90 handcrafted levels with progressive difficulty
 - 5 tile colors and 3 goal types (lines, squares, shapes)
-- 3 difficulty modes — Easy, Medium, Hard — each with a different starting world
+- 3 skill levels — Casual, Standard, Pro — each with a different starting world
 - Frozen tiles and void cells add strategic depth
 - 6 color themes to personalize your experience
 - Hint system, star ratings, and celebratory animations

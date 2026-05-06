@@ -5,7 +5,7 @@ All notable changes to Square Garden are documented in this file.
 ## [1.0.2] - 2026-05-05 (Build 2)
 
 ### Improvements
-- Difficulty-based starting worlds — experienced players skip easy content
+- Skill-based starting worlds — experienced players skip easy content
 - Progressive difficulty ramp in World 1 and World 2 levels
 - Orange color restricted to World 4+ (no longer appears in early worlds)
 - Goal completion shown as green checkmark next to struck-through text
@@ -23,9 +23,9 @@ All notable changes to Square Garden are documented in this file.
 - 90 handcrafted levels across 10 beautifully themed worlds
 - 5 tile colors: Red, Blue, Yellow, Green, and Orange (introduced in World 4)
 - 3 goal types: Line, Square, Shape (L/T/Cross)
-- 3 difficulty modes: Easy (more moves, start World 1), Medium (standard, start World 2), Hard (fewer moves, start World 3)
-- Difficulty-based starting worlds — experienced players skip easy content
-- Life system with difficulty-gated recovery and win streak bonuses
+- 3 skill levels: Casual (more moves, start World 1), Standard (balanced, start World 2), Pro (fewer moves, start World 3)
+- Skill-based starting worlds — experienced players skip easy content
+- Life system with skill-gated recovery and win streak bonuses
 - Drag-to-swap gameplay with smooth animations
 - Embossed tile rendering with shadow/highlight/sheen layers and unique motifs
 - Hint system highlighting best-move quadrant

@@ -112,7 +112,7 @@ fun GoalPanel(
                     if (difficultyLabel.isNotEmpty()) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
-                            text = "Difficulty:",
+                            text = "Skill:",
                             fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
