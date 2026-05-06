@@ -334,8 +334,9 @@ class GameViewModel(
 
     // ── Level lifecycle ──
 
-    private fun computeGameDifficulty(): GameDifficulty {
+    private fun computeGameDifficulty(board: Board): GameDifficulty {
         return GameDifficulty.calculate(
+            board = board,
             maxMoves = adjustedMaxMoves,
             goals = level.goals,
             frozenCount = level.frozenCells.size,
@@ -362,7 +363,7 @@ class GameViewModel(
             _state.value = GameState(
                 level = adjustedLevel, board = board,
                 movesRemaining = adjustedMaxMoves, difficulty = difficulty,
-                gameDifficulty = computeGameDifficulty(),
+                gameDifficulty = computeGameDifficulty(board),
                 initialBoard = board,
                 phase = GamePhase.TUTORIAL_PAUSE
             )
@@ -374,7 +375,7 @@ class GameViewModel(
             _state.value = GameState(
                 level = adjustedLevel, board = board,
                 movesRemaining = adjustedMaxMoves, difficulty = difficulty,
-                gameDifficulty = computeGameDifficulty(),
+                gameDifficulty = computeGameDifficulty(board),
                 initialBoard = board, hasSolution = solution != null,
                 phase = GamePhase.PLAYING
             )
@@ -426,7 +427,7 @@ class GameViewModel(
         _state.value = GameState(
             level = adjustedLevel, board = board,
             movesRemaining = moves, difficulty = difficulty,
-            gameDifficulty = computeGameDifficulty(),
+            gameDifficulty = computeGameDifficulty(board),
             initialBoard = board, hasSolution = solution != null,
             phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )

@@ -31,6 +31,7 @@ enum class GameDifficulty(val label: String, val starMultiplier: Float) {
 
     companion object {
         fun calculate(
+            board: Board,
             maxMoves: Int,
             goals: List<Goal>,
             frozenCount: Int,
@@ -38,7 +39,43 @@ enum class GameDifficulty(val label: String, val starMultiplier: Float) {
         ): GameDifficulty {
             var points = 0f
 
-            // Move pressure: fewer moves per goal = harder
+            // ── Tile scatter (heaviest weight: 0-8 pts) ──
+            // For each goal, find the tightest cluster of needed tiles
+            // and measure how spread out they are relative to board size
+            val maxDist = (board.width + board.height - 2).toFloat()
+            var scatterTotal = 0f
+            for (goal in goals) {
+                val positions = mutableListOf<CellPos>()
+                for (r in 0 until board.height) {
+                    for (c in 0 until board.width) {
+                        if (!board.isVoid(r, c) && board.tileAt(r, c).color == goal.color)
+                            positions.add(CellPos(r, c))
+                    }
+                }
+                val needed = when (goal) {
+                    is Goal.Line -> goal.length
+                    is Goal.Square -> 4
+                    is Goal.Shape -> goal.shapeType.offsets.size
+                }
+                if (positions.size >= needed) {
+                    // Try each tile as anchor, find tightest cluster of N nearest
+                    var minSpread = Float.MAX_VALUE
+                    for (anchor in positions) {
+                        val closest = positions
+                            .sortedBy { Math.abs(it.row - anchor.row) + Math.abs(it.col - anchor.col) }
+                            .take(needed)
+                        val spanR = closest.maxOf { it.row } - closest.minOf { it.row }
+                        val spanC = closest.maxOf { it.col } - closest.minOf { it.col }
+                        val spread = (spanR + spanC).toFloat() / maxDist
+                        if (spread < minSpread) minSpread = spread
+                    }
+                    scatterTotal += minSpread
+                }
+            }
+            val avgScatter = if (goals.isNotEmpty()) scatterTotal / goals.size else 0f
+            points += avgScatter * 8f
+
+            // ── Move pressure (0-7 pts) ──
             val movesPerGoal = if (goals.isNotEmpty()) maxMoves.toFloat() / goals.size else maxMoves.toFloat()
             points += when {
                 movesPerGoal >= 5f -> 0f
@@ -48,7 +85,7 @@ enum class GameDifficulty(val label: String, val starMultiplier: Float) {
                 else -> 7f
             }
 
-            // Goal type complexity
+            // ── Goal type complexity (0-6 pts) ──
             for (goal in goals) {
                 points += when (goal) {
                     is Goal.Line -> 0f
@@ -60,14 +97,14 @@ enum class GameDifficulty(val label: String, val starMultiplier: Float) {
                 }
             }
 
-            // Board constraints
+            // ── Board constraints (variable) ──
             points += frozenCount * 0.3f + voidCount * 0.2f
 
             return when {
-                points < 2f -> EASY
-                points < 3.5f -> MEDIUM
-                points < 5.5f -> HARD
-                points < 10f -> VERY_HARD
+                points < 3f -> EASY
+                points < 6f -> MEDIUM
+                points < 9f -> HARD
+                points < 14f -> VERY_HARD
                 else -> EXTREMELY_HARD
             }
         }
