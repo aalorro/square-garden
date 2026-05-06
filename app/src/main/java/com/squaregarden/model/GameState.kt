@@ -24,7 +24,10 @@ data class GameState(
     val shuffleTokenAwarded: Boolean = false,
     val passthroughTokens: Int = 0,
     val passthroughTokenAwarded: Boolean = false,
-    val passthroughActive: Boolean = false
+    val passthroughActive: Boolean = false,
+    val unfreezeTokens: Int = 0,
+    val unfreezeTokenAwarded: Boolean = false,
+    val unfreezeMode: Boolean = false
 )
 
 enum class GameDifficulty(val label: String, val starMultiplier: Float) {

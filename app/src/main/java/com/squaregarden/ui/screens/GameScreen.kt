@@ -105,70 +105,48 @@ fun GameScreen(
                 .padding(horizontal = 12.dp, vertical = 8.dp)
         )
 
-        // Bottom bar — row 1: Hint + Restart
+        // Bottom bar — circular action buttons
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Top
         ) {
-            Button(
+            ActionCircle(
+                icon = "\uD83D\uDCA1",
+                label = "Hint",
                 onClick = { viewModel.requestHint() },
-                modifier = Modifier.weight(1f).height(48.dp),
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text("\uD83D\uDCA1 Hint", fontWeight = FontWeight.Bold)
-            }
-
-            OutlinedButton(
-                onClick = { viewModel.resetLevel() },
-                modifier = Modifier.weight(1f).height(48.dp),
-                shape = RoundedCornerShape(50)
-            ) {
-                Text("\u21BB Restart", fontWeight = FontWeight.Bold)
-            }
-        }
-
-        // Bottom bar — row 2: Shuffle + Passthrough
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            OutlinedButton(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+            ActionCircle(
+                icon = "\uD83D\uDD00",
+                label = "\u00D7${state.shuffleTokens}",
                 onClick = { viewModel.shuffleBoard() },
-                enabled = state.shuffleTokens > 0 && state.phase == GamePhase.PLAYING,
-                modifier = Modifier.weight(1f).height(42.dp),
-                shape = RoundedCornerShape(50)
-            ) {
-                Text("\uD83D\uDD00 \u00D7${state.shuffleTokens}", fontWeight = FontWeight.Bold, fontSize = 13.sp)
-            }
-
-            if (state.passthroughActive) {
-                Button(
-                    onClick = {},
-                    modifier = Modifier.weight(1f).height(42.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Sage
-                    )
-                ) {
-                    Text("\uD83D\uDEE1\uFE0F Active", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = SoftWhite)
-                }
-            } else {
-                OutlinedButton(
-                    onClick = { viewModel.activatePassthrough() },
-                    enabled = state.passthroughTokens > 0 && state.phase == GamePhase.PLAYING,
-                    modifier = Modifier.weight(1f).height(42.dp),
-                    shape = RoundedCornerShape(50)
-                ) {
-                    Text("\uD83D\uDEE1\uFE0F \u00D7${state.passthroughTokens}", fontWeight = FontWeight.Bold, fontSize = 13.sp)
-                }
-            }
+                enabled = state.shuffleTokens > 0 && state.phase == GamePhase.PLAYING
+            )
+            ActionCircle(
+                icon = "\uD83D\uDEE1\uFE0F",
+                label = if (state.passthroughActive) "On" else "\u00D7${state.passthroughTokens}",
+                onClick = { if (!state.passthroughActive) viewModel.activatePassthrough() },
+                enabled = state.passthroughActive || (state.passthroughTokens > 0 && state.phase == GamePhase.PLAYING),
+                containerColor = if (state.passthroughActive) Sage else null,
+                contentColor = if (state.passthroughActive) SoftWhite else null
+            )
+            ActionCircle(
+                icon = "\u2744\uFE0F",
+                label = if (state.unfreezeMode) "Tap" else "\u00D7${state.unfreezeTokens}",
+                onClick = { if (state.unfreezeMode) viewModel.cancelUnfreezeMode() else viewModel.enterUnfreezeMode() },
+                enabled = state.unfreezeMode || (state.unfreezeTokens > 0 && state.phase == GamePhase.PLAYING),
+                containerColor = if (state.unfreezeMode) TileBlue else null,
+                contentColor = if (state.unfreezeMode) SoftWhite else null
+            )
+            ActionCircle(
+                icon = "\u21BB",
+                label = "Redo",
+                onClick = { viewModel.resetLevel() }
+            )
         }
     }
 
@@ -186,6 +164,7 @@ fun GameScreen(
             unlockedWorldName = state.unlockedWorldName,
             shuffleTokenAwarded = state.shuffleTokenAwarded,
             passthroughTokenAwarded = state.passthroughTokenAwarded,
+            unfreezeTokenAwarded = state.unfreezeTokenAwarded,
             onStarLanded = { viewModel.playStarCollect() },
             onAllStarsLanded = { viewModel.commitWinResult() },
             onNext = if (state.level.id < 90) {
@@ -311,7 +290,7 @@ fun GameScreen(
 }
 
 @Composable
-private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
+private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
     // Pulsing scale animation for the star display
     val infiniteTransition = rememberInfiniteTransition(label = "starPulse")
     val starScale by infiniteTransition.animateFloat(
@@ -521,6 +500,48 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                             )
                             Text(
                                 text = "+1 \uD83D\uDEE1\uFE0F",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = DarkSage
+                            )
+                        }
+                    }
+                }
+
+                // Unfreeze token reward
+                if (unfreezeTokenAwarded) {
+                    val ufScale = remember { Animatable(0f) }
+                    LaunchedEffect(Unit) {
+                        delay(when {
+                            shuffleTokenAwarded && passthroughTokenAwarded -> 2400L
+                            shuffleTokenAwarded || passthroughTokenAwarded -> 1600L
+                            else -> 800L
+                        })
+                        ufScale.animateTo(
+                            1f,
+                            animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = TileBlue.copy(alpha = 0.15f)
+                        ),
+                        modifier = Modifier.scale(ufScale.value)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Unfreeze Token Earned!",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = TileBlue
+                            )
+                            Text(
+                                text = "+1 \u2744\uFE0F",
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = DarkSage
@@ -796,5 +817,47 @@ private fun TutorialOverlay(message: String, onDismiss: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ActionCircle(
+    icon: String,
+    label: String,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    containerColor: androidx.compose.ui.graphics.Color? = null,
+    contentColor: androidx.compose.ui.graphics.Color? = null
+) {
+    val bgColor = containerColor ?: MaterialTheme.colorScheme.surface
+    val fgColor = contentColor ?: MaterialTheme.colorScheme.onSurface
+    val alpha = if (enabled) 1f else 0.4f
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Surface(
+            onClick = { if (enabled) onClick() },
+            modifier = Modifier.size(52.dp),
+            shape = CircleShape,
+            color = bgColor.copy(alpha = alpha),
+            border = if (containerColor == null) BorderStroke(
+                1.5.dp,
+                MaterialTheme.colorScheme.outline.copy(alpha = alpha)
+            ) else null,
+            tonalElevation = if (containerColor != null) 2.dp else 0.dp
+        ) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Text(icon, fontSize = 22.sp)
+            }
+        }
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = label,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = fgColor.copy(alpha = alpha),
+            maxLines = 1
+        )
     }
 }

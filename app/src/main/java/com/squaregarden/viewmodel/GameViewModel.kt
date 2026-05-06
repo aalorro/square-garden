@@ -38,6 +38,7 @@ class GameViewModel(
     private var precomputedSolution: List<Pair<CellPos, CellPos>>? = null
     private var shuffleTokens: Int = 0
     private var passthroughTokens: Int = 0
+    private var unfreezeTokens: Int = 0
     private val progressRepo = ProgressRepository(context)
     private val profileRepo = ProfileRepository(context)
     private val audioManager = AudioManager(context)
@@ -59,6 +60,7 @@ class GameViewModel(
 
             shuffleTokens = progressRepo.shuffleTokensFlow.first()
             passthroughTokens = progressRepo.passthroughTokensFlow.first()
+            unfreezeTokens = progressRepo.unfreezeTokensFlow.first()
 
             val levels = LevelLoader.loadAllLevels(context)
             level = levels.first { it.id == levelId }
@@ -371,7 +373,7 @@ class GameViewModel(
                 movesRemaining = adjustedMaxMoves, difficulty = difficulty,
                 gameDifficulty = computeGameDifficulty(board),
                 initialBoard = board,
-                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens,
+                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens,
                 phase = GamePhase.TUTORIAL_PAUSE
             )
             computeSolutionAsync(board)
@@ -384,7 +386,7 @@ class GameViewModel(
                 movesRemaining = adjustedMaxMoves, difficulty = difficulty,
                 gameDifficulty = computeGameDifficulty(board),
                 initialBoard = board, hasSolution = solution != null,
-                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens,
+                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens,
                 phase = GamePhase.PLAYING
             )
             // If reverse-construction failed, try solver in background
@@ -452,10 +454,51 @@ class GameViewModel(
         executeSwap(from, to)
     }
 
+    fun enterUnfreezeMode() {
+        val current = _state.value
+        if (current.phase != GamePhase.PLAYING || current.unfreezeTokens <= 0 || current.unfreezeMode) return
+        _state.value = current.copy(unfreezeMode = true, selectedCell = null, hintCells = emptySet())
+    }
+
+    fun cancelUnfreezeMode() {
+        val current = _state.value
+        if (!current.unfreezeMode) return
+        _state.value = current.copy(unfreezeMode = false)
+    }
+
+    private fun unfreezeCell(row: Int, col: Int) {
+        val current = _state.value
+        val tile = current.board.tileAt(row, col)
+        if (!tile.frozen) return
+        viewModelScope.launch {
+            val success = progressRepo.useUnfreezeToken()
+            if (!success) return@launch
+            unfreezeTokens--
+            val newTiles = current.board.tiles.mapIndexed { r, rowTiles ->
+                rowTiles.mapIndexed { c, t ->
+                    if (r == row && c == col) t.copy(frozen = false) else t
+                }
+            }
+            val newBoard = current.board.copy(tiles = newTiles)
+            audioManager.playMatch()
+            _state.value = current.copy(
+                board = newBoard, unfreezeTokens = unfreezeTokens, unfreezeMode = false
+            )
+        }
+    }
+
     fun onCellTapped(row: Int, col: Int) {
         val current = _state.value
         if (current.phase != GamePhase.PLAYING) return
         if (current.board.isVoid(row, col)) return
+
+        // Unfreeze mode: tap a frozen cell to unfreeze it
+        if (current.unfreezeMode) {
+            if (current.board.tileAt(row, col).frozen) {
+                unfreezeCell(row, col)
+            }
+            return
+        }
 
         val tapped = CellPos(row, col)
         when {
@@ -609,7 +652,7 @@ class GameViewModel(
             audioManager.playShuffle()
             _state.value = current.copy(
                 board = shuffled,
-                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens,
+                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens,
                 gameDifficulty = computeGameDifficulty(shuffled),
                 hintCells = emptySet(),
                 selectedCell = null
@@ -675,6 +718,11 @@ class GameViewModel(
                 progressRepo.addPassthroughToken()
                 passthroughTokens++
                 _state.value = _state.value.copy(passthroughTokenAwarded = true)
+            }
+            val unfreezeAwarded = progressRepo.recordUnfreezeStreak(pendingWinLevelId)
+            if (unfreezeAwarded) {
+                unfreezeTokens++
+                _state.value = _state.value.copy(unfreezeTokenAwarded = true)
             }
             if (result == -1) {
                 audioManager.playLifeRestored()

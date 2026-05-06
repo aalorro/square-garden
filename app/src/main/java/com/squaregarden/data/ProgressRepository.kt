@@ -26,6 +26,8 @@ class ProgressRepository(private val context: Context) {
         private val STARS_MIGRATED_KEY = booleanPreferencesKey("stars_migrated")
         private val SHUFFLE_TOKENS_KEY = intPreferencesKey("shuffle_tokens")
         private val PASSTHROUGH_TOKENS_KEY = intPreferencesKey("passthrough_tokens")
+        private val UNFREEZE_TOKENS_KEY = intPreferencesKey("unfreeze_tokens")
+        private val UNFREEZE_STREAK_KEY = intPreferencesKey("unfreeze_win_streak")
     }
 
     /** One-time migration: seed TOTAL_STARS_KEY from sum of per-level bests. */
@@ -109,6 +111,7 @@ class ProgressRepository(private val context: Context) {
             val newLives = current - 1
             prefs[LIVES_KEY] = newLives
             prefs[WIN_STREAK_KEY] = 0
+            prefs[UNFREEZE_STREAK_KEY] = 0
             // Record the difficulty at which the life was lost
             prefs[LIFE_LOST_DIFFICULTY_KEY] = difficultyOrdinal
             // Increment games played
@@ -190,6 +193,50 @@ class ProgressRepository(private val context: Context) {
             val current = prefs[PASSTHROUGH_TOKENS_KEY] ?: 0
             if (current > 0) {
                 prefs[PASSTHROUGH_TOKENS_KEY] = current - 1
+                success = true
+            }
+        }
+        return success
+    }
+
+    val unfreezeTokensFlow: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[UNFREEZE_TOKENS_KEY] ?: 0
+    }
+
+    /**
+     * Track consecutive wins on World 3+ levels (levelId >= 19).
+     * Awards an unfreeze token every 5 wins. Resets on loss.
+     * @return true if an unfreeze token was awarded
+     */
+    suspend fun recordUnfreezeStreak(levelId: Int): Boolean {
+        val world = (levelId - 1) / 9 + 1
+        if (world < 3) return false
+        var awarded = false
+        context.dataStore.edit { prefs ->
+            val streak = (prefs[UNFREEZE_STREAK_KEY] ?: 0) + 1
+            if (streak >= 5) {
+                prefs[UNFREEZE_TOKENS_KEY] = (prefs[UNFREEZE_TOKENS_KEY] ?: 0) + 1
+                prefs[UNFREEZE_STREAK_KEY] = 0
+                awarded = true
+            } else {
+                prefs[UNFREEZE_STREAK_KEY] = streak
+            }
+        }
+        return awarded
+    }
+
+    suspend fun resetUnfreezeStreak() {
+        context.dataStore.edit { prefs ->
+            prefs[UNFREEZE_STREAK_KEY] = 0
+        }
+    }
+
+    suspend fun useUnfreezeToken(): Boolean {
+        var success = false
+        context.dataStore.edit { prefs ->
+            val current = prefs[UNFREEZE_TOKENS_KEY] ?: 0
+            if (current > 0) {
+                prefs[UNFREEZE_TOKENS_KEY] = current - 1
                 success = true
             }
         }
