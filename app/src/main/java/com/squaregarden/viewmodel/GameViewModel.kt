@@ -38,6 +38,7 @@ class GameViewModel(
     private var pendingWinLevelId: Int = 0
     private var pendingWinStars: Int = 0
     private var precomputedSolution: List<Pair<CellPos, CellPos>>? = null
+    private var redoFullReset: Boolean = false
     private var shuffleTokens: Int = 0
     private var passthroughTokens: Int = 0
     private var unfreezeTokens: Int = 0
@@ -457,7 +458,7 @@ class GameViewModel(
         }
 
         precomputedSolution = solution
-        val moves = when (difficulty) {
+        val moves = if (redoFullReset) adjustedMaxMoves else when (difficulty) {
             Difficulty.EASY -> adjustedMaxMoves
             Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
             Difficulty.HARD -> if (current.movesRemaining > 0) current.movesRemaining else adjustedMaxMoves
@@ -469,7 +470,7 @@ class GameViewModel(
             movesRemaining = moves, difficulty = difficulty,
             gameDifficulty = computeGameDifficulty(board),
             initialBoard = board, hasSolution = solution != null,
-            shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens,
+            shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens,
             phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )
         if (solution == null) computeSolutionAsync(board)
@@ -875,7 +876,9 @@ class GameViewModel(
             val success = progressRepo.useRedoToken()
             if (!success) return@launch
             redoTokens--
+            redoFullReset = true
             resetLevel()
+            redoFullReset = false
         }
     }
 
