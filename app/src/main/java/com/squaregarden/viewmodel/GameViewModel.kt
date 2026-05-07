@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import android.app.Activity
 import com.squaregarden.audio.AudioManager
+import com.squaregarden.data.PlayGamesManager
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.logic.BoardEngine
@@ -42,6 +44,7 @@ class GameViewModel(
     private val progressRepo = ProgressRepository(context)
     private val profileRepo = ProfileRepository(context)
     private val audioManager = AudioManager(context)
+    var activity: Activity? = null
 
     private val _state = MutableStateFlow(
         GameState(
@@ -834,7 +837,7 @@ class GameViewModel(
             val result = progressRepo.recordWin(difficulty.ordinal, pendingWinLevelId)
             profileRepo.incrementPlayerLevel()
             val playerLevel = profileRepo.loadProfile().playerLevel
-            if (_state.value.unlockedWorldName != null) {
+            if (_state.value.unlockedWorldName != null || (playerLevel > 0 && playerLevel % 7 == 0)) {
                 progressRepo.addShuffleToken()
                 shuffleTokens++
                 _state.value = _state.value.copy(shuffleTokenAwarded = true)
@@ -853,8 +856,26 @@ class GameViewModel(
                 audioManager.playLifeRestored()
                 _state.value = _state.value.copy(lifeRestored = true)
             }
+
+            // Submit scores to Google Play Games leaderboards
+            activity?.let { act ->
+                val totalStars = progressRepo.totalStarsFlow.first()
+                val progress = progressRepo.loadProgress()
+                val highestLevel = progress.highestUnlockedLevel(difficulty.startingLevel)
+                PlayGamesManager.submitTotalStars(act, difficulty, totalStars)
+                PlayGamesManager.submitHighestLevel(act, difficulty, highestLevel)
+                // Submit world stars for the level's world
+                val worldId = level.world
+                val worldStars = progress.levelStars
+                    .filter { (id, _) -> levelWorldId(id) == worldId }
+                    .values.sum()
+                PlayGamesManager.submitWorldStars(act, difficulty, worldId, worldStars)
+            }
         }
     }
+
+    /** Map level ID (1-90) to world ID (1-10). */
+    private fun levelWorldId(levelId: Int): Int = ((levelId - 1) / 9) + 1
 
     private fun detectNewWorldUnlock(oldStars: Int, newStars: Int): String? {
         val startingWorld = difficulty.startingWorld

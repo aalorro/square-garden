@@ -28,6 +28,7 @@ class ProgressRepository(private val context: Context) {
         private val PASSTHROUGH_TOKENS_KEY = intPreferencesKey("passthrough_tokens")
         private val UNFREEZE_TOKENS_KEY = intPreferencesKey("unfreeze_tokens")
         private val UNFREEZE_STREAK_KEY = intPreferencesKey("unfreeze_win_streak")
+        private const val LEVEL_FAVORITE_PREFIX = "level_favorite_"
     }
 
     /** One-time migration: seed TOTAL_STARS_KEY from sum of per-level bests. */
@@ -67,14 +68,30 @@ class ProgressRepository(private val context: Context) {
     suspend fun loadProgress(): PlayerProgress {
         val prefs = context.dataStore.data.first()
         val stars = mutableMapOf<Int, Int>()
+        val favorites = mutableSetOf<Int>()
         prefs.asMap().forEach { (key, value) ->
             if (key.name.startsWith(LEVEL_STARS_PREFIX) && value is Int) {
                 val levelId = key.name.removePrefix(LEVEL_STARS_PREFIX).toIntOrNull()
                 if (levelId != null) stars[levelId] = value
             }
+            if (key.name.startsWith(LEVEL_FAVORITE_PREFIX) && value == true) {
+                val levelId = key.name.removePrefix(LEVEL_FAVORITE_PREFIX).toIntOrNull()
+                if (levelId != null) favorites.add(levelId)
+            }
         }
         val hints = prefs[HINTS_KEY] ?: 5
-        return PlayerProgress(levelStars = stars, hintsRemaining = hints)
+        return PlayerProgress(levelStars = stars, favoriteLevels = favorites, hintsRemaining = hints)
+    }
+
+    suspend fun toggleFavorite(levelId: Int): Boolean {
+        var nowFavorite = false
+        context.dataStore.edit { prefs ->
+            val key = booleanPreferencesKey("$LEVEL_FAVORITE_PREFIX$levelId")
+            val current = prefs[key] ?: false
+            nowFavorite = !current
+            if (nowFavorite) prefs[key] = true else prefs.remove(key)
+        }
+        return nowFavorite
     }
 
     suspend fun saveLevelResult(levelId: Int, stars: Int) {

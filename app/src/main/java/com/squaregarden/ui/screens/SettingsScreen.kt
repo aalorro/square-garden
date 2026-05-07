@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.squaregarden.data.PlayGamesManager
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.data.SettingsRepository
@@ -164,6 +165,26 @@ fun SettingsScreen(navController: NavHostController) {
             shape = RoundedCornerShape(50)
         ) {
             Text("Edit Profile", fontWeight = FontWeight.Bold)
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Leaderboards button
+        OutlinedButton(
+            onClick = {
+                val activity = context as? android.app.Activity ?: return@OutlinedButton
+                PlayGamesManager.checkSignIn(activity) { signedIn ->
+                    if (signedIn) {
+                        PlayGamesManager.showAllLeaderboards(activity)
+                    } else {
+                        PlayGamesManager.signIn(activity)
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            shape = RoundedCornerShape(50)
+        ) {
+            Text("\uD83C\uDFC6  Leaderboards", fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(12.dp))

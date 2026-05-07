@@ -146,6 +146,7 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                 val stars = progress.levelStars[level.id] ?: 0
                 val unlocked = level.id <= progress.highestUnlockedLevel(difficulty?.startingLevel ?: 1)
                 val isLastWon = level.id == lastWonLevel
+                val isFavorite = level.id in progress.favoriteLevels
 
                 Card(
                     onClick = {
@@ -169,48 +170,60 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                     border = if (isLastWon) BorderStroke(3.dp, theme.tileColor) else null,
                     elevation = CardDefaults.cardElevation(defaultElevation = if (unlocked) 4.dp else 0.dp)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(4.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        if (!unlocked) {
-                            Text("\uD83D\uDD12", fontSize = 22.sp, color = theme.textColor.copy(alpha = 0.6f))
-                            Text(
-                                text = level.name,
-                                fontSize = 8.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = theme.textColor.copy(alpha = 0.5f),
-                                textAlign = TextAlign.Center,
-                                maxLines = 1
-                            )
-                        } else {
-                            Text(
-                                text = "${level.id}",
-                                fontFamily = DisplayFontFamily,
-                                fontSize = 26.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = theme.textColor
-                            )
-                            Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                repeat(3) { i ->
-                                    Text(
-                                        text = "\u2605",
-                                        fontSize = 12.sp,
-                                        color = if (i < stars) theme.starColor
-                                        else theme.textColor.copy(alpha = 0.25f)
-                                    )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            if (!unlocked) {
+                                Text("\uD83D\uDD12", fontSize = 22.sp, color = theme.textColor.copy(alpha = 0.6f))
+                                Text(
+                                    text = level.name,
+                                    fontSize = 8.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = theme.textColor.copy(alpha = 0.5f),
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1
+                                )
+                            } else {
+                                Text(
+                                    text = "${level.id}",
+                                    fontFamily = DisplayFontFamily,
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = theme.textColor
+                                )
+                                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    repeat(3) { i ->
+                                        Text(
+                                            text = "\u2605",
+                                            fontSize = 12.sp,
+                                            color = if (i < stars) theme.starColor
+                                            else theme.textColor.copy(alpha = 0.25f)
+                                        )
+                                    }
                                 }
+                                Text(
+                                    text = level.name,
+                                    fontSize = 8.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = theme.textColor.copy(alpha = 0.7f),
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1
+                                )
                             }
+                        }
+                        if (isFavorite && unlocked) {
                             Text(
-                                text = level.name,
-                                fontSize = 8.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = theme.textColor.copy(alpha = 0.7f),
-                                textAlign = TextAlign.Center,
-                                maxLines = 1
+                                text = "\u2605",
+                                fontSize = 14.sp,
+                                color = Color(0xFFFFD600),
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(4.dp)
                             )
                         }
                     }

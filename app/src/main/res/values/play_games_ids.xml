@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Replace with your numeric Play Games project ID from Google Play Console -->
+    <string translatable="false" name="game_services_project_id">000000000000</string>
+
+    <!-- Total Stars leaderboards (one per skill level) -->
+    <string translatable="false" name="leaderboard_total_stars_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_total_stars_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_total_stars_pro">PLACEHOLDER</string>
+
+    <!-- Highest Level leaderboards (one per skill level) -->
+    <string translatable="false" name="leaderboard_highest_level_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_highest_level_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_highest_level_pro">PLACEHOLDER</string>
+
+    <!-- Per-World Stars leaderboards: Casual -->
+    <string translatable="false" name="leaderboard_world_1_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_2_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_3_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_4_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_5_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_6_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_7_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_8_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_9_casual">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_10_casual">PLACEHOLDER</string>
+
+    <!-- Per-World Stars leaderboards: Standard -->
+    <string translatable="false" name="leaderboard_world_1_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_2_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_3_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_4_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_5_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_6_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_7_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_8_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_9_standard">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_10_standard">PLACEHOLDER</string>
+
+    <!-- Per-World Stars leaderboards: Pro -->
+    <string translatable="false" name="leaderboard_world_1_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_2_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_3_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_4_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_5_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_6_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_7_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_8_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_9_pro">PLACEHOLDER</string>
+    <string translatable="false" name="leaderboard_world_10_pro">PLACEHOLDER</string>
+</resources>

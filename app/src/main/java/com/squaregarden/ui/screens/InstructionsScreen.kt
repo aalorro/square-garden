@@ -108,7 +108,7 @@ fun InstructionsScreen(navController: NavHostController) {
             body = "Earn tokens by playing well:\n\n" +
                 "\uD83D\uDCA1 Hint — highlights a good move area\n\n" +
                 "\uD83D\uDD00 Shuffle — randomizes the board tiles. " +
-                "Earn 1 token each time you unlock a new world.\n\n" +
+                "Earn 1 token each time you unlock a new world or every 7 wins.\n\n" +
                 "\uD83D\uDEE1\uFE0F Passthrough — your tile jumps over completed goal tiles and lands on the other side, keeping the goal intact. " +
                 "Earn 1 token every 7 levels completed.\n\n" +
                 "\u2744\uFE0F Unfreeze — tap a frozen tile to unfreeze it. " +
@@ -120,6 +120,12 @@ fun InstructionsScreen(navController: NavHostController) {
             body = "You start with 3 lives. Losing a level costs one life. " +
                 "To earn a life back, win 3 levels in a row. Only levels within 5 of your " +
                 "highest completed level count toward the streak."
+        )
+
+        InstructionSection(
+            title = "Tip: Favorites",
+            body = "Tap the \u2606 star next to the level name during gameplay to favorite a level. " +
+                "Favorited levels show a \u2605 marker on the level select screen for easy access."
         )
 
         Spacer(modifier = Modifier.height(16.dp))

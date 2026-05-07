@@ -67,4 +67,7 @@ dependencies {
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+    // Google Play Games Services v2
+    implementation("com.google.android.gms:play-services-games-v2:20.1.2")
 }

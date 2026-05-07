@@ -19,9 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.geometry.Offset
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.squaregarden.data.ProgressRepository
 import com.squaregarden.logic.BoardEngine
 import com.squaregarden.logic.PatternMatcher
 import com.squaregarden.model.*
@@ -42,6 +44,14 @@ fun GameScreen(
     )
     val state by viewModel.state.collectAsState()
     val isCompact = LocalConfiguration.current.screenWidthDp < 600
+    viewModel.activity = context as? android.app.Activity
+    val progressRepo = remember { ProgressRepository(context) }
+    val scope = rememberCoroutineScope()
+    var isFavorite by remember { mutableStateOf(false) }
+    LaunchedEffect(levelId) {
+        val progress = progressRepo.loadProgress()
+        isFavorite = levelId in progress.favoriteLevels
+    }
 
     Column(
         modifier = Modifier
@@ -79,6 +89,21 @@ fun GameScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1
             )
+            TextButton(
+                onClick = {
+                    scope.launch {
+                        isFavorite = progressRepo.toggleFavorite(levelId)
+                    }
+                },
+                modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp)
+            ) {
+                Text(
+                    text = if (isFavorite) "\u2605" else "\u2606",
+                    fontSize = if (isCompact) 18.sp else 22.sp,
+                    color = if (isFavorite) TileYellow else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
         }
 

@@ -11,6 +11,8 @@ All notable changes to Square Garden are documented in this file.
 - **Minimizable cooldown overlay** — "No lives left" timer can be minimized to a floating chip so you can watch solution replays.
 - **Dynamic win messages** — Randomized congratulatory headlines and star-tier subtitles on level completion.
 - **Token award celebrations** — Animated cards with spring bounce-in when earning power-up tokens.
+- **Favorite levels** — Star marker on levels for easy replay access, visible in-game and on level select.
+- **Google Play Games leaderboards** — 36 leaderboards (Total Stars, Highest Level, Per-World Stars) separated by skill level (Casual/Standard/Pro).
 
 ### Gameplay Changes
 - Redesigned levels 55-90 (Worlds 7-10) for improved solvability — removed impossible patterns (LINE 7 on 8x8, excessive CROSSes), minimum Pro MPG ~2.4
