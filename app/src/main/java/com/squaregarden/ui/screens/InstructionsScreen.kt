@@ -126,6 +126,14 @@ fun InstructionsScreen(navController: NavHostController) {
         )
 
         InstructionSection(
+            title = "Tip: Perfect Game",
+            body = "On World 5+, complete all goals in a number of moves equal to or fewer than the number of goals " +
+                "(e.g. 5 goals in 5 moves) to earn a Perfect Game. " +
+                "Reward: 2\u00D7 stars on top of all other multipliers, plus +1 of every power-up token " +
+                "(Shuffle, Passthrough, Unfreeze, and Redo)."
+        )
+
+        InstructionSection(
             title = "Tip: Favorites",
             body = "Tap the \u2606 star next to the level name during gameplay to favorite a level. " +
                 "Favorited levels show a \u2605 marker on the level select screen for easy access."
