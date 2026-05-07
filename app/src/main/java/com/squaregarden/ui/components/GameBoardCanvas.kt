@@ -28,6 +28,7 @@ fun GameBoardCanvas(
     hintCells: Set<CellPos>,
     swapAnim: SwapAnimation?,
     completedGoalCells: Set<CellPos>,
+    passthroughActive: Boolean = false,
     onDragSwap: (from: CellPos, to: CellPos) -> Unit,
     onCellTapped: ((row: Int, col: Int) -> Unit)? = null,
     modifier: Modifier = Modifier
@@ -225,24 +226,42 @@ fun GameBoardCanvas(
                     )
                 }
 
-                // Goal completion border — bright green with glow
+                // Goal completion border — green normally, cyan shield when passthrough active
                 if (pos in completedGoalCells) {
                     val tileInset = cs * 0.05f
-                    // Soft green glow behind the border
-                    drawRoundRect(
-                        color = Color(0xFF43A047).copy(alpha = 0.25f),
-                        topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
-                        size = Size(cs - tileInset * 2, cs - tileInset * 2),
-                        cornerRadius = CornerRadius(cornerR * 0.95f)
-                    )
-                    // Bold green border
-                    drawRoundRect(
-                        color = Color(0xFF2E7D32),
-                        topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
-                        size = Size(cs - tileInset * 2, cs - tileInset * 2),
-                        cornerRadius = CornerRadius(cornerR * 0.95f),
-                        style = Stroke(width = 3.dp.toPx())
-                    )
+                    if (passthroughActive) {
+                        // Shield glow — cyan/teal to indicate passthrough protection
+                        drawRoundRect(
+                            color = Color(0xFF00ACC1).copy(alpha = 0.35f),
+                            topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
+                            size = Size(cs - tileInset * 2, cs - tileInset * 2),
+                            cornerRadius = CornerRadius(cornerR * 0.95f)
+                        )
+                        // Bold cyan shield border
+                        drawRoundRect(
+                            color = Color(0xFF00838F),
+                            topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
+                            size = Size(cs - tileInset * 2, cs - tileInset * 2),
+                            cornerRadius = CornerRadius(cornerR * 0.95f),
+                            style = Stroke(width = 4.dp.toPx())
+                        )
+                    } else {
+                        // Normal green glow
+                        drawRoundRect(
+                            color = Color(0xFF43A047).copy(alpha = 0.25f),
+                            topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
+                            size = Size(cs - tileInset * 2, cs - tileInset * 2),
+                            cornerRadius = CornerRadius(cornerR * 0.95f)
+                        )
+                        // Bold green border
+                        drawRoundRect(
+                            color = Color(0xFF2E7D32),
+                            topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
+                            size = Size(cs - tileInset * 2, cs - tileInset * 2),
+                            cornerRadius = CornerRadius(cornerR * 0.95f),
+                            style = Stroke(width = 3.dp.toPx())
+                        )
+                    }
                 }
             }
         }

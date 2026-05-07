@@ -556,6 +556,7 @@ class GameViewModel(
             if (usePassthrough) {
                 progressRepo.usePassthroughToken()
                 passthroughTokens--
+                audioManager.playMatch() // audio feedback for passthrough use
                 _state.value = _state.value.copy(
                     passthroughActive = false, passthroughTokens = passthroughTokens
                 )
@@ -690,7 +691,7 @@ class GameViewModel(
         if (current.phase != GamePhase.PLAYING) return
         if (current.passthroughActive) {
             _state.value = current.copy(passthroughActive = false)
-        } else if (current.passthroughTokens > 0) {
+        } else if (current.passthroughTokens > 0 && current.completedGoalIds.isNotEmpty()) {
             _state.value = current.copy(
                 passthroughActive = true, shuffleReady = false, unfreezeMode = false,
                 selectedCell = null, hintCells = emptySet()

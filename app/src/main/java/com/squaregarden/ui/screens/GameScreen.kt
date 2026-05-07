@@ -102,6 +102,7 @@ fun GameScreen(
             hintCells = state.hintCells,
             swapAnim = state.swapAnim,
             completedGoalCells = state.completedGoalCells.values.flatten().toSet(),
+            passthroughActive = state.passthroughActive,
             onDragSwap = { from, to -> viewModel.onDragSwap(from, to) },
             onCellTapped = { row, col -> viewModel.onCellTapped(row, col) },
             modifier = Modifier
@@ -136,7 +137,7 @@ fun GameScreen(
                 icon = "\uD83D\uDEE1\uFE0F",
                 label = if (state.passthroughActive) "On" else "\u00D7${state.passthroughTokens}",
                 onClick = { viewModel.togglePassthrough() },
-                enabled = state.passthroughActive || (state.passthroughTokens > 0 && state.phase == GamePhase.PLAYING),
+                enabled = state.passthroughActive || (state.passthroughTokens > 0 && state.phase == GamePhase.PLAYING && state.completedGoalIds.isNotEmpty()),
                 containerColor = if (state.passthroughActive) Sage else null,
                 contentColor = if (state.passthroughActive) SoftWhite else null
             )
