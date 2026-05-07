@@ -2,6 +2,35 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.2.0] - 2026-05-07 (Build 4)
+
+### New Features
+- **Shuffle power-up** — Randomize the board mid-game. Frozen tiles and completed goals stay in place. Earned when unlocking a new world.
+- **Passthrough power-up** — Next swap through a goal border won't break it. Visual cyan shield on protected borders. Earned every 7 levels completed.
+- **Unfreeze power-up** — Tap a frozen tile to thaw it. Earned every 5 consecutive wins on World 3+.
+- **Minimizable cooldown overlay** — "No lives left" timer can be minimized to a floating chip so you can watch solution replays.
+- **Dynamic win messages** — Randomized congratulatory headlines and star-tier subtitles on level completion.
+- **Token award celebrations** — Animated cards with spring bounce-in when earning power-up tokens.
+
+### Gameplay Changes
+- Redesigned levels 55-90 (Worlds 7-10) for improved solvability — removed impossible patterns (LINE 7 on 8x8, excessive CROSSes), minimum Pro MPG ~2.4
+- Passthrough only activatable when completed goals exist on the board
+- Audio feedback when passthrough token is consumed
+- Pro difficulty thresholds tightened for more meaningful star multipliers
+- World unlock thresholds lowered to align with natural progression
+
+### UI/UX
+- Compact GoalPanel on phones and 7" tablets — smaller fonts, tighter spacing for more board space
+- Full-width game board on phones and 7" tablets for easier tile interaction
+- Compact PlayerBadge on phones — smaller avatar and reduced font sizes
+- Bottom action bar with 5 circular buttons: Hint, Shuffle, Passthrough, Unfreeze, Redo
+- Token count badges on power-up buttons with active state highlighting
+
+### Bug Fixes
+- Fixed gesture handler silently dropping taps when state changed during touch (pointerInput key stability)
+- Fixed levels with unsolvable patterns on 8x8 and 9x9 grids
+- Fixed star display crash when difficulty multipliers pushed stars above 3
+
 ## [1.1.0] - 2026-05-06 (Build 3)
 
 ### New Features

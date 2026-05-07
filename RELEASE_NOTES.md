@@ -34,6 +34,7 @@ FEATURES
 - 90 handcrafted levels with progressive difficulty
 - Drag-to-swap with smooth animations
 - 3 goal types: Lines, Squares, and Shapes (L, T, Cross)
+- 3 power-ups: Shuffle, Passthrough, and Unfreeze — earned through gameplay
 - Hint system to nudge you in the right direction
 - Star trail animations and confetti celebrations on wins
 - 6 beautiful color themes: Light, Dark, Summer, Winter, Fall, Spring
@@ -42,16 +43,18 @@ FEATURES
 
 ---
 
-## Release Notes — Version 1.1.0 (What's New)
+## Release Notes — Version 1.2.0 (What's New)
 
-What's new in 1.0.3:
+What's new in 1.2.0:
 
-- Real-time difficulty rating — each game is rated Easy to Extremely Hard based on the randomized board
-- Earn more stars on harder games: up to 2x on Extremely Hard
-- Animated shapes explainer teaches all 7 goal patterns after signup
-- Life restored celebration with confetti and music
-- Skill level locked after creation for fairer progression
-- World unlock thresholds scale by skill level
-- UI polish and performance improvements
+- 3 new power-ups earned through gameplay:
+  - Shuffle — randomize the board when you're stuck (completed goals stay put!)
+  - Passthrough — cross a goal border without breaking it
+  - Unfreeze — thaw a frozen tile with a tap
+- Redesigned late-game levels (Worlds 7-10) for better balance and solvability
+- Minimizable cooldown timer — shrink it to a chip while you watch solution replays
+- Compact UI on phones and 7" tablets — bigger game board, more room to play
+- Dynamic win celebrations with randomized messages
+- Bug fixes and performance improvements
 
 Happy gardening!
