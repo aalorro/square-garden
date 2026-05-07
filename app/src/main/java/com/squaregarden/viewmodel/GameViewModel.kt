@@ -738,7 +738,7 @@ class GameViewModel(
                 shuffleTokens++
                 _state.value = _state.value.copy(shuffleTokenAwarded = true)
             }
-            if (playerLevel > 0 && playerLevel % 15 == 0) {
+            if (playerLevel > 0 && playerLevel % 7 == 0) {
                 progressRepo.addPassthroughToken()
                 passthroughTokens++
                 _state.value = _state.value.copy(passthroughTokenAwarded = true)

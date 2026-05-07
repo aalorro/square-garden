@@ -110,7 +110,7 @@ fun InstructionsScreen(navController: NavHostController) {
                 "\uD83D\uDD00 Shuffle — randomizes the board tiles. " +
                 "Earn 1 token each time you unlock a new world.\n\n" +
                 "\uD83D\uDEE1\uFE0F Passthrough — your next swap through a border won't break the goal. " +
-                "Earn 1 token every 15 levels completed.\n\n" +
+                "Earn 1 token every 7 levels completed.\n\n" +
                 "\u2744\uFE0F Unfreeze — tap a frozen tile to unfreeze it. " +
                 "Earn 1 token for every 5 consecutive wins on World 3+."
         )
