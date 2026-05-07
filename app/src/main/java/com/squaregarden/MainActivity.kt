@@ -5,14 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -100,6 +103,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun CooldownOverlay(cooldownUntil: Long, onExpired: () -> Unit) {
     var remainingMs by remember { mutableLongStateOf(cooldownUntil - System.currentTimeMillis()) }
+    var minimized by remember { mutableStateOf(false) }
 
     LaunchedEffect(cooldownUntil) {
         while (true) {
@@ -116,46 +120,83 @@ private fun CooldownOverlay(cooldownUntil: Long, onExpired: () -> Unit) {
 
     val minutes = (remainingMs / 60000).toInt()
     val seconds = ((remainingMs % 60000) / 1000).toInt()
+    val timeText = "%d:%02d".format(minutes, seconds)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.95f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+    if (minimized) {
+        // Minimized: small floating chip in bottom-center
+        Box(
             modifier = Modifier
-                .background(
-                    MaterialTheme.colorScheme.surface,
-                    RoundedCornerShape(24.dp)
-                )
-                .padding(40.dp)
+                .fillMaxSize()
+                .systemBarsPadding(),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            Text(
-                text = "No Lives Left",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.error
-            )
-            Text(
-                text = "You've used all your lives.\nPlease wait to continue playing.",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "%d:%02d".format(minutes, seconds),
-                fontSize = 48.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = "until lives restore",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            )
+            Row(
+                modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .shadow(4.dp, RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.errorContainer, RoundedCornerShape(20.dp))
+                    .clickable { minimized = false }
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(
+                    text = "\u2764\uFE0F $timeText",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
+        }
+    } else {
+        // Fullscreen overlay
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.95f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colorScheme.surface,
+                        RoundedCornerShape(24.dp)
+                    )
+                    .padding(40.dp)
+            ) {
+                Text(
+                    text = "No Lives Left",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
+                Text(
+                    text = "You've used all your lives.\nPlease wait to continue playing.",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = timeText,
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "until lives restore",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = { minimized = true },
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Text("Minimize", fontSize = 13.sp)
+                }
+            }
         }
     }
 }
