@@ -132,6 +132,16 @@ fun InstructionsScreen(navController: NavHostController) {
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { navController.popBackStack() },
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("Back")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

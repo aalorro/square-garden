@@ -328,9 +328,10 @@ class GameViewModel(
         return Board(level.boardWidth, level.boardHeight, tiles, voids)
     }
 
-    /** Place a single redo tile on a random non-frozen, non-void cell (World 4+ only). */
+    /** Place a single redo tile on a random non-frozen, non-void cell (World 4+, ~25% chance). */
     private fun placeRedoTile(board: Board): Board {
         if (level.world < 4) return board
+        if ((1..4).random() != 1) return board // ~25% chance
         val candidates = mutableListOf<CellPos>()
         for (r in 0 until board.height) {
             for (c in 0 until board.width) {

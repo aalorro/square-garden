@@ -186,6 +186,44 @@ fun GameScreen(
         }
     }
 
+    // Redo token captured celebration (mid-game)
+    if (state.redoTokenAwarded && state.phase == GamePhase.PLAYING) {
+        val redoScale = remember { Animatable(0f) }
+        LaunchedEffect(Unit) {
+            redoScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f))
+            delay(2000)
+            redoScale.animateTo(0f, animationSpec = tween(300))
+        }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)),
+                modifier = Modifier.scale(redoScale.value)
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Redo Token Earned!",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "+1 \u21BB",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = DarkSage
+                    )
+                }
+            }
+        }
+    }
+
     // Win overlay with confetti + star trail + dialog (all in same window layer)
     if (state.phase == GamePhase.WON) {
         val stars = state.starsAwarded
