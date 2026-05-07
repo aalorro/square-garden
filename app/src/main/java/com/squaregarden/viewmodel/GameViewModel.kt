@@ -180,7 +180,7 @@ class GameViewModel(
      * Avoids immediately undoing the previous swap.
      */
     private fun scrambleBoard(
-        board: Board, numSwaps: Int
+        board: Board, numSwaps: Int, protectedCells: Set<CellPos> = emptySet()
     ): Pair<Board, List<Pair<CellPos, CellPos>>> {
         var current = board
         val swaps = mutableListOf<Pair<CellPos, CellPos>>()
@@ -191,8 +191,10 @@ class GameViewModel(
                 for (c in 0 until current.width) {
                     if (current.isVoid(r, c) || current.tileAt(r, c).frozen) continue
                     val from = CellPos(r, c)
+                    if (from in protectedCells) continue
                     for (nb in listOf(CellPos(r, c + 1), CellPos(r + 1, c))) {
                         if (!BoardEngine.canSwap(current, from, nb)) continue
+                        if (nb in protectedCells) continue
                         // Skip if it would just undo the last swap
                         if (swaps.isNotEmpty()) {
                             val last = swaps.last()
@@ -673,7 +675,8 @@ class GameViewModel(
             if (!success) return@launch
             shuffleTokens--
             val numSwaps = current.board.width * current.board.height
-            val (shuffled, _) = scrambleBoard(current.board, numSwaps)
+            val goalCells = current.completedGoalCells.values.flatten().toSet()
+            val (shuffled, _) = scrambleBoard(current.board, numSwaps, protectedCells = goalCells)
             audioManager.playShuffle()
             _state.value = current.copy(
                 board = shuffled, shuffleReady = false,
