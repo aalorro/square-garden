@@ -6237,7 +6237,7 @@
     "name": "Magma Flow",
     "width": 8,
     "height": 8,
-    "maxMoves": 14,
+    "maxMoves": 18,
     "tiles": [
       [
         "GREEN",
@@ -6323,47 +6323,47 @@
     "goals": [
       {
         "type": "shape",
-        "color": "YELLOW",
-        "shape": "Z_SHAPE"
+        "color": "RED",
+        "shape": "L_SHAPE"
       },
       {
         "type": "shape",
-        "color": "ORANGE",
+        "color": "BLUE",
         "shape": "T_SHAPE"
       },
       {
         "type": "line",
-        "color": "BLUE",
-        "length": 6
+        "color": "YELLOW",
+        "length": 5
       },
       {
-        "type": "shape",
-        "color": "RED",
-        "shape": "T_SHAPE"
+        "type": "square",
+        "color": "GREEN"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 6,
-        "col": 5
+        "row": 2,
+        "col": 3
       },
       {
-        "row": 1,
-        "col": 1
+        "row": 5,
+        "col": 4
       }
     ],
     "voids": [
       {
-        "row": 6,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 4,
-        "col": 3
+        "row": 7,
+        "col": 7
       }
     ]
   },
@@ -6373,7 +6373,7 @@
     "name": "Ember Dance",
     "width": 8,
     "height": 8,
-    "maxMoves": 14,
+    "maxMoves": 17,
     "tiles": [
       [
         "ORANGE",
@@ -6459,46 +6459,48 @@
     "goals": [
       {
         "type": "shape",
-        "color": "YELLOW",
-        "shape": "CROSS"
+        "color": "ORANGE",
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
+        "color": "YELLOW",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "line",
         "color": "BLUE",
-        "shape": "CROSS"
+        "length": 5
       },
       {
         "type": "shape",
         "color": "GREEN",
         "shape": "L_SHAPE"
-      },
-      {
-        "type": "square",
-        "color": "RED"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 2,
-        "col": 3
+        "row": 3,
+        "col": 2
       },
       {
-        "row": 2,
-        "col": 1
+        "row": 4,
+        "col": 5
       }
     ],
     "voids": [
       {
-        "row": 7,
-        "col": 3
+        "row": 0,
+        "col": 7
       },
       {
-        "row": 3,
-        "col": 3
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -6508,7 +6510,7 @@
     "name": "Lava Bridge",
     "width": 8,
     "height": 8,
-    "maxMoves": 13,
+    "maxMoves": 16,
     "tiles": [
       [
         "RED",
@@ -6594,41 +6596,37 @@
     "goals": [
       {
         "type": "shape",
-        "color": "YELLOW",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "T_SHAPE"
-      },
-      {
-        "type": "line",
         "color": "RED",
-        "length": 5
+        "shape": "CROSS"
       },
       {
         "type": "shape",
         "color": "BLUE",
-        "shape": "T_SHAPE"
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "ORANGE",
+        "length": 5
+      },
+      {
+        "type": "square",
+        "color": "YELLOW"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 7
-    },
+    "stars": [
+      7,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 3,
-        "col": 4
+        "row": 2,
+        "col": 5
       },
       {
         "row": 5,
         "col": 2
-      },
-      {
-        "row": 4,
-        "col": 1
       }
     ],
     "voids": [
@@ -6637,12 +6635,12 @@
         "col": 0
       },
       {
-        "row": 3,
+        "row": 7,
         "col": 7
       },
       {
-        "row": 4,
-        "col": 3
+        "row": 0,
+        "col": 7
       }
     ]
   },
@@ -6652,7 +6650,7 @@
     "name": "Crater Edge",
     "width": 8,
     "height": 8,
-    "maxMoves": 16,
+    "maxMoves": 20,
     "tiles": [
       [
         "RED",
@@ -6738,59 +6736,56 @@
     "goals": [
       {
         "type": "shape",
+        "color": "GREEN",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "shape",
         "color": "YELLOW",
-        "shape": "U_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
+        "color": "RED",
         "shape": "L_SHAPE"
       },
       {
         "type": "line",
-        "color": "GREEN",
-        "length": 6
+        "color": "BLUE",
+        "length": 5
       },
       {
         "type": "square",
-        "color": "RED"
+        "color": "ORANGE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
       {
-        "row": 5,
+        "row": 1,
+        "col": 4
+      },
+      {
+        "row": 4,
         "col": 1
       },
       {
-        "row": 3,
+        "row": 6,
         "col": 5
-      },
-      {
-        "row": 1,
-        "col": 3
       }
     ],
     "voids": [
       {
-        "row": 3,
-        "col": 7
+        "row": 0,
+        "col": 0
       },
       {
         "row": 7,
-        "col": 3
-      },
-      {
-        "row": 2,
-        "col": 3
+        "col": 7
       }
     ]
   },
@@ -6800,7 +6795,7 @@
     "name": "Obsidian Path",
     "width": 8,
     "height": 8,
-    "maxMoves": 15,
+    "maxMoves": 19,
     "tiles": [
       [
         "RED",
@@ -6886,22 +6881,22 @@
     "goals": [
       {
         "type": "shape",
+        "color": "BLUE",
+        "shape": "U_SHAPE"
+      },
+      {
+        "type": "shape",
         "color": "ORANGE",
-        "shape": "Z_SHAPE"
+        "shape": "T_SHAPE"
       },
       {
         "type": "shape",
         "color": "YELLOW",
-        "shape": "T_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "T_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "line",
-        "color": "BLUE",
+        "color": "RED",
         "length": 5
       },
       {
@@ -6910,36 +6905,37 @@
         "length": 5
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
       {
-        "row": 4,
-        "col": 4
+        "row": 2,
+        "col": 2
       },
       {
-        "row": 1,
-        "col": 3
+        "row": 5,
+        "col": 5
       },
       {
-        "row": 4,
-        "col": 1
+        "row": 3,
+        "col": 6
       }
     ],
     "voids": [
       {
-        "row": 7,
-        "col": 6
-      },
-      {
-        "row": 1,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 5,
-        "col": 3
+        "row": 0,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -6949,7 +6945,7 @@
     "name": "Pyroclast",
     "width": 8,
     "height": 8,
-    "maxMoves": 15,
+    "maxMoves": 18,
     "tiles": [
       [
         "RED",
@@ -7051,48 +7047,44 @@
       {
         "type": "line",
         "color": "ORANGE",
-        "length": 5
+        "length": 6
       },
       {
-        "type": "line",
-        "color": "YELLOW",
-        "length": 5
+        "type": "square",
+        "color": "YELLOW"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 6,
+        "row": 2,
+        "col": 1
+      },
+      {
+        "row": 4,
         "col": 6
       },
       {
         "row": 6,
         "col": 3
-      },
-      {
-        "row": 5,
-        "col": 3
-      },
-      {
-        "row": 3,
-        "col": 4
       }
     ],
     "voids": [
       {
-        "row": 4,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 0,
-        "col": 2
+        "row": 7,
+        "col": 7
       },
       {
-        "row": 2,
-        "col": 2
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -7102,7 +7094,7 @@
     "name": "Inferno Ring",
     "width": 8,
     "height": 8,
-    "maxMoves": 14,
+    "maxMoves": 18,
     "tiles": [
       [
         "GREEN",
@@ -7189,16 +7181,6 @@
       {
         "type": "shape",
         "color": "YELLOW",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
         "shape": "U_SHAPE"
       },
       {
@@ -7207,49 +7189,52 @@
         "shape": "Z_SHAPE"
       },
       {
+        "type": "shape",
+        "color": "RED",
+        "shape": "T_SHAPE"
+      },
+      {
         "type": "line",
+        "color": "BLUE",
+        "length": 6
+      },
+      {
+        "type": "shape",
         "color": "GREEN",
-        "length": 7
+        "shape": "L_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 5,
-        "col": 1
-      },
-      {
         "row": 1,
-        "col": 5
+        "col": 3
       },
       {
         "row": 5,
-        "col": 4
+        "col": 2
       },
       {
-        "row": 1,
-        "col": 1
+        "row": 6,
+        "col": 6
       }
     ],
     "voids": [
       {
         "row": 0,
-        "col": 5
-      },
-      {
-        "row": 2,
-        "col": 7
-      },
-      {
-        "row": 5,
         "col": 0
       },
       {
-        "row": 4,
-        "col": 4
+        "row": 0,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -7345,73 +7330,64 @@
     "goals": [
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
         "color": "YELLOW",
         "shape": "CROSS"
       },
       {
         "type": "shape",
-        "color": "RED",
-        "shape": "T_SHAPE"
+        "color": "BLUE",
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "L_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "line",
-        "color": "ORANGE",
-        "length": 5
+        "color": "RED",
+        "length": 6
       },
       {
-        "type": "line",
-        "color": "BLUE",
-        "length": 5
+        "type": "square",
+        "color": "ORANGE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 10
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 5,
-        "col": 4
-      },
-      {
-        "row": 1,
-        "col": 4
-      },
-      {
-        "row": 3,
+        "row": 2,
         "col": 6
       },
       {
-        "row": 1,
-        "col": 5
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 6,
+        "col": 4
       }
     ],
     "voids": [
       {
         "row": 0,
-        "col": 4
+        "col": 0
       },
       {
         "row": 0,
-        "col": 2
+        "col": 7
       },
       {
         "row": 7,
-        "col": 5
+        "col": 0
       },
       {
-        "row": 3,
-        "col": 4
+        "row": 7,
+        "col": 7
       }
     ]
   },
@@ -7421,7 +7397,7 @@
     "name": "Caldera",
     "width": 8,
     "height": 8,
-    "maxMoves": 14,
+    "maxMoves": 17,
     "tiles": [
       [
         "YELLOW",
@@ -7518,62 +7494,54 @@
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "L_SHAPE"
+        "shape": "CROSS"
       },
       {
         "type": "line",
         "color": "BLUE",
-        "length": 5
+        "length": 6
       },
       {
         "type": "shape",
         "color": "RED",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "Z_SHAPE"
+        "shape": "T_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 2,
-        "col": 6
+        "row": 1,
+        "col": 2
       },
       {
-        "row": 1,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 6
+        "row": 3,
+        "col": 5
       },
       {
         "row": 5,
-        "col": 3
+        "col": 1
+      },
+      {
+        "row": 6,
+        "col": 6
       }
     ],
     "voids": [
+      {
+        "row": 0,
+        "col": 0
+      },
       {
         "row": 7,
         "col": 7
       },
       {
         "row": 7,
-        "col": 1
-      },
-      {
-        "row": 4,
         "col": 0
-      },
-      {
-        "row": 5,
-        "col": 4
       }
     ]
   },
@@ -7583,7 +7551,7 @@
     "name": "Stellar Dawn",
     "width": 8,
     "height": 8,
-    "maxMoves": 15,
+    "maxMoves": 19,
     "tiles": [
       [
         "YELLOW",
@@ -7680,7 +7648,7 @@
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "Z_SHAPE"
+        "shape": "L_SHAPE"
       },
       {
         "type": "line",
@@ -7693,36 +7661,37 @@
         "length": 5
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
       {
-        "row": 5,
-        "col": 2
-      },
-      {
         "row": 2,
-        "col": 2
+        "col": 3
       },
       {
-        "row": 5,
-        "col": 4
+        "row": 4,
+        "col": 6
+      },
+      {
+        "row": 6,
+        "col": 2
       }
     ],
     "voids": [
       {
-        "row": 7,
-        "col": 5
+        "row": 0,
+        "col": 0
       },
       {
         "row": 0,
-        "col": 2
+        "col": 7
       },
       {
-        "row": 5,
-        "col": 5
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -7732,7 +7701,7 @@
     "name": "Nebula Drift",
     "width": 8,
     "height": 8,
-    "maxMoves": 14,
+    "maxMoves": 18,
     "tiles": [
       [
         "GREEN",
@@ -7818,11 +7787,6 @@
     "goals": [
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
         "color": "ORANGE",
         "shape": "U_SHAPE"
       },
@@ -7834,48 +7798,50 @@
       {
         "type": "shape",
         "color": "YELLOW",
-        "shape": "L_SHAPE"
+        "shape": "T_SHAPE"
       },
       {
         "type": "line",
         "color": "RED",
         "length": 5
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "L_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 4,
-        "col": 3
-      },
-      {
         "row": 1,
-        "col": 3
+        "col": 5
       },
       {
         "row": 4,
-        "col": 5
+        "col": 2
+      },
+      {
+        "row": 6,
+        "col": 6
       }
     ],
     "voids": [
+      {
+        "row": 0,
+        "col": 0
+      },
       {
         "row": 7,
         "col": 7
       },
       {
         "row": 7,
-        "col": 2
-      },
-      {
-        "row": 0,
-        "col": 5
-      },
-      {
-        "row": 3,
-        "col": 3
+        "col": 0
       }
     ]
   },
@@ -7885,7 +7851,7 @@
     "name": "Cosmic Weave",
     "width": 8,
     "height": 8,
-    "maxMoves": 14,
+    "maxMoves": 18,
     "tiles": [
       [
         "YELLOW",
@@ -7987,52 +7953,48 @@
       {
         "type": "line",
         "color": "RED",
-        "length": 5
+        "length": 6
       },
       {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "T_SHAPE"
+        "type": "square",
+        "color": "GREEN"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 4,
+        "row": 2,
+        "col": 1
+      },
+      {
+        "row": 3,
         "col": 6
       },
       {
-        "row": 4,
+        "row": 5,
         "col": 3
-      },
-      {
-        "row": 6,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
       }
     ],
     "voids": [
       {
-        "row": 3,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 6,
+        "row": 0,
         "col": 7
       },
       {
-        "row": 5,
-        "col": 2
+        "row": 7,
+        "col": 0
+      },
+      {
+        "row": 7,
+        "col": 7
       }
     ]
   },
@@ -8042,7 +8004,7 @@
     "name": "Meteor Shower",
     "width": 8,
     "height": 8,
-    "maxMoves": 13,
+    "maxMoves": 18,
     "tiles": [
       [
         "YELLOW",
@@ -8138,11 +8100,6 @@
       },
       {
         "type": "shape",
-        "color": "YELLOW",
-        "shape": "L_SHAPE"
-      },
-      {
-        "type": "shape",
         "color": "GREEN",
         "shape": "Z_SHAPE"
       },
@@ -8150,46 +8107,47 @@
         "type": "line",
         "color": "RED",
         "length": 5
+      },
+      {
+        "type": "square",
+        "color": "YELLOW"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 7
-    },
+    "stars": [
+      8,
+      4,
+      1
+    ],
     "frozen": [
       {
-        "row": 2,
-        "col": 4
-      },
-      {
-        "row": 2,
-        "col": 1
-      },
-      {
-        "row": 4,
-        "col": 5
-      },
-      {
-        "row": 5,
-        "col": 2
-      }
-    ],
-    "voids": [
-      {
         "row": 1,
-        "col": 7
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 7,
         "col": 3
       },
       {
         "row": 3,
-        "col": 3
+        "col": 6
+      },
+      {
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 6,
+        "col": 5
+      }
+    ],
+    "voids": [
+      {
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 7,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -8199,7 +8157,7 @@
     "name": "Pulsar Beat",
     "width": 8,
     "height": 8,
-    "maxMoves": 16,
+    "maxMoves": 19,
     "tiles": [
       [
         "GREEN",
@@ -8285,8 +8243,8 @@
     "goals": [
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "L_SHAPE"
+        "color": "GREEN",
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
@@ -8296,39 +8254,35 @@
       {
         "type": "shape",
         "color": "YELLOW",
-        "shape": "L_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "U_SHAPE"
+        "shape": "T_SHAPE"
       },
       {
         "type": "line",
         "color": "ORANGE",
-        "length": 5
+        "length": 6
       },
       {
         "type": "square",
         "color": "BLUE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
-      {
-        "row": 3,
-        "col": 4
-      },
-      {
-        "row": 6,
-        "col": 2
-      },
       {
         "row": 2,
         "col": 2
+      },
+      {
+        "row": 3,
+        "col": 5
+      },
+      {
+        "row": 5,
+        "col": 1
       },
       {
         "row": 6,
@@ -8337,20 +8291,16 @@
     ],
     "voids": [
       {
-        "row": 6,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 1,
-        "col": 0
-      },
-      {
-        "row": 3,
+        "row": 0,
         "col": 7
       },
       {
-        "row": 5,
-        "col": 4
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -8360,7 +8310,7 @@
     "name": "Dark Matter",
     "width": 8,
     "height": 8,
-    "maxMoves": 15,
+    "maxMoves": 23,
     "tiles": [
       [
         "GREEN",
@@ -8452,71 +8402,59 @@
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "CROSS"
+        "shape": "T_SHAPE"
       },
       {
         "type": "shape",
         "color": "YELLOW",
-        "shape": "U_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "line",
         "color": "GREEN",
-        "length": 6
+        "shape": "L_SHAPE"
       },
       {
         "type": "line",
-        "color": "RED",
+        "color": "BLUE",
         "length": 5
+      },
+      {
+        "type": "square",
+        "color": "RED"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 6,
-        "col": 5
-      },
-      {
-        "row": 6,
-        "col": 1
-      },
-      {
-        "row": 3,
-        "col": 1
-      },
-      {
-        "row": 1,
+        "row": 2,
         "col": 3
+      },
+      {
+        "row": 4,
+        "col": 6
+      },
+      {
+        "row": 6,
+        "col": 1
       }
     ],
     "voids": [
       {
-        "row": 4,
-        "col": 0
-      },
-      {
-        "row": 2,
+        "row": 0,
         "col": 0
       },
       {
         "row": 0,
-        "col": 5
-      },
-      {
-        "row": 7,
         "col": 7
       },
       {
-        "row": 2,
-        "col": 5
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -8526,7 +8464,7 @@
     "name": "Supernova",
     "width": 8,
     "height": 8,
-    "maxMoves": 15,
+    "maxMoves": 22,
     "tiles": [
       [
         "ORANGE",
@@ -8622,70 +8560,59 @@
       },
       {
         "type": "shape",
-        "color": "RED",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "square",
-        "color": "GREEN"
-      },
-      {
-        "type": "shape",
         "color": "BLUE",
-        "shape": "CROSS"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "line",
-        "color": "ORANGE",
+        "color": "RED",
         "length": 6
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "square",
+        "color": "YELLOW"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 5,
-        "col": 1
-      },
-      {
         "row": 1,
-        "col": 1
-      },
-      {
-        "row": 1,
-        "col": 2
-      },
-      {
-        "row": 5,
         "col": 4
       },
       {
+        "row": 3,
+        "col": 1
+      },
+      {
         "row": 5,
-        "col": 2
+        "col": 6
+      },
+      {
+        "row": 6,
+        "col": 3
       }
     ],
     "voids": [
       {
         "row": 0,
-        "col": 4
+        "col": 0
       },
       {
         "row": 7,
-        "col": 4
-      },
-      {
-        "row": 7,
-        "col": 3
-      },
-      {
-        "row": 6,
         "col": 7
       },
       {
-        "row": 2,
-        "col": 3
+        "row": 7,
+        "col": 0
       }
     ]
   },
@@ -8695,7 +8622,7 @@
     "name": "Event Horizon",
     "width": 8,
     "height": 8,
-    "maxMoves": 14,
+    "maxMoves": 21,
     "tiles": [
       [
         "ORANGE",
@@ -8806,56 +8733,49 @@
       },
       {
         "type": "shape",
-        "color": "ORANGE",
+        "color": "RED",
         "shape": "Z_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
       {
-        "row": 4,
-        "col": 4
-      },
-      {
-        "row": 1,
-        "col": 1
+        "row": 2,
+        "col": 2
       },
       {
         "row": 3,
-        "col": 3
+        "col": 5
       },
       {
-        "row": 2,
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 6,
         "col": 6
-      },
-      {
-        "row": 1,
-        "col": 2
       }
     ],
     "voids": [
       {
         "row": 0,
-        "col": 1
+        "col": 0
       },
       {
         "row": 0,
         "col": 7
       },
       {
-        "row": 5,
-        "col": 7
+        "row": 7,
+        "col": 0
       },
       {
-        "row": 2,
+        "row": 7,
         "col": 7
-      },
-      {
-        "row": 2,
-        "col": 3
       }
     ]
   },
@@ -8865,7 +8785,7 @@
     "name": "Black Hole",
     "width": 8,
     "height": 8,
-    "maxMoves": 13,
+    "maxMoves": 21,
     "tiles": [
       [
         "YELLOW",
@@ -8962,69 +8882,62 @@
       {
         "type": "shape",
         "color": "BLUE",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "GREEN",
-        "length": 7
-      },
-      {
-        "type": "square",
-        "color": "YELLOW"
+        "shape": "T_SHAPE"
       },
       {
         "type": "shape",
-        "color": "RED",
-        "shape": "Z_SHAPE"
+        "color": "GREEN",
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "YELLOW",
+        "length": 6
+      },
+      {
+        "type": "square",
+        "color": "RED"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 7
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
       {
-        "row": 6,
-        "col": 2
-      },
-      {
-        "row": 3,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 5
-      },
-      {
         "row": 1,
+        "col": 3
+      },
+      {
+        "row": 2,
         "col": 6
       },
       {
-        "row": 1,
-        "col": 4
+        "row": 5,
+        "col": 1
+      },
+      {
+        "row": 6,
+        "col": 5
       }
     ],
     "voids": [
       {
-        "row": 2,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 6,
+        "row": 0,
         "col": 7
       },
       {
         "row": 7,
-        "col": 1
+        "col": 0
       },
       {
-        "row": 5,
-        "col": 4
+        "row": 7,
+        "col": 7
       }
     ]
   },
@@ -9034,7 +8947,7 @@
     "name": "Tidal Surge",
     "width": 9,
     "height": 9,
-    "maxMoves": 15,
+    "maxMoves": 20,
     "tiles": [
       [
         "RED",
@@ -9162,44 +9075,37 @@
         "color": "RED"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
       {
         "row": 2,
         "col": 3
       },
       {
-        "row": 5,
-        "col": 5
+        "row": 4,
+        "col": 6
       },
       {
-        "row": 3,
-        "col": 1
-      },
-      {
-        "row": 7,
-        "col": 1
+        "row": 6,
+        "col": 2
       }
     ],
     "voids": [
       {
-        "row": 8,
-        "col": 5
-      },
-      {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 7,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 6,
-        "col": 5
+        "row": 0,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 0
       }
     ]
   },
@@ -9209,7 +9115,7 @@
     "name": "Coral Maze",
     "width": 9,
     "height": 9,
-    "maxMoves": 14,
+    "maxMoves": 19,
     "tiles": [
       [
         "YELLOW",
@@ -9338,48 +9244,41 @@
         "shape": "T_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
       {
-        "row": 6,
-        "col": 1
-      },
-      {
-        "row": 2,
-        "col": 5
-      },
-      {
-        "row": 3,
+        "row": 1,
         "col": 4
       },
       {
-        "row": 5,
-        "col": 6
+        "row": 4,
+        "col": 7
+      },
+      {
+        "row": 6,
+        "col": 2
       }
     ],
     "voids": [
       {
-        "row": 8,
-        "col": 6
-      },
-      {
-        "row": 2,
-        "col": 8
+        "row": 0,
+        "col": 0
       },
       {
         "row": 0,
-        "col": 7
+        "col": 8
       },
       {
         "row": 8,
-        "col": 2
+        "col": 0
       },
       {
-        "row": 5,
-        "col": 2
+        "row": 8,
+        "col": 8
       }
     ]
   },
@@ -9389,7 +9288,7 @@
     "name": "Kraken's Lair",
     "width": 9,
     "height": 9,
-    "maxMoves": 17,
+    "maxMoves": 24,
     "tiles": [
       [
         "BLUE",
@@ -9505,70 +9404,58 @@
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "line",
-        "color": "YELLOW",
-        "length": 5
-      },
-      {
-        "type": "shape",
-        "color": "RED",
         "shape": "L_SHAPE"
       },
       {
         "type": "shape",
-        "color": "ORANGE",
-        "shape": "Z_SHAPE"
+        "color": "YELLOW",
+        "shape": "T_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "RED",
+        "length": 5
+      },
+      {
+        "type": "square",
+        "color": "ORANGE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 10
-    },
+    "stars": [
+      11,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 1,
-        "col": 4
-      },
-      {
-        "row": 4,
+        "row": 2,
         "col": 2
       },
       {
-        "row": 5,
-        "col": 2
+        "row": 2,
+        "col": 6
       },
       {
         "row": 6,
-        "col": 7
+        "col": 3
       },
       {
-        "row": 5,
-        "col": 4
+        "row": 6,
+        "col": 6
       }
     ],
     "voids": [
       {
-        "row": 7,
-        "col": 8
-      },
-      {
         "row": 0,
-        "col": 2
-      },
-      {
-        "row": 4,
         "col": 0
       },
       {
-        "row": 8,
-        "col": 1
+        "row": 0,
+        "col": 8
       },
       {
-        "row": 4,
-        "col": 3
+        "row": 8,
+        "col": 0
       }
     ]
   },
@@ -9578,7 +9465,7 @@
     "name": "Whirlpool",
     "width": 9,
     "height": 9,
-    "maxMoves": 16,
+    "maxMoves": 23,
     "tiles": [
       [
         "BLUE",
@@ -9711,52 +9598,45 @@
         "color": "RED"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 3,
-        "col": 6
-      },
-      {
-        "row": 3,
+        "row": 1,
         "col": 3
       },
       {
-        "row": 6,
+        "row": 3,
+        "col": 7
+      },
+      {
+        "row": 5,
         "col": 1
       },
       {
-        "row": 4,
-        "col": 6
-      },
-      {
         "row": 7,
-        "col": 6
+        "col": 5
       }
     ],
     "voids": [
       {
-        "row": 8,
-        "col": 6
+        "row": 0,
+        "col": 0
       },
       {
-        "row": 8,
-        "col": 1
+        "row": 0,
+        "col": 8
       },
       {
         "row": 8,
         "col": 0
       },
       {
-        "row": 4,
+        "row": 8,
         "col": 8
-      },
-      {
-        "row": 3,
-        "col": 4
       }
     ]
   },
@@ -9766,7 +9646,7 @@
     "name": "Leviathan",
     "width": 9,
     "height": 9,
-    "maxMoves": 15,
+    "maxMoves": 22,
     "tiles": [
       [
         "ORANGE",
@@ -9877,12 +9757,12 @@
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "L_SHAPE"
+        "shape": "T_SHAPE"
       },
       {
         "type": "shape",
         "color": "BLUE",
-        "shape": "T_SHAPE"
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
@@ -9890,66 +9770,59 @@
         "shape": "CROSS"
       },
       {
-        "type": "shape",
+        "type": "line",
         "color": "YELLOW",
-        "shape": "U_SHAPE"
+        "length": 6
       },
       {
-        "type": "line",
+        "type": "shape",
         "color": "RED",
-        "length": 6
+        "shape": "Z_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
         "row": 1,
-        "col": 7
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 2
       },
       {
         "row": 5,
-        "col": 3
-      },
-      {
-        "row": 4,
-        "col": 6
-      },
-      {
-        "row": 2,
-        "col": 4
-      },
-      {
-        "row": 6,
         "col": 7
+      },
+      {
+        "row": 7,
+        "col": 4
       }
     ],
     "voids": [
       {
-        "row": 8,
-        "col": 2
+        "row": 0,
+        "col": 0
       },
       {
         "row": 0,
-        "col": 6
+        "col": 8
       },
       {
         "row": 8,
-        "col": 1
+        "col": 0
       },
       {
-        "row": 1,
+        "row": 8,
         "col": 8
       },
       {
-        "row": 4,
-        "col": 8
-      },
-      {
-        "row": 2,
-        "col": 5
+        "row": 0,
+        "col": 4
       }
     ]
   },
@@ -9959,7 +9832,7 @@
     "name": "Pressure Crush",
     "width": 9,
     "height": 9,
-    "maxMoves": 15,
+    "maxMoves": 22,
     "tiles": [
       [
         "RED",
@@ -10075,12 +9948,12 @@
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "T_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
         "color": "BLUE",
-        "shape": "Z_SHAPE"
+        "shape": "CROSS"
       },
       {
         "type": "line",
@@ -10092,60 +9965,49 @@
         "color": "RED"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 2,
-        "col": 4
-      },
-      {
-        "row": 5,
-        "col": 6
+        "row": 1,
+        "col": 2
       },
       {
         "row": 1,
-        "col": 4
-      },
-      {
-        "row": 4,
-        "col": 5
-      },
-      {
-        "row": 6,
-        "col": 1
+        "col": 6
       },
       {
         "row": 5,
-        "col": 7
+        "col": 3
+      },
+      {
+        "row": 7,
+        "col": 5
+      },
+      {
+        "row": 3,
+        "col": 4
       }
     ],
     "voids": [
       {
-        "row": 6,
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 8
+      },
+      {
+        "row": 8,
         "col": 0
       },
       {
         "row": 8,
         "col": 8
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 8,
-        "col": 3
-      },
-      {
-        "row": 3,
-        "col": 0
-      },
-      {
-        "row": 5,
-        "col": 2
       }
     ]
   },
@@ -10155,7 +10017,7 @@
     "name": "Trench Run",
     "width": 9,
     "height": 9,
-    "maxMoves": 18,
+    "maxMoves": 22,
     "tiles": [
       [
         "BLUE",
@@ -10276,7 +10138,7 @@
       {
         "type": "shape",
         "color": "RED",
-        "shape": "Z_SHAPE"
+        "shape": "L_SHAPE"
       },
       {
         "type": "line",
@@ -10286,59 +10148,39 @@
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "YELLOW",
-        "shape": "L_SHAPE"
+        "shape": "T_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 6,
-      "threeStar": 10
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 2,
+        "row": 1,
+        "col": 3
+      },
+      {
+        "row": 3,
+        "col": 6
+      },
+      {
+        "row": 5,
         "col": 1
       },
       {
-        "row": 4,
-        "col": 3
+        "row": 6,
+        "col": 7
       },
       {
         "row": 7,
         "col": 4
-      },
-      {
-        "row": 3,
-        "col": 1
-      },
-      {
-        "row": 5,
-        "col": 5
-      },
-      {
-        "row": 4,
-        "col": 5
       }
     ],
     "voids": [
       {
-        "row": 4,
-        "col": 8
-      },
-      {
-        "row": 6,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 8
-      },
-      {
-        "row": 3,
+        "row": 0,
         "col": 0
       },
       {
@@ -10346,8 +10188,16 @@
         "col": 8
       },
       {
-        "row": 5,
-        "col": 3
+        "row": 8,
+        "col": 0
+      },
+      {
+        "row": 8,
+        "col": 8
+      },
+      {
+        "row": 4,
+        "col": 8
       }
     ]
   },
@@ -10357,7 +10207,7 @@
     "name": "Abyss Gate",
     "width": 9,
     "height": 9,
-    "maxMoves": 17,
+    "maxMoves": 21,
     "tiles": [
       [
         "GREEN",
@@ -10467,93 +10317,77 @@
       },
       {
         "type": "shape",
-        "color": "YELLOW",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
         "color": "BLUE",
         "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "CROSS"
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
-        "color": "RED",
-        "shape": "U_SHAPE"
+        "shape": "L_SHAPE"
       },
       {
         "type": "line",
         "color": "YELLOW",
         "length": 6
+      },
+      {
+        "type": "shape",
+        "color": "BLUE",
+        "shape": "T_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 10
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
-      {
-        "row": 4,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 1
-      },
       {
         "row": 1,
         "col": 5
       },
       {
+        "row": 3,
+        "col": 2
+      },
+      {
+        "row": 4,
+        "col": 7
+      },
+      {
         "row": 6,
-        "col": 4
+        "col": 1
       },
       {
         "row": 7,
-        "col": 6
-      },
-      {
-        "row": 2,
-        "col": 4
+        "col": 5
       }
     ],
     "voids": [
       {
-        "row": 7,
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 0,
         "col": 8
-      },
-      {
-        "row": 8,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 8,
-        "col": 4
       },
       {
         "row": 8,
         "col": 0
       },
       {
-        "row": 0,
-        "col": 7
+        "row": 8,
+        "col": 8
       },
       {
-        "row": 6,
-        "col": 6
+        "row": 0,
+        "col": 4
       }
     ]
   },
@@ -10563,7 +10397,7 @@
     "name": "Mariana",
     "width": 9,
     "height": 9,
-    "maxMoves": 15,
+    "maxMoves": 21,
     "tiles": [
       [
         "YELLOW",
@@ -10669,16 +10503,11 @@
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "Z_SHAPE"
+        "shape": "U_SHAPE"
       },
       {
         "type": "shape",
         "color": "BLUE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
         "shape": "Z_SHAPE"
       },
       {
@@ -10688,78 +10517,67 @@
       },
       {
         "type": "shape",
-        "color": "YELLOW",
-        "shape": "U_SHAPE"
+        "color": "GREEN",
+        "shape": "T_SHAPE"
       },
       {
         "type": "line",
-        "color": "ORANGE",
+        "color": "YELLOW",
         "length": 7
       },
       {
         "type": "shape",
-        "color": "BLUE",
-        "shape": "U_SHAPE"
+        "color": "ORANGE",
+        "shape": "L_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
       {
-        "row": 3,
-        "col": 6
+        "row": 2,
+        "col": 3
       },
       {
         "row": 2,
-        "col": 6
+        "col": 7
       },
       {
-        "row": 3,
-        "col": 4
-      },
-      {
-        "row": 7,
-        "col": 1
-      },
-      {
-        "row": 6,
+        "row": 5,
         "col": 1
       },
       {
         "row": 6,
         "col": 5
+      },
+      {
+        "row": 7,
+        "col": 3
       }
     ],
     "voids": [
       {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 1
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 7,
+        "row": 0,
         "col": 0
       },
       {
         "row": 0,
-        "col": 3
+        "col": 8
       },
       {
         "row": 8,
-        "col": 6
+        "col": 0
       },
       {
-        "row": 2,
-        "col": 3
+        "row": 8,
+        "col": 8
+      },
+      {
+        "row": 4,
+        "col": 0
       }
     ]
   },
@@ -10769,7 +10587,7 @@
     "name": "Prism Spark",
     "width": 9,
     "height": 9,
-    "maxMoves": 16,
+    "maxMoves": 23,
     "tiles": [
       [
         "YELLOW",
@@ -10885,69 +10703,70 @@
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "L_SHAPE"
+        "shape": "T_SHAPE"
       },
       {
         "type": "shape",
         "color": "YELLOW",
-        "shape": "T_SHAPE"
-      },
-      {
-        "type": "square",
-        "color": "GREEN"
+        "shape": "U_SHAPE"
       },
       {
         "type": "line",
-        "color": "RED",
+        "color": "GREEN",
         "length": 6
+      },
+      {
+        "type": "square",
+        "color": "RED"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 3,
+        "row": 1,
+        "col": 3
+      },
+      {
+        "row": 2,
+        "col": 7
+      },
+      {
+        "row": 5,
         "col": 1
       },
       {
         "row": 6,
-        "col": 2
+        "col": 5
       },
       {
-        "row": 5,
-        "col": 4
-      },
-      {
-        "row": 6,
-        "col": 7
-      },
-      {
-        "row": 3,
-        "col": 6
+        "row": 7,
+        "col": 3
       }
     ],
     "voids": [
       {
-        "row": 3,
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 0,
         "col": 8
       },
       {
         "row": 8,
-        "col": 3
+        "col": 0
       },
       {
-        "row": 0,
-        "col": 2
-      },
-      {
-        "row": 0,
-        "col": 4
+        "row": 8,
+        "col": 8
       },
       {
         "row": 4,
-        "col": 4
+        "col": 8
       }
     ]
   },
@@ -10957,7 +10776,7 @@
     "name": "Refraction",
     "width": 9,
     "height": 9,
-    "maxMoves": 15,
+    "maxMoves": 22,
     "tiles": [
       [
         "BLUE",
@@ -11073,12 +10892,12 @@
       {
         "type": "shape",
         "color": "RED",
-        "shape": "T_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "U_SHAPE"
+        "shape": "CROSS"
       },
       {
         "type": "line",
@@ -11088,59 +10907,56 @@
       {
         "type": "shape",
         "color": "YELLOW",
-        "shape": "Z_SHAPE"
+        "shape": "L_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
         "row": 1,
-        "col": 3
+        "col": 5
       },
       {
-        "row": 1,
+        "row": 3,
         "col": 2
       },
       {
         "row": 4,
-        "col": 4
+        "col": 7
       },
       {
         "row": 6,
-        "col": 2
+        "col": 1
       },
       {
-        "row": 1,
-        "col": 1
+        "row": 7,
+        "col": 6
       }
     ],
     "voids": [
       {
-        "row": 2,
+        "row": 0,
         "col": 0
       },
       {
         "row": 0,
-        "col": 2
+        "col": 8
       },
       {
-        "row": 1,
+        "row": 8,
         "col": 0
       },
       {
         "row": 8,
-        "col": 1
+        "col": 8
       },
       {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 5,
-        "col": 6
+        "row": 0,
+        "col": 4
       }
     ]
   },
@@ -11150,7 +10966,7 @@
     "name": "Spectrum Shift",
     "width": 9,
     "height": 9,
-    "maxMoves": 15,
+    "maxMoves": 22,
     "tiles": [
       [
         "ORANGE",
@@ -11270,74 +11086,71 @@
       },
       {
         "type": "shape",
-        "color": "GREEN",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
         "color": "BLUE",
         "shape": "Z_SHAPE"
       },
       {
         "type": "line",
-        "color": "RED",
+        "color": "GREEN",
         "length": 6
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "T_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      10,
+      6,
+      1
+    ],
     "frozen": [
       {
         "row": 1,
-        "col": 4
+        "col": 2
       },
       {
-        "row": 6,
-        "col": 4
-      },
-      {
-        "row": 6,
-        "col": 5
-      },
-      {
-        "row": 3,
-        "col": 4
+        "row": 2,
+        "col": 6
       },
       {
         "row": 4,
-        "col": 5
+        "col": 1
       },
       {
-        "row": 4,
-        "col": 3
+        "row": 5,
+        "col": 7
+      },
+      {
+        "row": 7,
+        "col": 4
       }
     ],
     "voids": [
       {
         "row": 0,
-        "col": 4
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 8
       },
       {
         "row": 8,
-        "col": 3
+        "col": 0
       },
       {
-        "row": 0,
-        "col": 1
-      },
-      {
-        "row": 2,
+        "row": 8,
         "col": 8
       },
       {
-        "row": 0,
-        "col": 8
+        "row": 8,
+        "col": 4
       },
       {
-        "row": 3,
-        "col": 3
+        "row": 4,
+        "col": 0
       }
     ]
   },
@@ -11347,7 +11160,7 @@
     "name": "Kaleidoscope",
     "width": 9,
     "height": 9,
-    "maxMoves": 14,
+    "maxMoves": 21,
     "tiles": [
       [
         "ORANGE",
@@ -11462,78 +11275,76 @@
       },
       {
         "type": "shape",
-        "color": "ORANGE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
         "color": "BLUE",
         "shape": "CROSS"
       },
       {
-        "type": "square",
-        "color": "GREEN"
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "L_SHAPE"
       },
       {
         "type": "line",
+        "color": "GREEN",
+        "length": 7
+      },
+      {
+        "type": "shape",
         "color": "RED",
-        "length": 5
+        "shape": "T_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      9,
+      5,
+      1
+    ],
     "frozen": [
+      {
+        "row": 1,
+        "col": 3
+      },
+      {
+        "row": 1,
+        "col": 6
+      },
       {
         "row": 3,
         "col": 4
       },
       {
-        "row": 1,
-        "col": 1
+        "row": 5,
+        "col": 2
       },
       {
-        "row": 4,
-        "col": 5
-      },
-      {
-        "row": 4,
+        "row": 6,
         "col": 7
       },
       {
-        "row": 4,
+        "row": 7,
         "col": 4
-      },
-      {
-        "row": 1,
-        "col": 6
       }
     ],
     "voids": [
       {
-        "row": 2,
-        "col": 8
-      },
-      {
         "row": 0,
-        "col": 7
-      },
-      {
-        "row": 5,
-        "col": 8
-      },
-      {
-        "row": 6,
-        "col": 8
-      },
-      {
-        "row": 6,
         "col": 0
       },
       {
-        "row": 6,
-        "col": 4
+        "row": 0,
+        "col": 8
+      },
+      {
+        "row": 8,
+        "col": 0
+      },
+      {
+        "row": 8,
+        "col": 8
+      },
+      {
+        "row": 4,
+        "col": 8
       }
     ]
   },
@@ -11543,7 +11354,7 @@
     "name": "Light Weaver",
     "width": 9,
     "height": 9,
-    "maxMoves": 17,
+    "maxMoves": 28,
     "tiles": [
       [
         "GREEN",
@@ -11658,88 +11469,76 @@
       },
       {
         "type": "shape",
-        "color": "GREEN",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
         "color": "YELLOW",
         "shape": "U_SHAPE"
       },
       {
         "type": "shape",
         "color": "BLUE",
-        "shape": "U_SHAPE"
+        "shape": "L_SHAPE"
+      },
+      {
+        "type": "shape",
+        "color": "GREEN",
+        "shape": "T_SHAPE"
       },
       {
         "type": "line",
         "color": "ORANGE",
-        "length": 7
+        "length": 6
       },
       {
-        "type": "shape",
-        "color": "RED",
-        "shape": "U_SHAPE"
+        "type": "square",
+        "color": "RED"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 10
-    },
+    "stars": [
+      13,
+      7,
+      1
+    ],
     "frozen": [
       {
-        "row": 2,
+        "row": 1,
         "col": 4
       },
       {
-        "row": 1,
-        "col": 5
+        "row": 3,
+        "col": 1
       },
       {
         "row": 3,
         "col": 7
       },
       {
-        "row": 7,
-        "col": 6
-      },
-      {
         "row": 6,
         "col": 2
       },
       {
-        "row": 4,
-        "col": 3
+        "row": 7,
+        "col": 6
       }
     ],
     "voids": [
       {
-        "row": 8,
-        "col": 3
-      },
-      {
-        "row": 3,
-        "col": 8
-      },
-      {
-        "row": 8,
-        "col": 2
-      },
-      {
-        "row": 2,
-        "col": 8
-      },
-      {
-        "row": 2,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 6,
+        "row": 0,
         "col": 8
       },
       {
-        "row": 3,
-        "col": 2
+        "row": 8,
+        "col": 0
+      },
+      {
+        "row": 8,
+        "col": 8
+      },
+      {
+        "row": 4,
+        "col": 0
       }
     ]
   },
@@ -11749,7 +11548,7 @@
     "name": "Chromatic Storm",
     "width": 9,
     "height": 9,
-    "maxMoves": 16,
+    "maxMoves": 27,
     "tiles": [
       [
         "YELLOW",
@@ -11860,96 +11659,85 @@
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "Z_SHAPE"
+        "shape": "T_SHAPE"
       },
       {
         "type": "shape",
         "color": "YELLOW",
-        "shape": "Z_SHAPE"
+        "shape": "L_SHAPE"
       },
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "Z_SHAPE"
+        "shape": "CROSS"
       },
       {
         "type": "shape",
         "color": "RED",
-        "shape": "Z_SHAPE"
+        "shape": "U_SHAPE"
       },
       {
         "type": "line",
         "color": "BLUE",
-        "length": 7
+        "length": 6
       },
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "CROSS"
+        "shape": "Z_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      12,
+      7,
+      1
+    ],
     "frozen": [
       {
-        "row": 7,
+        "row": 1,
         "col": 3
       },
       {
-        "row": 1,
-        "col": 4
+        "row": 2,
+        "col": 7
       },
       {
-        "row": 3,
+        "row": 4,
         "col": 1
       },
       {
-        "row": 7,
-        "col": 4
-      },
-      {
-        "row": 6,
-        "col": 5
-      },
-      {
         "row": 5,
-        "col": 3
+        "col": 6
       },
       {
-        "row": 6,
+        "row": 7,
         "col": 4
       }
     ],
     "voids": [
       {
-        "row": 1,
+        "row": 0,
         "col": 0
       },
       {
-        "row": 6,
+        "row": 0,
         "col": 8
       },
       {
         "row": 8,
-        "col": 2
-      },
-      {
-        "row": 6,
         "col": 0
       },
       {
-        "row": 5,
-        "col": 0
+        "row": 8,
+        "col": 8
       },
       {
         "row": 0,
         "col": 4
       },
       {
-        "row": 4,
-        "col": 3
+        "row": 8,
+        "col": 4
       }
     ]
   },
@@ -11959,7 +11747,7 @@
     "name": "Prismatic Core",
     "width": 9,
     "height": 9,
-    "maxMoves": 16,
+    "maxMoves": 26,
     "tiles": [
       [
         "RED",
@@ -12075,61 +11863,57 @@
       {
         "type": "shape",
         "color": "ORANGE",
-        "shape": "U_SHAPE"
+        "shape": "Z_SHAPE"
       },
       {
         "type": "shape",
         "color": "BLUE",
-        "shape": "U_SHAPE"
+        "shape": "T_SHAPE"
       },
       {
         "type": "shape",
         "color": "RED",
-        "shape": "U_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "GREEN",
-        "shape": "Z_SHAPE"
+        "shape": "L_SHAPE"
       },
       {
         "type": "line",
-        "color": "YELLOW",
+        "color": "GREEN",
         "length": 7
-      }
-    ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
-    "frozen": [
-      {
-        "row": 6,
-        "col": 4
       },
       {
-        "row": 4,
+        "type": "square",
+        "color": "YELLOW"
+      }
+    ],
+    "stars": [
+      12,
+      6,
+      1
+    ],
+    "frozen": [
+      {
+        "row": 1,
         "col": 2
+      },
+      {
+        "row": 1,
+        "col": 6
+      },
+      {
+        "row": 3,
+        "col": 4
       },
       {
         "row": 5,
         "col": 1
       },
       {
-        "row": 5,
-        "col": 3
+        "row": 6,
+        "col": 7
       },
       {
-        "row": 2,
-        "col": 6
-      },
-      {
-        "row": 1,
+        "row": 7,
         "col": 4
-      },
-      {
-        "row": 1,
-        "col": 3
       }
     ],
     "voids": [
@@ -12138,28 +11922,20 @@
         "col": 0
       },
       {
-        "row": 7,
+        "row": 0,
         "col": 8
       },
       {
         "row": 8,
-        "col": 5
-      },
-      {
-        "row": 8,
-        "col": 7
-      },
-      {
-        "row": 0,
-        "col": 6
-      },
-      {
-        "row": 2,
         "col": 0
       },
       {
+        "row": 8,
+        "col": 8
+      },
+      {
         "row": 4,
-        "col": 4
+        "col": 8
       }
     ]
   },
@@ -12169,7 +11945,7 @@
     "name": "Infinite Light",
     "width": 9,
     "height": 9,
-    "maxMoves": 15,
+    "maxMoves": 26,
     "tiles": [
       [
         "YELLOW",
@@ -12274,7 +12050,7 @@
     "goals": [
       {
         "type": "shape",
-        "color": "GREEN",
+        "color": "ORANGE",
         "shape": "CROSS"
       },
       {
@@ -12289,91 +12065,80 @@
       },
       {
         "type": "shape",
-        "color": "ORANGE",
-        "shape": "CROSS"
-      },
-      {
-        "type": "shape",
         "color": "RED",
-        "shape": "U_SHAPE"
+        "shape": "T_SHAPE"
       },
       {
         "type": "shape",
         "color": "GREEN",
-        "shape": "Z_SHAPE"
+        "shape": "L_SHAPE"
       },
       {
         "type": "line",
         "color": "BLUE",
         "length": 7
+      },
+      {
+        "type": "shape",
+        "color": "RED",
+        "shape": "Z_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 5,
-      "threeStar": 9
-    },
+    "stars": [
+      12,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 6,
-        "col": 7
-      },
-      {
-        "row": 3,
-        "col": 6
-      },
-      {
-        "row": 3,
-        "col": 1
+        "row": 1,
+        "col": 4
       },
       {
         "row": 2,
         "col": 7
       },
       {
-        "row": 5,
+        "row": 4,
         "col": 1
       },
       {
-        "row": 6,
+        "row": 5,
+        "col": 6
+      },
+      {
+        "row": 7,
         "col": 3
       },
       {
         "row": 7,
-        "col": 1
+        "col": 7
       }
     ],
     "voids": [
       {
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 8
+      },
+      {
         "row": 8,
+        "col": 0
+      },
+      {
+        "row": 8,
+        "col": 8
+      },
+      {
+        "row": 0,
         "col": 4
       },
       {
-        "row": 7,
-        "col": 8
-      },
-      {
-        "row": 6,
-        "col": 0
-      },
-      {
-        "row": 1,
-        "col": 8
-      },
-      {
-        "row": 1,
-        "col": 0
-      },
-      {
         "row": 8,
-        "col": 8
-      },
-      {
-        "row": 3,
-        "col": 8
-      },
-      {
-        "row": 3,
-        "col": 3
+        "col": 4
       }
     ]
   },
@@ -12383,7 +12148,7 @@
     "name": "Eternal Prism",
     "width": 9,
     "height": 9,
-    "maxMoves": 14,
+    "maxMoves": 25,
     "tiles": [
       [
         "RED",
@@ -12493,16 +12258,6 @@
       },
       {
         "type": "shape",
-        "color": "GREEN",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
-        "color": "ORANGE",
-        "shape": "Z_SHAPE"
-      },
-      {
-        "type": "shape",
         "color": "RED",
         "shape": "CROSS"
       },
@@ -12513,85 +12268,80 @@
       },
       {
         "type": "shape",
-        "color": "YELLOW",
+        "color": "GREEN",
         "shape": "Z_SHAPE"
       },
       {
+        "type": "shape",
+        "color": "ORANGE",
+        "shape": "T_SHAPE"
+      },
+      {
         "type": "line",
+        "color": "YELLOW",
+        "length": 7
+      },
+      {
+        "type": "shape",
         "color": "GREEN",
-        "length": 5
+        "shape": "L_SHAPE"
       }
     ],
-    "stars": {
-      "twoStar": 4,
-      "threeStar": 8
-    },
+    "stars": [
+      11,
+      6,
+      1
+    ],
     "frozen": [
       {
-        "row": 7,
-        "col": 6
-      },
-      {
-        "row": 7,
-        "col": 2
-      },
-      {
-        "row": 5,
-        "col": 1
-      },
-      {
-        "row": 3,
-        "col": 2
-      },
-      {
-        "row": 6,
-        "col": 6
-      },
-      {
-        "row": 7,
-        "col": 5
+        "row": 1,
+        "col": 3
       },
       {
         "row": 2,
         "col": 6
       },
       {
-        "row": 4,
+        "row": 3,
+        "col": 1
+      },
+      {
+        "row": 5,
+        "col": 7
+      },
+      {
+        "row": 6,
         "col": 2
+      },
+      {
+        "row": 7,
+        "col": 5
       }
     ],
     "voids": [
       {
-        "row": 6,
+        "row": 0,
+        "col": 0
+      },
+      {
+        "row": 0,
+        "col": 8
+      },
+      {
+        "row": 8,
         "col": 0
       },
       {
         "row": 8,
-        "col": 6
-      },
-      {
-        "row": 5,
         "col": 8
       },
       {
-        "row": 2,
+        "row": 4,
         "col": 0
       },
       {
-        "row": 0,
-        "col": 4
-      },
-      {
-        "row": 0,
-        "col": 0
-      },
-      {
-        "row": 0,
-        "col": 5
-      },
-      {
-        "row": 2,
-        "col": 2
+        "row": 4,
+        "col": 8
       }
     ]
   }
