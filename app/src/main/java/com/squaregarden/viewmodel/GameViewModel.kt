@@ -758,15 +758,15 @@ class GameViewModel(
         val startingWorld = difficulty.startingWorld
         val skillMultiplier = difficulty.starMultiplier
         val worldThresholds = listOf(
-            Triple(2, 9, "Blooming Meadow"),
-            Triple(3, 25, "Ancient Grove"),
-            Triple(4, 50, "Crystal Cavern"),
-            Triple(5, 85, "Shattered Isles"),
-            Triple(6, 130, "Void Fortress"),
-            Triple(7, 185, "Molten Core"),
-            Triple(8, 250, "Starfall Summit"),
-            Triple(9, 325, "Abyssal Depths"),
-            Triple(10, 410, "Prism Citadel")
+            Triple(2, 8, "Blooming Meadow"),
+            Triple(3, 20, "Ancient Grove"),
+            Triple(4, 35, "Crystal Cavern"),
+            Triple(5, 55, "Shattered Isles"),
+            Triple(6, 80, "Void Fortress"),
+            Triple(7, 110, "Molten Core"),
+            Triple(8, 145, "Starfall Summit"),
+            Triple(9, 185, "Abyssal Depths"),
+            Triple(10, 230, "Prism Citadel")
         )
         for ((worldId, baseThreshold, name) in worldThresholds) {
             if (worldId <= startingWorld) continue

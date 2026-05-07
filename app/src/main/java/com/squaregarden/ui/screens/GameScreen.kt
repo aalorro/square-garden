@@ -100,6 +100,7 @@ fun GameScreen(
             swapAnim = state.swapAnim,
             completedGoalCells = state.completedGoalCells.values.flatten().toSet(),
             onDragSwap = { from, to -> viewModel.onDragSwap(from, to) },
+            onCellTapped = { row, col -> viewModel.onCellTapped(row, col) },
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 12.dp, vertical = 8.dp)

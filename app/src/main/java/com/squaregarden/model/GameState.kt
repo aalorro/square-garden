@@ -126,11 +126,11 @@ enum class GameDifficulty(val label: String, val starMultiplier: Float) {
                     points < 14f -> VERY_HARD
                     else -> EXTREMELY_HARD
                 }
-                Difficulty.HARD -> when {   // Pro — generous (more skilled, things feel easier)
-                    points < 4f -> EASY
-                    points < 7f -> MEDIUM
-                    points < 10f -> HARD
-                    points < 15f -> VERY_HARD
+                Difficulty.HARD -> when {   // Pro — tighter (skilled players earn harder ratings)
+                    points < 2f -> EASY
+                    points < 4f -> MEDIUM
+                    points < 7f -> HARD
+                    points < 10f -> VERY_HARD
                     else -> EXTREMELY_HARD
                 }
             }

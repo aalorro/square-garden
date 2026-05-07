@@ -2,6 +2,7 @@ package com.squaregarden.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -28,6 +29,7 @@ fun GameBoardCanvas(
     swapAnim: SwapAnimation?,
     completedGoalCells: Set<CellPos>,
     onDragSwap: (from: CellPos, to: CellPos) -> Unit,
+    onCellTapped: ((row: Int, col: Int) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var cellSizePx by remember { mutableFloatStateOf(0f) }
@@ -40,6 +42,15 @@ fun GameBoardCanvas(
     Canvas(
         modifier = modifier
             .aspectRatio(board.width.toFloat() / board.height)
+            .pointerInput(board.width, board.height, onCellTapped) {
+                detectTapGestures { offset ->
+                    if (cellSizePx > 0f && onCellTapped != null) {
+                        val col = (offset.x / cellSizePx).toInt().coerceIn(0, board.width - 1)
+                        val row = (offset.y / cellSizePx).toInt().coerceIn(0, board.height - 1)
+                        onCellTapped(row, col)
+                    }
+                }
+            }
             .pointerInput(board.width, board.height) {
                 detectDragGestures(
                     onDragStart = { offset ->
