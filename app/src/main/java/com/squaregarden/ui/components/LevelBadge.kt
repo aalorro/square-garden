@@ -15,6 +15,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +34,7 @@ fun PlayerBadge(
     modifier: Modifier = Modifier
 ) {
     var showMenu by remember { mutableStateOf(false) }
+    val isCompact = LocalConfiguration.current.screenWidthDp < 600
 
     // Animated star counter: counts up over max 5 seconds then snaps to total
     var displayedStars by remember { mutableIntStateOf(totalStars) }
@@ -54,43 +56,46 @@ fun PlayerBadge(
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
-                .shadow(4.dp, RoundedCornerShape(16.dp))
+                .shadow(4.dp, RoundedCornerShape(if (isCompact) 12.dp else 16.dp))
                 .background(
                     MaterialTheme.colorScheme.surface,
-                    RoundedCornerShape(16.dp)
+                    RoundedCornerShape(if (isCompact) 12.dp else 16.dp)
                 )
                 .clickable { showMenu = true }
-                .padding(horizontal = 8.dp, vertical = 6.dp),
+                .padding(
+                    horizontal = if (isCompact) 5.dp else 8.dp,
+                    vertical = if (isCompact) 3.dp else 6.dp
+                ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (isCompact) 4.dp else 6.dp)
         ) {
             // Avatar circle
             Box(
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(if (isCompact) 34.dp else 60.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = avatarEmoji, fontSize = 32.sp)
+                Text(text = avatarEmoji, fontSize = if (isCompact) 18.sp else 32.sp)
             }
 
             // Level + Games + Stars + Lives stacked
             Column {
                 Text(
                     text = "Lv $playerLevel",
-                    fontSize = 26.sp,
+                    fontSize = if (isCompact) 15.sp else 26.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = "$gamesPlayed played",
-                    fontSize = 12.sp,
+                    fontSize = if (isCompact) 9.sp else 12.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
                 Text(
                     text = "$displayedStars ★",
-                    fontSize = 22.sp,
+                    fontSize = if (isCompact) 13.sp else 22.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = Color(0xFFD4A017),
                     modifier = Modifier.onGloballyPositioned { coords ->
@@ -103,7 +108,7 @@ fun PlayerBadge(
                 )
                 Text(
                     text = "\u2764".repeat(lives),
-                    fontSize = 16.sp,
+                    fontSize = if (isCompact) 11.sp else 16.sp,
                     color = Color(0xFFE53935)
                 )
             }

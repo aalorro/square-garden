@@ -1,8 +1,8 @@
 package com.squaregarden.ui.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -34,6 +34,12 @@ fun GameBoardCanvas(
 ) {
     var cellSizePx by remember { mutableFloatStateOf(0f) }
 
+    // Use rememberUpdatedState so the gesture coroutine always sees the latest
+    // callbacks and board without restarting pointerInput on every recomposition
+    val currentBoard by rememberUpdatedState(board)
+    val currentOnDragSwap by rememberUpdatedState(onDragSwap)
+    val currentOnCellTapped by rememberUpdatedState(onCellTapped)
+
     // Track drag state: which cell the drag started in, cumulative drag offset
     var dragStartCell by remember { mutableStateOf<CellPos?>(null) }
     var dragOffset by remember { mutableStateOf(Offset.Zero) }
@@ -42,67 +48,53 @@ fun GameBoardCanvas(
     Canvas(
         modifier = modifier
             .aspectRatio(board.width.toFloat() / board.height)
-            .pointerInput(board.width, board.height, onCellTapped) {
-                detectTapGestures { offset ->
-                    if (cellSizePx > 0f && onCellTapped != null) {
-                        val col = (offset.x / cellSizePx).toInt().coerceIn(0, board.width - 1)
-                        val row = (offset.y / cellSizePx).toInt().coerceIn(0, board.height - 1)
-                        onCellTapped(row, col)
-                    }
-                }
-            }
             .pointerInput(board.width, board.height) {
-                detectDragGestures(
-                    onDragStart = { offset ->
-                        if (cellSizePx > 0f) {
-                            val col = (offset.x / cellSizePx).toInt().coerceIn(0, board.width - 1)
-                            val row = (offset.y / cellSizePx).toInt().coerceIn(0, board.height - 1)
-                            // Don't start drag on void or frozen cells
-                            if (!board.isVoid(row, col) && !board.tileAt(row, col).frozen) {
-                                dragStartCell = CellPos(row, col)
-                                dragOffset = Offset.Zero
-                                dragCommitted = false
+                awaitEachGesture {
+                    val down = awaitFirstDown()
+                    if (cellSizePx <= 0f) return@awaitEachGesture
+                    val b = currentBoard
+                    val startCol = (down.position.x / cellSizePx).toInt().coerceIn(0, b.width - 1)
+                    val startRow = (down.position.y / cellSizePx).toInt().coerceIn(0, b.height - 1)
+                    val startCell = CellPos(startRow, startCol)
+                    val canDrag = !b.isVoid(startRow, startCol) && !b.tileAt(startRow, startCol).frozen
+                    var totalDrag = Offset.Zero
+                    var committed = false
+
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val change = event.changes.firstOrNull() ?: break
+                        if (!change.pressed) {
+                            // Finger lifted — if no drag committed, it's a tap
+                            if (!committed) {
+                                currentOnCellTapped?.invoke(startRow, startCol)
                             }
+                            break
                         }
-                    },
-                    onDrag = { change, dragAmount ->
+                        if (committed || !canDrag) continue
+                        val delta = change.position - change.previousPosition
+                        totalDrag += delta
                         change.consume()
-                        if (!dragCommitted) {
-                            dragOffset += dragAmount
-                            val cs = cellSizePx
-                            // If drag exceeds half a cell in one direction, commit the swap
-                            val threshold = cs * 0.35f
-                            val start = dragStartCell ?: return@detectDragGestures
-                            val target = when {
-                                dragOffset.x > threshold && start.col < board.width - 1 ->
-                                    CellPos(start.row, start.col + 1)
-                                dragOffset.x < -threshold && start.col > 0 ->
-                                    CellPos(start.row, start.col - 1)
-                                dragOffset.y > threshold && start.row < board.height - 1 ->
-                                    CellPos(start.row + 1, start.col)
-                                dragOffset.y < -threshold && start.row > 0 ->
-                                    CellPos(start.row - 1, start.col)
-                                else -> null
-                            }
-                            if (target != null) {
-                                dragCommitted = true
-                                dragOffset = Offset.Zero
-                                dragStartCell = null
-                                onDragSwap(start, target)
-                            }
+                        val threshold = cellSizePx * 0.35f
+                        val target = when {
+                            totalDrag.x > threshold && startCol < b.width - 1 ->
+                                CellPos(startRow, startCol + 1)
+                            totalDrag.x < -threshold && startCol > 0 ->
+                                CellPos(startRow, startCol - 1)
+                            totalDrag.y > threshold && startRow < b.height - 1 ->
+                                CellPos(startRow + 1, startCol)
+                            totalDrag.y < -threshold && startRow > 0 ->
+                                CellPos(startRow - 1, startCol)
+                            else -> null
                         }
-                    },
-                    onDragEnd = {
-                        dragStartCell = null
-                        dragOffset = Offset.Zero
-                        dragCommitted = false
-                    },
-                    onDragCancel = {
-                        dragStartCell = null
-                        dragOffset = Offset.Zero
-                        dragCommitted = false
+                        if (target != null) {
+                            committed = true
+                            currentOnDragSwap(startCell, target)
+                        }
                     }
-                )
+                    dragStartCell = null
+                    dragOffset = Offset.Zero
+                    dragCommitted = false
+                }
             }
     ) {
         val cs = size.width / board.width

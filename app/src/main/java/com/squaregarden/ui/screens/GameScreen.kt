@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +41,7 @@ fun GameScreen(
         factory = GameViewModelFactory(context.applicationContext, levelId)
     )
     val state by viewModel.state.collectAsState()
+    val isCompact = LocalConfiguration.current.screenWidthDp < 600
 
     Column(
         modifier = Modifier
@@ -52,7 +54,7 @@ fun GameScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
+                .padding(horizontal = if (isCompact) 8.dp else 16.dp, vertical = if (isCompact) 6.dp else 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val hasNotMoved = state.movesRemaining == state.level.maxMoves
@@ -63,7 +65,7 @@ fun GameScreen(
             ) {
                 Text(
                     text = "\u2190",
-                    fontSize = 24.sp,
+                    fontSize = if (isCompact) 20.sp else 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (canGoBack) MaterialTheme.colorScheme.onBackground
                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
@@ -72,7 +74,7 @@ fun GameScreen(
             Text(
                 text = state.level.name,
                 fontFamily = com.squaregarden.ui.theme.DisplayFontFamily,
-                fontSize = 16.sp,
+                fontSize = if (isCompact) 13.sp else 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1
