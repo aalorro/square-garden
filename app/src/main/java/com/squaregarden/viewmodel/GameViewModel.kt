@@ -452,6 +452,20 @@ class GameViewModel(
     fun onDragSwap(from: CellPos, to: CellPos) {
         val current = _state.value
         if (current.phase != GamePhase.PLAYING) return
+
+        // Passthrough skip: jump over completed goal cells and land on the other side
+        val borderedCells = allGoalCells()
+        if (current.passthroughActive && to in borderedCells && from !in borderedCells) {
+            val dr = to.row - from.row
+            val dc = to.col - from.col
+            var r = to.row; var c = to.col
+            while (CellPos(r, c) in borderedCells) { r += dr; c += dc }
+            if (!current.board.isValidCell(r, c)) return
+            if (current.board.tileAt(r, c).frozen) return
+            executePassthroughSwap(from, CellPos(r, c))
+            return
+        }
+
         if (!BoardEngine.canSwap(current.board, from, to)) return
         executeSwap(from, to)
     }
@@ -517,8 +531,22 @@ class GameViewModel(
             }
             current.selectedCell == tapped ->
                 _state.value = current.copy(selectedCell = null)
-            BoardEngine.canSwap(current.board, current.selectedCell, tapped) ->
-                executeSwap(current.selectedCell, tapped)
+            BoardEngine.canSwap(current.board, current.selectedCell, tapped) -> {
+                // Passthrough skip for tap-swap
+                val borderedCells = allGoalCells()
+                val sel = current.selectedCell
+                if (current.passthroughActive && tapped in borderedCells && sel !in borderedCells) {
+                    val dr = tapped.row - sel.row
+                    val dc = tapped.col - sel.col
+                    var r = tapped.row; var c = tapped.col
+                    while (CellPos(r, c) in borderedCells) { r += dr; c += dc }
+                    if (current.board.isValidCell(r, c) && !current.board.tileAt(r, c).frozen) {
+                        executePassthroughSwap(sel, CellPos(r, c))
+                    }
+                } else {
+                    executeSwap(sel, tapped)
+                }
+            }
             else -> {
                 _state.value = current.copy(selectedCell = tapped, hintCells = emptySet())
                 audioManager.playTap()
@@ -534,9 +562,8 @@ class GameViewModel(
         val borderedCells = allGoalCells()
         val crossesBorder = from in borderedCells || to in borderedCells
 
-        val usePassthrough = crossesBorder && current.passthroughActive
-
-        if (crossesBorder && difficulty == Difficulty.HARD && !usePassthrough) return
+        // Pro blocks swaps touching goal cells (passthrough skip handled before reaching here)
+        if (crossesBorder && difficulty == Difficulty.HARD) return
 
         hasMovedSinceReset = true
         _state.value = current.copy(
@@ -554,23 +581,13 @@ class GameViewModel(
                 delay(stepDelay)
             }
 
-            // Consume passthrough token and deactivate after use
-            if (usePassthrough) {
-                progressRepo.usePassthroughToken()
-                passthroughTokens--
-                audioManager.playMatch() // audio feedback for passthrough use
-                _state.value = _state.value.copy(
-                    passthroughActive = false, passthroughTokens = passthroughTokens
-                )
-            }
-
             val newBoard = BoardEngine.executeSwap(current.board, from, to)
             val newMoves = current.movesRemaining - 1
 
             var baseGoalIds = current.completedGoalIds
             var baseGoalCells = current.completedGoalCells
             var invalidatedGoals = emptySet<String>()
-            if (crossesBorder && !usePassthrough && (difficulty == Difficulty.EASY || difficulty == Difficulty.MEDIUM)) {
+            if (crossesBorder && (difficulty == Difficulty.EASY || difficulty == Difficulty.MEDIUM)) {
                 invalidatedGoals = current.completedGoalCells.filter { (_, cells) ->
                     from in cells || to in cells
                 }.keys
@@ -624,6 +641,87 @@ class GameViewModel(
                 board = newBoard, movesRemaining = newMoves,
                 completedGoalIds = newCompleted, completedGoalCells = newGoalCells,
                 selectedCell = null, hintCells = emptySet(), swapAnim = null,
+                phase = phase, starsAwarded = starsAwarded, winsToRestoreLife = winsNeeded,
+                unlockedWorldName = unlockedWorld
+            )
+        }
+    }
+
+    /** Passthrough swap: tile jumps over completed goal cells and lands on the other side. */
+    private fun executePassthroughSwap(from: CellPos, landing: CellPos) {
+        val current = _state.value
+
+        hasMovedSinceReset = true
+        _state.value = current.copy(
+            phase = GamePhase.ANIMATING, selectedCell = null,
+            hintCells = emptySet(), swapAnim = SwapAnimation(from, landing, 0f)
+        )
+
+        viewModelScope.launch {
+            audioManager.playSwap()
+            val steps = 15; val stepDelay = 17L
+            for (i in 1..steps) {
+                val t = i.toFloat() / steps
+                val eased = 1f - (1f - t) * (1f - t) * (1f - t)
+                _state.value = _state.value.copy(swapAnim = SwapAnimation(from, landing, eased))
+                delay(stepDelay)
+            }
+
+            // Consume passthrough token
+            progressRepo.usePassthroughToken()
+            passthroughTokens--
+            audioManager.playMatch()
+
+            // Swap from <-> landing directly; goal cells in between are untouched
+            val newBoard = current.board.withSwap(from.row, from.col, landing.row, landing.col)
+            val newMoves = current.movesRemaining - 1
+
+            // Re-evaluate goals (no invalidation — goal cells stayed in place)
+            val metGoalIds = BoardEngine.evaluateGoals(newBoard, current.level.goals)
+            val newCompleted = current.completedGoalIds + metGoalIds
+
+            val newGoalCells = current.completedGoalCells.toMutableMap()
+            for (goal in current.level.goals) {
+                if (goal.id in newCompleted) {
+                    val cells = PatternMatcher.findGoalPositions(newBoard, goal)
+                    if (cells != null) newGoalCells[goal.id] = cells
+                } else {
+                    newGoalCells.remove(goal.id)
+                }
+            }
+
+            val won = BoardEngine.checkWin(newCompleted, current.level.goals)
+            val lost = BoardEngine.checkLose(newMoves, won)
+
+            if ((newCompleted - current.completedGoalIds).isNotEmpty()) audioManager.playMatch()
+
+            var starsAwarded = 0; var winsNeeded = 0; var unlockedWorld: String? = null
+            val phase = when {
+                won -> {
+                    val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
+                    val gameDiff = _state.value.gameDifficulty
+                    starsAwarded = (baseStars * difficulty.starMultiplier * gameDiff.starMultiplier).roundToInt()
+                    audioManager.playWin(baseStars)
+                    val oldTotal = progressRepo.totalStarsFlow.first()
+                    unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
+                    winResultCommitted = false
+                    pendingWinLevelId = current.level.id
+                    pendingWinStars = starsAwarded
+                    GamePhase.WON
+                }
+                lost -> {
+                    audioManager.playLose()
+                    progressRepo.loseLife(difficulty.ordinal)
+                    GamePhase.LOST
+                }
+                else -> GamePhase.PLAYING
+            }
+
+            _state.value = _state.value.copy(
+                board = newBoard, movesRemaining = newMoves,
+                completedGoalIds = newCompleted, completedGoalCells = newGoalCells,
+                selectedCell = null, hintCells = emptySet(), swapAnim = null,
+                passthroughActive = false, passthroughTokens = passthroughTokens,
                 phase = phase, starsAwarded = starsAwarded, winsToRestoreLife = winsNeeded,
                 unlockedWorldName = unlockedWorld
             )
