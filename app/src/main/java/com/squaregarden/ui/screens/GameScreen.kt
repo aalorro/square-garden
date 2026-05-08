@@ -191,7 +191,9 @@ fun GameScreen(
                 icon = "\u21BB",
                 label = "\u00D7${state.redoTokens}",
                 onClick = { viewModel.executeRedo() },
-                enabled = state.redoTokens > 0 && state.phase == GamePhase.PLAYING
+                enabled = state.redoTokens > 0 && state.phase == GamePhase.PLAYING,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
     }
