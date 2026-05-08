@@ -41,58 +41,65 @@ fun DrawScope.drawEmbossedTile(
     cornerR: Float
 ) {
     val tileInset = cs * 0.08f
-    val embossWidth = cs * 0.045f
+    val embossWidth = cs * 0.065f
     val tileCorner = cornerR * 0.9f
     val tileX = x + tileInset
     val tileY = y + tileInset
     val tileW = cs - tileInset * 2
     val tileH = cs - tileInset * 2
 
-    // Shadow edge (bottom-right)
+    // Drop shadow (soft outer shadow for depth)
     drawRoundRect(
-        color = color.toDarkColor().copy(alpha = 0.55f),
-        topLeft = Offset(tileX + embossWidth * 0.3f, tileY + embossWidth * 0.6f),
+        color = Color.Black.copy(alpha = 0.25f),
+        topLeft = Offset(tileX + embossWidth * 0.5f, tileY + embossWidth * 0.8f),
         size = Size(tileW, tileH),
         cornerRadius = CornerRadius(tileCorner)
     )
 
-    // Main tile body
+    // Shadow edge (bottom-right bevel)
+    drawRoundRect(
+        color = color.toDarkColor().copy(alpha = 0.9f),
+        topLeft = Offset(tileX + embossWidth * 0.35f, tileY + embossWidth * 0.6f),
+        size = Size(tileW, tileH),
+        cornerRadius = CornerRadius(tileCorner)
+    )
+
+    // Highlight edge (top-left bevel)
+    drawRoundRect(
+        color = color.toLightColor().copy(alpha = 0.9f),
+        topLeft = Offset(tileX, tileY),
+        size = Size(tileW, tileH),
+        cornerRadius = CornerRadius(tileCorner)
+    )
+
+    // Main tile body (inset to reveal bevel edges)
     drawRoundRect(
         color = color.toComposeColor(),
-        topLeft = Offset(tileX, tileY),
-        size = Size(tileW, tileH),
-        cornerRadius = CornerRadius(tileCorner)
-    )
-
-    // Highlight edge (top-left inner bevel)
-    drawRoundRect(
-        color = color.toLightColor().copy(alpha = 0.6f),
-        topLeft = Offset(tileX, tileY),
+        topLeft = Offset(tileX + embossWidth * 0.5f, tileY + embossWidth * 0.5f),
         size = Size(tileW - embossWidth, tileH - embossWidth),
-        cornerRadius = CornerRadius(tileCorner)
+        cornerRadius = CornerRadius(tileCorner * 0.85f)
     )
 
-    // Re-draw center to clean the bevel
+    // Top sheen (glossy highlight)
     drawRoundRect(
-        color = color.toComposeColor(),
-        topLeft = Offset(tileX + embossWidth, tileY + embossWidth),
-        size = Size(tileW - embossWidth * 2, tileH - embossWidth * 2),
-        cornerRadius = CornerRadius(tileCorner * 0.8f)
-    )
-
-    // Subtle inner glow / sheen at top
-    drawRoundRect(
-        color = Color.White.copy(alpha = 0.15f),
-        topLeft = Offset(tileX + embossWidth * 1.5f, tileY + embossWidth),
-        size = Size(tileW - embossWidth * 3, tileH * 0.35f),
+        color = Color.White.copy(alpha = 0.28f),
+        topLeft = Offset(tileX + embossWidth * 1.2f, tileY + embossWidth * 0.7f),
+        size = Size(tileW - embossWidth * 2.4f, tileH * 0.32f),
         cornerRadius = CornerRadius(tileCorner * 0.7f)
+    )
+
+    // Specular highlight dot (top-left corner)
+    drawCircle(
+        color = Color.White.copy(alpha = 0.35f),
+        radius = cs * 0.06f,
+        center = Offset(tileX + tileW * 0.25f, tileY + tileH * 0.22f)
     )
 }
 
 fun DrawScope.drawTileMotif(color: TileColor, x: Float, y: Float, cs: Float) {
     val cx = x + cs / 2
     val cy = y + cs / 2
-    val motifColor = color.toDarkColor().copy(alpha = 0.25f)
+    val motifColor = color.toDarkColor().copy(alpha = 0.3f)
     val motifSize = cs * 0.16f
 
     when (color) {
