@@ -178,7 +178,11 @@ fun SettingsScreen(navController: NavHostController) {
                         if (signedIn) {
                             PlayGamesManager.showAllLeaderboards(activity)
                         } else {
-                            PlayGamesManager.signIn(activity)
+                            PlayGamesManager.signIn(activity) { success ->
+                                if (success) {
+                                    PlayGamesManager.showAllLeaderboards(activity)
+                                }
+                            }
                         }
                     }
                 },

@@ -18,8 +18,16 @@ object PlayGamesManager {
             }
     }
 
-    fun signIn(activity: Activity) {
+    fun signIn(activity: Activity, onComplete: ((Boolean) -> Unit)? = null) {
         PlayGames.getGamesSignInClient(activity).signIn()
+            .addOnCompleteListener { task ->
+                val success = task.isSuccessful
+                Log.d(TAG, "Sign-in complete: success=$success")
+                if (!success) {
+                    Log.e(TAG, "Sign-in failed", task.exception)
+                }
+                onComplete?.invoke(success)
+            }
     }
 
     fun submitTotalStars(activity: Activity, difficulty: Difficulty, totalStars: Int) {
@@ -41,6 +49,9 @@ object PlayGamesManager {
             .allLeaderboardsIntent
             .addOnSuccessListener { intent ->
                 activity.startActivity(intent)
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to open leaderboards: ${e.message}", e)
             }
     }
 
