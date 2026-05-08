@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -137,12 +138,13 @@ fun GoalPanel(
                     )
                     if (gameDifficulty != null) {
                         Spacer(modifier = Modifier.weight(1f))
+                        val isDark = MaterialTheme.colorScheme.background.luminance() < 0.3f
                         val diffColor = when (gameDifficulty) {
-                            GameDifficulty.EASY -> Color(0xFF43A047)
-                            GameDifficulty.MEDIUM -> Color(0xFF1E88E5)
-                            GameDifficulty.HARD -> Color(0xFFEF6C00)
-                            GameDifficulty.VERY_HARD -> Color(0xFFC62828)
-                            GameDifficulty.EXTREMELY_HARD -> Color(0xFF6A1B9A)
+                            GameDifficulty.EASY -> if (isDark) Color(0xFF81C784) else Color(0xFF43A047)
+                            GameDifficulty.MEDIUM -> if (isDark) Color(0xFF64B5F6) else Color(0xFF1E88E5)
+                            GameDifficulty.HARD -> if (isDark) Color(0xFFFFB74D) else Color(0xFFEF6C00)
+                            GameDifficulty.VERY_HARD -> if (isDark) Color(0xFFEF5350) else Color(0xFFC62828)
+                            GameDifficulty.EXTREMELY_HARD -> if (isDark) Color(0xFFCE93D8) else Color(0xFF6A1B9A)
                         }
                         Text(
                             text = gameDifficulty.label,
