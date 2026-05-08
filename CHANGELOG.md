@@ -2,6 +2,29 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.3.0] - 2026-05-08 (Build 5)
+
+### New Features
+- **Redo tile power-up** — Special tiles appear randomly on World 4+ boards (~25% chance). Capture one as part of a completed goal to earn a redo token. Redo tokens let you restart a level without penalty.
+- **Perfect game award** — Complete all goals in the same number of moves as goals (World 5+) to earn 2x stars and +1 of every token (shuffle, passthrough, unfreeze, redo).
+- **Leaderboard opt-in toggle** — Choose whether to submit scores to Google Play Games leaderboards (default off). Toggle in Profile screen.
+- **Visual goal grid** — Goals displayed as a graphical grid of mini embossed tile shapes instead of text descriptions. Grid layout adapts to 2-7 goals — fewer goals means bigger shapes.
+- **Bas-relief avatars** — Cartoony, sculpted avatar display with beveled medallion, specular highlights, and subtle breathing animation.
+- **Passthrough through frozen tiles** — Passthrough power-up now jumps over frozen tiles as well as completed goal cells.
+
+### UI/UX
+- **Vivid beveled tiles** — Richer, more saturated tile colors with stronger 3D embossing (thicker bevel, drop shadow, specular highlight).
+- **Horizontal PlayerBadge** — All player info (level, stars, lives, trophies) in a single compact row instead of a vertical stack.
+- **Redo button visibility** — Redo button now uses themed secondary container colors, visible in all themes including dark mode.
+- **Dark theme difficulty labels** — All difficulty labels (Easy through Extremely Hard) now use lighter colors in dark themes for readability.
+- **Perfect game count** — Trophy icon with count displayed in PlayerBadge and HomeScreen star chip.
+- **Back button** on How to Play page.
+
+### Bug Fixes
+- Fixed redo not resetting moves to full amount when using a redo token
+- Fixed cooldown bypass — players can no longer access game screens during the 5-minute cooldown by minimizing the timer overlay
+- Removed duplicate avatar on HomeScreen that was hidden behind the PlayerBadge
+
 ## [1.2.0] - 2026-05-07 (Build 4)
 
 ### New Features

@@ -43,18 +43,19 @@ FEATURES
 
 ---
 
-## Release Notes — Version 1.2.0 (What's New)
+## Release Notes — Version 1.3.0 (What's New)
 
-What's new in 1.2.0:
+What's new in 1.3.0:
 
-- 3 new power-ups earned through gameplay:
-  - Shuffle — randomize the board when you're stuck (completed goals stay put!)
-  - Passthrough — cross a goal border without breaking it
-  - Unfreeze — thaw a frozen tile with a tap
-- Redesigned late-game levels (Worlds 7-10) for better balance and solvability
-- Minimizable cooldown timer — shrink it to a chip while you watch solution replays
-- Compact UI on phones and 7" tablets — bigger game board, more room to play
-- Dynamic win celebrations with randomized messages
-- Bug fixes and performance improvements
+- Redo tile power-up — capture special tiles on World 4+ boards to earn free level restarts
+- Perfect game award — finish all goals in minimal moves (World 5+) for 2x stars and bonus tokens
+- Visual goal grid — goals are now displayed as mini tile shapes instead of text
+- Vivid 3D tiles — richer colors, stronger bevel, and specular highlights
+- Cartoony bas-relief avatars with sculpted medallion styling
+- Passthrough now jumps over frozen tiles too
+- Horizontal compact PlayerBadge — all stats in one row
+- Leaderboard opt-in toggle in Profile
+- Dark theme improvements — all labels now readable
+- Bug fixes: cooldown bypass, redo move reset, duplicate avatar
 
 Happy gardening!

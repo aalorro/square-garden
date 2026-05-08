@@ -38,18 +38,28 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 | **Medium** | 1.0x | 2x | World 2 | Breaks on cross |
 | **Hard** | 0.7x | 3x | World 3 | Locks tiles |
 
-Players start at a world matching their skill level — no grinding through easy content. Difficulty can be changed anytime in the profile.
+Players start at a world matching their skill level — no grinding through easy content. Skill is locked after profile creation; reset progress in Settings to change.
+
+### Power-Ups
+- **Shuffle** — Randomize the board when stuck (completed goals stay put)
+- **Passthrough** — Next swap jumps over completed goal cells and frozen tiles
+- **Unfreeze** — Tap a frozen tile to thaw it
+- **Redo** — Special tiles appear on World 4+ boards (~25% chance). Capture one in a goal to earn a redo token for a free level restart
+- **Perfect Game** — Complete all goals in minimal moves (World 5+) for 2x stars and +1 of every token
 
 ### Features
 - Difficulty-based starting worlds (skip easy content if you're experienced)
 - Drag-to-swap with animated sliding
-- Embossed tile rendering with unique motifs per color
+- Vivid beveled tile rendering with embossed 3D effect and unique motifs per color
+- Visual goal grid — goals shown as mini tile shapes instead of text
+- Cartoony bas-relief avatar medallions with breathing animation
 - Hint system (highlights quadrant containing best move)
 - 6 color themes (Light, Dark, Summer, Winter, Fall, Spring)
 - User profiles with emoji avatars
 - Star trail animations on win
 - Life system with difficulty-gated recovery
 - Win streak tracking
+- Google Play Games leaderboards (opt-in)
 
 ## Tech Stack
 
