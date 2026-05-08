@@ -175,13 +175,23 @@ fun SettingsScreen(navController: NavHostController) {
                 onClick = {
                     val activity = context as? android.app.Activity ?: return@OutlinedButton
                     PlayGamesManager.checkSignIn(activity) { signedIn ->
-                        if (signedIn) {
+                        val openLeaderboards = {
+                            // Submit current progress before showing leaderboards
+                            scope.launch {
+                                val totalStars = progressRepo.totalStarsFlow.first()
+                                val progress = progressRepo.loadProgress()
+                                val diff = com.squaregarden.model.Difficulty.fromId(currentProfile.difficulty)
+                                val highestLevel = progress.highestUnlockedLevel(diff.startingLevel)
+                                PlayGamesManager.submitTotalStars(activity, diff, totalStars)
+                                PlayGamesManager.submitHighestLevel(activity, diff, highestLevel)
+                            }
                             PlayGamesManager.showAllLeaderboards(activity)
+                        }
+                        if (signedIn) {
+                            openLeaderboards()
                         } else {
                             PlayGamesManager.signIn(activity) { success ->
-                                if (success) {
-                                    PlayGamesManager.showAllLeaderboards(activity)
-                                }
+                                if (success) openLeaderboards()
                             }
                         }
                     }
