@@ -54,8 +54,8 @@ fun HomeScreen(navController: NavHostController) {
             .systemBarsPadding()
             .padding(horizontal = 20.dp, vertical = 24.dp)
     ) {
-        // Top greeting bar
-        Column {
+        // Top greeting bar — end padding avoids PlayerBadge overlay
+        Column(modifier = Modifier.padding(end = 100.dp)) {
             Text(
                 text = "Welcome back,",
                 fontSize = 20.sp,
