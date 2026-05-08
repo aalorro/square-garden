@@ -200,39 +200,48 @@ fun GameScreen(
         }
     }
 
-    // Redo token captured celebration (mid-game)
-    if (state.redoTokenAwarded && state.phase == GamePhase.PLAYING) {
-        val redoScale = remember { Animatable(0f) }
-        LaunchedEffect(Unit) {
-            redoScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f))
-            delay(2000)
-            redoScale.animateTo(0f, animationSpec = tween(300))
-        }
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)),
-                modifier = Modifier.scale(redoScale.value)
+    // Token captured celebrations (mid-game) — staggered if multiple captured at once
+    if (state.phase == GamePhase.PLAYING) {
+        val captured = listOfNotNull(
+            if (state.shuffleTokenAwarded) Pair("Shuffle Token Earned!", "+1 \uD83D\uDD00") else null,
+            if (state.passthroughTokenAwarded) Pair("Passthrough Token Earned!", "+1 \uD83D\uDEE1\uFE0F") else null,
+            if (state.unfreezeTokenAwarded) Pair("Unfreeze Token Earned!", "+1 \u2744\uFE0F") else null,
+            if (state.redoTokenAwarded) Pair("Redo Token Earned!", "+1 \u21BB") else null
+        )
+        captured.forEachIndexed { index, (title, icon) ->
+            val tokenScale = remember(title) { Animatable(0f) }
+            LaunchedEffect(title) {
+                delay(index * 600L) // stagger multiple celebrations
+                tokenScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f))
+                delay(2000)
+                tokenScale.animateTo(0f, animationSpec = tween(300))
+            }
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)),
+                    modifier = Modifier.scale(tokenScale.value)
                 ) {
-                    Text(
-                        text = "Redo Token Earned!",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "+1 \u21BB",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = DarkSage
-                    )
+                    Column(
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = title,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = icon,
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = DarkSage
+                        )
+                    }
                 }
             }
         }

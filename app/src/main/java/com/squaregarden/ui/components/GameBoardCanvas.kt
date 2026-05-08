@@ -10,6 +10,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -153,33 +154,71 @@ fun GameBoardCanvas(
                 drawEmbossedTile(tile.color, x, y, cs, cornerR)
                 drawTileMotif(tile.color, x, y, cs)
 
-                // Redo tile overlay: circular arrow indicator
-                if (tile.redo) {
-                    val cx = x + cs / 2f
-                    val cy = y + cs / 2f
-                    val radius = cs * 0.22f
-                    // Glow circle background
-                    drawCircle(
-                        color = Color.White.copy(alpha = 0.45f),
-                        radius = radius + cs * 0.06f,
-                        center = Offset(cx, cy)
-                    )
-                    // Arc (270 degrees of a circle)
-                    drawArc(
-                        color = Color.White,
-                        startAngle = -90f,
-                        sweepAngle = 270f,
-                        useCenter = false,
-                        topLeft = Offset(cx - radius, cy - radius),
-                        size = Size(radius * 2, radius * 2),
-                        style = Stroke(width = cs * 0.045f)
-                    )
-                    // Arrowhead at the end of the arc (pointing down-right at 180° position)
-                    val arrowSize = cs * 0.08f
-                    val ax = cx - radius
-                    val ay = cy
-                    drawLine(Color.White, Offset(ax, ay), Offset(ax + arrowSize, ay - arrowSize), strokeWidth = cs * 0.045f)
-                    drawLine(Color.White, Offset(ax, ay), Offset(ax + arrowSize, ay + arrowSize), strokeWidth = cs * 0.045f)
+                // Token tile overlays
+                val tokenFlags = listOfNotNull(
+                    if (tile.redo) "redo" else null,
+                    if (tile.shuffleToken) "shuffle" else null,
+                    if (tile.passthroughToken) "passthrough" else null,
+                    if (tile.unfreezeToken) "unfreeze" else null
+                )
+                if (tokenFlags.isNotEmpty()) {
+                    val tileCx = x + cs / 2f
+                    val tileCy = y + cs / 2f
+                    val single = tokenFlags.size == 1
+                    // For multiple tokens, offset into quadrants
+                    val offsets = when (tokenFlags.size) {
+                        1 -> listOf(Offset(0f, 0f))
+                        2 -> listOf(Offset(-cs * 0.14f, 0f), Offset(cs * 0.14f, 0f))
+                        3 -> listOf(Offset(-cs * 0.14f, -cs * 0.1f), Offset(cs * 0.14f, -cs * 0.1f), Offset(0f, cs * 0.14f))
+                        else -> listOf(Offset(-cs * 0.14f, -cs * 0.1f), Offset(cs * 0.14f, -cs * 0.1f), Offset(-cs * 0.14f, cs * 0.14f), Offset(cs * 0.14f, cs * 0.14f))
+                    }
+                    val scale = if (single) 1f else 0.6f
+                    tokenFlags.forEachIndexed { i, token ->
+                        val cx = tileCx + offsets[i].x
+                        val cy = tileCy + offsets[i].y
+                        val radius = cs * 0.22f * scale
+                        val sw = cs * 0.045f * scale
+                        // Glow circle
+                        drawCircle(Color.White.copy(alpha = 0.45f), radius + cs * 0.06f * scale, Offset(cx, cy))
+                        when (token) {
+                            "redo" -> {
+                                drawArc(Color.White, -90f, 270f, false,
+                                    Offset(cx - radius, cy - radius), Size(radius * 2, radius * 2), style = Stroke(sw))
+                                val a = cs * 0.08f * scale
+                                drawLine(Color.White, Offset(cx - radius, cy), Offset(cx - radius + a, cy - a), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx - radius, cy), Offset(cx - radius + a, cy + a), strokeWidth = sw)
+                            }
+                            "shuffle" -> {
+                                // Two crossed arrows
+                                val s = radius * 0.7f
+                                drawLine(Color.White, Offset(cx - s, cy - s), Offset(cx + s, cy + s), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx + s, cy - s), Offset(cx - s, cy + s), strokeWidth = sw)
+                                val a = cs * 0.06f * scale
+                                // Arrow tips on top-right and bottom-left
+                                drawLine(Color.White, Offset(cx + s, cy + s), Offset(cx + s - a, cy + s), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx + s, cy + s), Offset(cx + s, cy + s - a), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx - s, cy + s), Offset(cx - s + a, cy + s), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx - s, cy + s), Offset(cx - s, cy + s - a), strokeWidth = sw)
+                            }
+                            "passthrough" -> {
+                                // Right arrow with vertical pass-through line
+                                val s = radius * 0.7f
+                                drawLine(Color.White, Offset(cx - s, cy), Offset(cx + s, cy), strokeWidth = sw)
+                                val a = cs * 0.06f * scale
+                                drawLine(Color.White, Offset(cx + s, cy), Offset(cx + s - a, cy - a), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx + s, cy), Offset(cx + s - a, cy + a), strokeWidth = sw)
+                                // Vertical bar in the middle
+                                drawLine(Color.White, Offset(cx, cy - s * 0.8f), Offset(cx, cy + s * 0.8f), strokeWidth = sw)
+                            }
+                            "unfreeze" -> {
+                                // Snowflake: 3 lines through center (6 spokes)
+                                val s = radius * 0.7f
+                                drawLine(Color.White, Offset(cx, cy - s), Offset(cx, cy + s), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx - s * 0.87f, cy - s * 0.5f), Offset(cx + s * 0.87f, cy + s * 0.5f), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx - s * 0.87f, cy + s * 0.5f), Offset(cx + s * 0.87f, cy - s * 0.5f), strokeWidth = sw)
+                            }
+                        }
+                    }
                 }
 
                 // Frozen overlay: light frost + diagonal lines + thick ice border
@@ -258,39 +297,32 @@ fun GameBoardCanvas(
                 // Goal completion border — green normally, cyan shield when passthrough active
                 if (pos in completedGoalCells) {
                     val tileInset = cs * 0.05f
+                    val bx = c * cs + tileInset
+                    val by = r * cs + tileInset
+                    val bw = cs - tileInset * 2
+                    val bh = cs - tileInset * 2
+                    val bcr = CornerRadius(cornerR * 0.95f)
                     if (passthroughActive) {
                         // Shield glow — cyan/teal to indicate passthrough protection
-                        drawRoundRect(
-                            color = Color(0xFF00ACC1).copy(alpha = 0.35f),
-                            topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
-                            size = Size(cs - tileInset * 2, cs - tileInset * 2),
-                            cornerRadius = CornerRadius(cornerR * 0.95f)
-                        )
+                        drawRoundRect(Color(0xFF00ACC1).copy(alpha = 0.35f), Offset(bx, by), Size(bw, bh), bcr)
                         // Bold cyan shield border
-                        drawRoundRect(
-                            color = Color(0xFF00838F),
-                            topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
-                            size = Size(cs - tileInset * 2, cs - tileInset * 2),
-                            cornerRadius = CornerRadius(cornerR * 0.95f),
-                            style = Stroke(width = 4.dp.toPx())
-                        )
+                        drawRoundRect(Color(0xFF00838F), Offset(bx, by), Size(bw, bh), bcr, style = Stroke(width = 4.dp.toPx()))
                     } else {
                         // Normal green glow
-                        drawRoundRect(
-                            color = Color(0xFF43A047).copy(alpha = 0.25f),
-                            topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
-                            size = Size(cs - tileInset * 2, cs - tileInset * 2),
-                            cornerRadius = CornerRadius(cornerR * 0.95f)
-                        )
+                        drawRoundRect(Color(0xFF43A047).copy(alpha = 0.25f), Offset(bx, by), Size(bw, bh), bcr)
                         // Bold green border
-                        drawRoundRect(
-                            color = Color(0xFF2E7D32),
-                            topLeft = Offset(c * cs + tileInset, r * cs + tileInset),
-                            size = Size(cs - tileInset * 2, cs - tileInset * 2),
-                            cornerRadius = CornerRadius(cornerR * 0.95f),
-                            style = Stroke(width = 3.dp.toPx())
-                        )
+                        drawRoundRect(Color(0xFF2E7D32), Offset(bx, by), Size(bw, bh), bcr, style = Stroke(width = 3.dp.toPx()))
                     }
+                    // White dotted outline to clearly distinguish from frozen tiles
+                    val dotLen = cs * 0.08f
+                    val gapLen = cs * 0.06f
+                    drawRoundRect(
+                        color = Color.White.copy(alpha = 0.85f),
+                        topLeft = Offset(bx, by),
+                        size = Size(bw, bh),
+                        cornerRadius = bcr,
+                        style = Stroke(width = 1.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(dotLen, gapLen)))
+                    )
                 }
             }
         }

@@ -11,14 +11,20 @@ object PlayGamesManager {
     private const val TAG = "PlayGamesManager"
 
     fun checkSignIn(activity: Activity, onResult: (Boolean) -> Unit) {
+        Log.d(TAG, "Checking sign-in status...")
         PlayGames.getGamesSignInClient(activity).isAuthenticated
             .addOnCompleteListener { task ->
                 val isAuth = task.isSuccessful && task.result.isAuthenticated
+                Log.d(TAG, "checkSignIn result: success=${task.isSuccessful}, authenticated=$isAuth")
+                if (!task.isSuccessful) {
+                    Log.e(TAG, "checkSignIn failed", task.exception)
+                }
                 onResult(isAuth)
             }
     }
 
     fun signIn(activity: Activity, onComplete: ((Boolean) -> Unit)? = null) {
+        Log.d(TAG, "Initiating sign-in...")
         PlayGames.getGamesSignInClient(activity).signIn()
             .addOnCompleteListener { task ->
                 val success = task.isSuccessful
@@ -45,9 +51,11 @@ object PlayGamesManager {
     }
 
     fun showAllLeaderboards(activity: Activity) {
+        Log.d(TAG, "Requesting leaderboards intent...")
         PlayGames.getLeaderboardsClient(activity)
             .allLeaderboardsIntent
             .addOnSuccessListener { intent ->
+                Log.d(TAG, "Leaderboards intent received, launching...")
                 activity.startActivity(intent)
             }
             .addOnFailureListener { e ->

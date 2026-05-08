@@ -240,10 +240,10 @@ class GameViewModel(
             if (BoardEngine.evaluateGoals(scrambled, level.goals).isNotEmpty()) return@repeat
 
             val solution = swaps.reversed()
-            return Pair(placeRedoTile(scrambled), solution)
+            return Pair(placeTokenTiles(scrambled), solution)
         }
         // Fallback: random board, solver will try in background
-        return Pair(placeRedoTile(generateValidBoard()), null)
+        return Pair(placeTokenTiles(generateValidBoard()), null)
     }
 
     // Shape rotation helpers (mirrors PatternMatcher logic)
@@ -329,24 +329,34 @@ class GameViewModel(
         return Board(level.boardWidth, level.boardHeight, tiles, voids)
     }
 
-    /** Place a single redo tile on a random non-frozen, non-void cell (World 4+, ~25% chance). */
-    private fun placeRedoTile(board: Board): Board {
+    /** Place token tiles on random non-frozen, non-void cells (World 4+, ~25% chance each). */
+    private fun placeTokenTiles(board: Board): Board {
         if (level.world < 4) return board
-        if ((1..4).random() != 1) return board // ~25% chance
         val candidates = mutableListOf<CellPos>()
         for (r in 0 until board.height) {
             for (c in 0 until board.width) {
                 if (board.isVoid(r, c)) continue
-                val tile = board.tileAt(r, c)
-                if (tile.frozen) continue
+                if (board.tileAt(r, c).frozen) continue
                 candidates.add(CellPos(r, c))
             }
         }
         if (candidates.isEmpty()) return board
-        val pos = candidates.random()
+
+        // Each token type rolls independently (~25% chance each)
+        val redoPos = if ((1..4).random() == 1) candidates.random() else null
+        val shufflePos = if ((1..4).random() == 1) candidates.random() else null
+        val ptPos = if ((1..4).random() == 1) candidates.random() else null
+        val ufPos = if ((1..4).random() == 1) candidates.random() else null
+
         val newTiles = board.tiles.mapIndexed { r, row ->
             row.mapIndexed { c, tile ->
-                if (r == pos.row && c == pos.col) tile.copy(redo = true) else tile
+                val pos = CellPos(r, c)
+                tile.copy(
+                    redo = tile.redo || pos == redoPos,
+                    shuffleToken = tile.shuffleToken || pos == shufflePos,
+                    passthroughToken = tile.passthroughToken || pos == ptPos,
+                    unfreezeToken = tile.unfreezeToken || pos == ufPos
+                )
             }
         }
         return board.copy(tiles = newTiles)
@@ -645,24 +655,32 @@ class GameViewModel(
                 }
             }
 
-            // Check for redo tile capture in newly completed goals
-            var boardAfterRedo = newBoard
+            // Check for token tile captures in newly completed goals
+            var boardAfterCapture = newBoard
             var redoCaptured = false
+            var shuffleCaptured = false
+            var ptCaptured = false
+            var ufCaptured = false
             val newlyCompleted = newCompleted - current.completedGoalIds
             if (newlyCompleted.isNotEmpty()) {
                 val newCells = newlyCompleted.flatMap { id -> newGoalCells[id] ?: emptySet() }
-                val hasRedo = newCells.any { boardAfterRedo.tileAt(it.row, it.col).redo }
-                if (hasRedo) {
-                    progressRepo.addRedoToken()
-                    redoTokens++
-                    redoCaptured = true
-                    // Clear redo flag from captured tiles
-                    val updatedTiles = boardAfterRedo.tiles.mapIndexed { r, row ->
+                for (cell in newCells) {
+                    val t = boardAfterCapture.tileAt(cell.row, cell.col)
+                    if (t.redo) { progressRepo.addRedoToken(); redoTokens++; redoCaptured = true }
+                    if (t.shuffleToken) { progressRepo.addShuffleToken(); shuffleTokens++; shuffleCaptured = true }
+                    if (t.passthroughToken) { progressRepo.addPassthroughToken(); passthroughTokens++; ptCaptured = true }
+                    if (t.unfreezeToken) { progressRepo.addUnfreezeToken(); unfreezeTokens++; ufCaptured = true }
+                }
+                if (redoCaptured || shuffleCaptured || ptCaptured || ufCaptured) {
+                    val updatedTiles = boardAfterCapture.tiles.mapIndexed { r, row ->
                         row.mapIndexed { c, tile ->
-                            if (tile.redo && CellPos(r, c) in newCells) tile.copy(redo = false) else tile
+                            if (CellPos(r, c) in newCells) tile.copy(
+                                redo = false, shuffleToken = false,
+                                passthroughToken = false, unfreezeToken = false
+                            ) else tile
                         }
                     }
-                    boardAfterRedo = boardAfterRedo.copy(tiles = updatedTiles)
+                    boardAfterCapture = boardAfterCapture.copy(tiles = updatedTiles)
                 }
             }
 
@@ -698,11 +716,14 @@ class GameViewModel(
             }
 
             _state.value = _state.value.copy(
-                board = boardAfterRedo, movesRemaining = newMoves,
+                board = boardAfterCapture, movesRemaining = newMoves,
                 completedGoalIds = newCompleted, completedGoalCells = newGoalCells,
                 selectedCell = null, hintCells = emptySet(), swapAnim = null,
                 phase = phase, starsAwarded = starsAwarded, winsToRestoreLife = winsNeeded,
                 unlockedWorldName = unlockedWorld,
+                shuffleTokens = shuffleTokens, shuffleTokenAwarded = shuffleCaptured,
+                passthroughTokens = passthroughTokens, passthroughTokenAwarded = ptCaptured,
+                unfreezeTokens = unfreezeTokens, unfreezeTokenAwarded = ufCaptured,
                 redoTokens = redoTokens, redoTokenAwarded = redoCaptured,
                 perfectGame = isPerfect
             )
@@ -752,23 +773,32 @@ class GameViewModel(
                 }
             }
 
-            // Check for redo tile capture in newly completed goals
-            var boardAfterRedo = newBoard
+            // Check for token tile captures in newly completed goals
+            var boardAfterCapture = newBoard
             var redoCaptured = false
+            var shuffleCaptured = false
+            var ptCaptured = false
+            var ufCaptured = false
             val newlyCompletedPt = newCompleted - current.completedGoalIds
             if (newlyCompletedPt.isNotEmpty()) {
                 val newCells = newlyCompletedPt.flatMap { id -> newGoalCells[id] ?: emptySet() }
-                val hasRedo = newCells.any { boardAfterRedo.tileAt(it.row, it.col).redo }
-                if (hasRedo) {
-                    progressRepo.addRedoToken()
-                    redoTokens++
-                    redoCaptured = true
-                    val updatedTiles = boardAfterRedo.tiles.mapIndexed { r, row ->
+                for (cell in newCells) {
+                    val t = boardAfterCapture.tileAt(cell.row, cell.col)
+                    if (t.redo) { progressRepo.addRedoToken(); redoTokens++; redoCaptured = true }
+                    if (t.shuffleToken) { progressRepo.addShuffleToken(); shuffleTokens++; shuffleCaptured = true }
+                    if (t.passthroughToken) { progressRepo.addPassthroughToken(); passthroughTokens++; ptCaptured = true }
+                    if (t.unfreezeToken) { progressRepo.addUnfreezeToken(); unfreezeTokens++; ufCaptured = true }
+                }
+                if (redoCaptured || shuffleCaptured || ptCaptured || ufCaptured) {
+                    val updatedTiles = boardAfterCapture.tiles.mapIndexed { r, row ->
                         row.mapIndexed { c, tile ->
-                            if (tile.redo && CellPos(r, c) in newCells) tile.copy(redo = false) else tile
+                            if (CellPos(r, c) in newCells) tile.copy(
+                                redo = false, shuffleToken = false,
+                                passthroughToken = false, unfreezeToken = false
+                            ) else tile
                         }
                     }
-                    boardAfterRedo = boardAfterRedo.copy(tiles = updatedTiles)
+                    boardAfterCapture = boardAfterCapture.copy(tiles = updatedTiles)
                 }
             }
 
@@ -804,10 +834,13 @@ class GameViewModel(
             }
 
             _state.value = _state.value.copy(
-                board = boardAfterRedo, movesRemaining = newMoves,
+                board = boardAfterCapture, movesRemaining = newMoves,
                 completedGoalIds = newCompleted, completedGoalCells = newGoalCells,
                 selectedCell = null, hintCells = emptySet(), swapAnim = null,
                 passthroughActive = false, passthroughTokens = passthroughTokens,
+                shuffleTokens = shuffleTokens, shuffleTokenAwarded = shuffleCaptured,
+                passthroughTokenAwarded = ptCaptured,
+                unfreezeTokens = unfreezeTokens, unfreezeTokenAwarded = ufCaptured,
                 phase = phase, starsAwarded = starsAwarded, winsToRestoreLife = winsNeeded,
                 unlockedWorldName = unlockedWorld,
                 redoTokens = redoTokens, redoTokenAwarded = redoCaptured,
