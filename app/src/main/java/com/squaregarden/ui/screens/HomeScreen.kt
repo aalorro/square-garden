@@ -30,6 +30,7 @@ fun HomeScreen(navController: NavHostController) {
     val progressRepo = remember { ProgressRepository(context) }
     val profileRepo = remember { ProfileRepository(context) }
     val totalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
+    val perfectGames by progressRepo.perfectGamesFlow.collectAsState(initial = 0)
     var profile by remember { mutableStateOf(UserProfile()) }
     var currentWorld by remember { mutableIntStateOf(1) }
 
@@ -109,6 +110,16 @@ fun HomeScreen(navController: NavHostController) {
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onBackground
                     )
+                    if (perfectGames > 0) {
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(text = "\uD83C\uDFC6", fontSize = 14.sp)
+                        Text(
+                            text = "$perfectGames perfect",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                 }
             }
         }

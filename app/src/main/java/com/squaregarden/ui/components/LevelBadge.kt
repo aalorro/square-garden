@@ -28,6 +28,7 @@ fun PlayerBadge(
     totalStars: Int,
     gamesPlayed: Int,
     lives: Int,
+    perfectGames: Int = 0,
     onSettingsClick: () -> Unit,
     onExitClick: () -> Unit,
     onStarPositioned: ((Offset) -> Unit)? = null,
@@ -111,6 +112,14 @@ fun PlayerBadge(
                     fontSize = if (isCompact) 11.sp else 16.sp,
                     color = Color(0xFFE53935)
                 )
+                if (perfectGames > 0) {
+                    Text(
+                        text = "\uD83C\uDFC6 $perfectGames",
+                        fontSize = if (isCompact) 10.sp else 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFD4A017)
+                    )
+                }
             }
         }
 

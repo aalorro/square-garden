@@ -29,6 +29,7 @@ class ProgressRepository(private val context: Context) {
         private val UNFREEZE_TOKENS_KEY = intPreferencesKey("unfreeze_tokens")
         private val UNFREEZE_STREAK_KEY = intPreferencesKey("unfreeze_win_streak")
         private val REDO_TOKENS_KEY = intPreferencesKey("redo_tokens")
+        private val PERFECT_GAMES_KEY = intPreferencesKey("perfect_games")
         private const val LEVEL_FAVORITE_PREFIX = "level_favorite_"
     }
 
@@ -251,6 +252,16 @@ class ProgressRepository(private val context: Context) {
 
     val redoTokensFlow: Flow<Int> = context.dataStore.data.map { prefs ->
         prefs[REDO_TOKENS_KEY] ?: 0
+    }
+
+    val perfectGamesFlow: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[PERFECT_GAMES_KEY] ?: 0
+    }
+
+    suspend fun incrementPerfectGames() {
+        context.dataStore.edit { prefs ->
+            prefs[PERFECT_GAMES_KEY] = (prefs[PERFECT_GAMES_KEY] ?: 0) + 1
+        }
     }
 
     suspend fun addRedoToken() {

@@ -944,8 +944,9 @@ class GameViewModel(
                 unfreezeTokens++
                 _state.value = _state.value.copy(unfreezeTokenAwarded = true)
             }
-            // Perfect game: award +1 of every token
+            // Perfect game: award +1 of every token + record count
             if (_state.value.perfectGame) {
+                progressRepo.incrementPerfectGames()
                 progressRepo.addShuffleToken(); shuffleTokens++
                 progressRepo.addPassthroughToken(); passthroughTokens++
                 progressRepo.addUnfreezeToken(); unfreezeTokens++

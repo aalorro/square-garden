@@ -46,6 +46,7 @@ class MainActivity : ComponentActivity() {
             val totalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
             val gamesPlayed by progressRepo.gamesPlayedFlow.collectAsState(initial = 0)
             val lives by progressRepo.livesFlow.collectAsState(initial = 3)
+            val perfectGames by progressRepo.perfectGamesFlow.collectAsState(initial = 0)
             val cooldownUntil by progressRepo.cooldownUntilFlow.collectAsState(initial = 0L)
             val scope = rememberCoroutineScope()
 
@@ -81,6 +82,7 @@ class MainActivity : ComponentActivity() {
                             totalStars = totalStars,
                             gamesPlayed = gamesPlayed,
                             lives = lives,
+                            perfectGames = perfectGames,
                             onSettingsClick = {
                                 navController.navigate(Screen.Settings.route)
                             },
