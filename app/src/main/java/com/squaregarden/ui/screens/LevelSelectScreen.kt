@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.logic.LevelLoader
+import com.squaregarden.model.ChallengeType
 import com.squaregarden.model.Difficulty
 import com.squaregarden.model.Level
 import com.squaregarden.model.PlayerProgress
@@ -58,7 +59,10 @@ private val worldThemes = mapOf(
     9 to WorldTheme(Color(0xFF4DB6AC), Color(0xFF80CBC4), Color(0xFF004D40), Color(0xFFFFD740),
         listOf(Color(0xFF0F4C5C), Color(0xFF0A2540), Color(0xFF000814))),
     10 to WorldTheme(Color(0xFFF48FB1), Color(0xFFF8BBD0), Color(0xFF880E4F), Color(0xFFFFE082),
-        listOf(Color(0xFFFFD3E0), Color(0xFFC9B8FF), Color(0xFFA0E4FF)))
+        listOf(Color(0xFFFFD3E0), Color(0xFFC9B8FF), Color(0xFFA0E4FF))),
+    // TODO: Temporary test world — remove before release
+    11 to WorldTheme(Color(0xFFFF7043), Color(0xFFFFAB91), Color(0xFFBF360C), Color(0xFFFFD600),
+        listOf(Color(0xFFFF5722), Color(0xFFE64A19), Color(0xFFBF360C)))
 )
 
 @Composable
@@ -75,15 +79,23 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
     val cooldownUntil by progressRepo.cooldownUntilFlow.collectAsState(initial = 0L)
     val cooldownActive = lives <= 0 && cooldownUntil > System.currentTimeMillis()
 
+    // TODO: World 11 challenge lab — remove before release
+    val challengeEntries = remember {
+        if (worldId == 11) ChallengeType.entries.toList() else emptyList()
+    }
+
     LaunchedEffect(Unit) {
         progress = progressRepo.loadProgress()
-        levels = LevelLoader.loadAllLevels(context).filter { it.world == worldId }
+        if (worldId != 11) {
+            levels = LevelLoader.loadAllLevels(context).filter { it.world == worldId }
+        }
     }
 
     val worldNames = mapOf(
         1 to "Seedling Garden", 2 to "Blooming Meadow", 3 to "Ancient Grove",
         4 to "Crystal Cavern", 5 to "Shattered Isles", 6 to "Void Fortress",
-        7 to "Molten Core", 8 to "Starfall Summit", 9 to "Abyssal Depths", 10 to "Prism Citadel"
+        7 to "Molten Core", 8 to "Starfall Summit", 9 to "Abyssal Depths", 10 to "Prism Citadel",
+        11 to "Challenge Lab"
     )
 
     val theme = worldThemes[worldId] ?: worldThemes[1]!!
@@ -139,95 +151,140 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Fixed(if (worldId == 11) 2 else 3),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
             contentPadding = PaddingValues(top = 60.dp, bottom = 4.dp)
         ) {
-            items(levels) { level ->
-                val stars = progress.levelStars[level.id] ?: 0
-                val unlocked = level.id <= progress.highestUnlockedLevel(difficulty?.startingLevel ?: 1)
-                val isLastWon = level.id == lastWonLevel
-                val isFavorite = level.id in progress.favoriteLevels
-
-                Card(
-                    onClick = {
-                        if (unlocked && !cooldownActive) {
-                            navController.navigate(Screen.Game.create(level.id))
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .alpha(if (unlocked && !cooldownActive) 1f else if (unlocked) 0.6f else 0.4f),
-                    shape = RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isLastWon)
-                            theme.tileColor
-                        else if (unlocked)
-                            theme.tileColorLight
-                        else
-                            MaterialTheme.colorScheme.surfaceVariant
-                    ),
-                    border = if (isLastWon) BorderStroke(3.dp, theme.tileColor) else null,
-                    elevation = CardDefaults.cardElevation(defaultElevation = if (unlocked) 4.dp else 0.dp)
-                ) {
-                    Box(modifier = Modifier.fillMaxSize()) {
+            // TODO: Challenge lab cards — remove before release
+            if (worldId == 11) {
+                items(challengeEntries) { challenge ->
+                    Card(
+                        onClick = { navController.navigate(Screen.Game.create(challenge.id)) },
+                        modifier = Modifier.fillMaxWidth().aspectRatio(0.85f),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = CardDefaults.cardColors(containerColor = theme.tileColorLight),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    ) {
                         Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
+                            modifier = Modifier.fillMaxSize().padding(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            if (!unlocked) {
-                                Text("\uD83D\uDD12", fontSize = 22.sp, color = theme.textColor.copy(alpha = 0.6f))
-                                Text(
-                                    text = level.name,
-                                    fontSize = 8.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = theme.textColor.copy(alpha = 0.5f),
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1
-                                )
-                            } else {
-                                Text(
-                                    text = "${level.id}",
-                                    fontFamily = DisplayFontFamily,
-                                    fontSize = 26.sp,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = theme.textColor
-                                )
-                                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                    repeat(3) { i ->
-                                        Text(
-                                            text = "\u2605",
-                                            fontSize = 12.sp,
-                                            color = if (i < stars) theme.starColor
-                                            else theme.textColor.copy(alpha = 0.25f)
-                                        )
+                            Text(
+                                text = when (challenge) {
+                                    ChallengeType.BLITZ -> "\u23F1"
+                                    ChallengeType.OVERGROWN -> "\uD83C\uDF3F"
+                                    ChallengeType.SHIFTING -> "\uD83C\uDF0A"
+                                    ChallengeType.MEMORY -> "\uD83E\uDDE0"
+                                },
+                                fontSize = 32.sp
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = challenge.title,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = theme.textColor,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = challenge.description,
+                                fontSize = 9.sp,
+                                color = theme.textColor.copy(alpha = 0.7f),
+                                textAlign = TextAlign.Center,
+                                maxLines = 2
+                            )
+                        }
+                    }
+                }
+            } else {
+                items(levels) { level ->
+                    val stars = progress.levelStars[level.id] ?: 0
+                    val unlocked = level.id <= progress.highestUnlockedLevel(difficulty?.startingLevel ?: 1)
+                    val isLastWon = level.id == lastWonLevel
+                    val isFavorite = level.id in progress.favoriteLevels
+
+                    Card(
+                        onClick = {
+                            if (unlocked && !cooldownActive) {
+                                navController.navigate(Screen.Game.create(level.id))
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .alpha(if (unlocked && !cooldownActive) 1f else if (unlocked) 0.6f else 0.4f),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isLastWon)
+                                theme.tileColor
+                            else if (unlocked)
+                                theme.tileColorLight
+                            else
+                                MaterialTheme.colorScheme.surfaceVariant
+                        ),
+                        border = if (isLastWon) BorderStroke(3.dp, theme.tileColor) else null,
+                        elevation = CardDefaults.cardElevation(defaultElevation = if (unlocked) 4.dp else 0.dp)
+                    ) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(4.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                if (!unlocked) {
+                                    Text("\uD83D\uDD12", fontSize = 22.sp, color = theme.textColor.copy(alpha = 0.6f))
+                                    Text(
+                                        text = level.name,
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = theme.textColor.copy(alpha = 0.5f),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1
+                                    )
+                                } else {
+                                    Text(
+                                        text = "${level.id}",
+                                        fontFamily = DisplayFontFamily,
+                                        fontSize = 26.sp,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = theme.textColor
+                                    )
+                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                        repeat(3) { i ->
+                                            Text(
+                                                text = "\u2605",
+                                                fontSize = 12.sp,
+                                                color = if (i < stars) theme.starColor
+                                                else theme.textColor.copy(alpha = 0.25f)
+                                            )
+                                        }
                                     }
+                                    Text(
+                                        text = level.name,
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = theme.textColor.copy(alpha = 0.7f),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1
+                                    )
                                 }
+                            }
+                            if (isFavorite && unlocked) {
                                 Text(
-                                    text = level.name,
-                                    fontSize = 8.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = theme.textColor.copy(alpha = 0.7f),
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1
+                                    text = "\u2605",
+                                    fontSize = 14.sp,
+                                    color = Color(0xFFFFD600),
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(4.dp)
                                 )
                             }
-                        }
-                        if (isFavorite && unlocked) {
-                            Text(
-                                text = "\u2605",
-                                fontSize = 14.sp,
-                                color = Color(0xFFFFD600),
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(4.dp)
-                            )
                         }
                     }
                 }

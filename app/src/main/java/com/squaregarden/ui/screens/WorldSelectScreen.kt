@@ -51,7 +51,9 @@ private val worlds = listOf(
     WorldInfo(7, "Molten Core", "Levels 55-63", 110, Color(0xFFFF6D00)),
     WorldInfo(8, "Starfall Summit", "Levels 64-72", 145, Color(0xFF7C4DFF)),
     WorldInfo(9, "Abyssal Depths", "Levels 73-81", 185, Color(0xFF00897B)),
-    WorldInfo(10, "Prism Citadel", "Levels 82-90", 230, Color(0xFFE91E63))
+    WorldInfo(10, "Prism Citadel", "Levels 82-90", 230, Color(0xFFE91E63)),
+    // TODO: Temporary test world — remove before release
+    WorldInfo(11, "Challenge Lab", "4 Challenge Modes", 0, Color(0xFFFF5722))
 )
 
 @Composable
@@ -156,6 +158,7 @@ fun WorldSelectScreen(navController: NavHostController) {
                                 8 -> drawStarfallSummit(size)
                                 9 -> drawAbyssalDepths(size)
                                 10 -> drawPrismCitadel(size)
+                                else -> drawRect(Brush.linearGradient(listOf(world.color, world.color.copy(alpha = 0.6f))))
                             }
                         }
 
