@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.border
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -200,37 +201,42 @@ private fun GoalBox(
             }
         }
 
-        // Completed overlay with white grid
+        // Completed overlay with solid black grid
         if (completed) {
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .background(dimColor, RoundedCornerShape(8.dp)),
+                    .background(dimColor, RoundedCornerShape(8.dp))
+                    .border(2.dp, Color.Black, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                // White grid cells showing tile structure
+                // Solid black grid lines between cells
                 Canvas(modifier = Modifier.fillMaxSize().padding(4.dp)) {
                     val availW = size.width
                     val availH = size.height
                     val cellSize = minOf(availW / shapeCols, availH / shapeRows)
                     val totalW = shapeCols * cellSize
                     val totalH = shapeRows * cellSize
-                    val offsetX = (availW - totalW) / 2f
-                    val offsetY = (availH - totalH) / 2f
-                    val gap = (cellSize * 0.12f).coerceAtLeast(1.5f)
-                    val cr = androidx.compose.ui.geometry.CornerRadius(cellSize * 0.18f)
+                    val ox = (availW - totalW) / 2f
+                    val oy = (availH - totalH) / 2f
+                    val lineW = (cellSize * 0.1f).coerceIn(2f, 4f)
 
-                    for (cell in cells) {
-                        val x = offsetX + cell.col * cellSize + gap / 2f
-                        val y = offsetY + cell.row * cellSize + gap / 2f
-                        val s = cellSize - gap
-                        // Bold black border around each cell
-                        drawRoundRect(
-                            color = Color.Black.copy(alpha = 0.7f),
-                            topLeft = Offset(x, y),
-                            size = Size(s, s),
-                            cornerRadius = cr,
-                            style = Stroke(width = (cellSize * 0.12f).coerceIn(2.5f, 6f))
+                    // Horizontal lines
+                    for (r in 0..shapeRows) {
+                        val y = oy + r * cellSize
+                        drawRect(
+                            color = Color.Black,
+                            topLeft = Offset(ox, y - lineW / 2f),
+                            size = Size(totalW, lineW)
+                        )
+                    }
+                    // Vertical lines
+                    for (c in 0..shapeCols) {
+                        val x = ox + c * cellSize
+                        drawRect(
+                            color = Color.Black,
+                            topLeft = Offset(x - lineW / 2f, oy),
+                            size = Size(lineW, totalH)
                         )
                     }
                 }

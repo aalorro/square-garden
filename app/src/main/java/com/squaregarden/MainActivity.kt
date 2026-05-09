@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.squaregarden.audio.MusicManager
 import com.squaregarden.ui.navigation.SquareGardenNavGraph
 import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.ui.theme.SquareGardenTheme
@@ -59,6 +60,7 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 progressRepo.migrateStarsIfNeeded()
                 progressRepo.checkAndRestoreLives()
+                MusicManager.observeSettings(context, scope)
             }
 
             SquareGardenTheme(themeId = profile.themeId) {

@@ -45,7 +45,7 @@ fun HomeScreen(navController: NavHostController) {
     var currentWorld by remember { mutableIntStateOf(1) }
 
     val settingsRepo = remember { SettingsRepository(context) }
-    val soundEnabled by settingsRepo.soundEnabled.collectAsState(initial = true)
+    val musicEnabled by settingsRepo.musicEnabled.collectAsState(initial = true)
 
     LaunchedEffect(Unit) {
         profile = profileRepo.loadProfile()
@@ -55,13 +55,13 @@ fun HomeScreen(navController: NavHostController) {
         currentWorld = ((highestUnlocked - 1) / 9) + 1
     }
 
-    // Intro music: plays while HomeScreen is visible, respects sound toggle
+    // Intro music: plays while HomeScreen is visible, respects music toggle
     val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner, soundEnabled) {
-        if (soundEnabled) MusicManager.startIntro(context)
+    DisposableEffect(lifecycleOwner, musicEnabled) {
+        if (musicEnabled) MusicManager.startIntro(context)
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) MusicManager.stopIntro()
-            if (event == Lifecycle.Event.ON_RESUME && soundEnabled) MusicManager.startIntro(context)
+            if (event == Lifecycle.Event.ON_RESUME && musicEnabled) MusicManager.startIntro(context)
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
