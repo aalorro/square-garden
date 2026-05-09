@@ -2,6 +2,28 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.4.0] - 2026-05-09 (Build 7)
+
+### New Features
+- **Celebratory music on wins** — Every win plays a random segment from the celebration track (~8 sec with smooth fade-out). Perfect games get their own dedicated segment that loops until Next Level is pressed.
+- **Background intro music** — Looping music on the Home screen, respects the music toggle in Settings.
+- **Sad trombone on game loss** — Procedural "wah wah wah wahhh" descending brass sound effect when a game is lost.
+- **9 goal-completion sound effects** — 5 sampled congratulatory clips plus 4 new procedural celebration patterns (chime cascade, horn stab, sparkle arpeggio, tubular bell), played at random on each goal completion.
+- **5 scramble sound effects** — Distinct procedural audio patterns (digital glitch, modem stutter, warped vinyl, buzz saw, data corruption) played at random during board scramble.
+
+### Audio
+- **Brass celebration fanfares** — Win sounds replaced with rich procedural brass section synthesis (6.5s–11s) with multiple voices, timpani, and cymbal crashes.
+- **Music toggle respected everywhere** — MusicManager now observes the music enabled setting globally; toggling music off immediately stops all playback (intro and win music).
+- **Pre-computed celebration audio** — Heavy brass synthesis now runs on a background thread at startup, eliminating the ~10 second delay before the win overlay appeared.
+
+### UI/UX
+- **Celebration overlays rain down** — Confetti, balloons, and stars now fall from the top of the screen in the foreground (rendered above the win overlay), with doubled sizes and mixed scale variation.
+- **Solid black grid on completed goals** — Completed goal cells now display a solid black border and grid lines for clear visibility across all themes.
+
+### Bug Fixes
+- Fixed Show Solution not completing all moves — solver now uses the full original move budget instead of the difficulty-adjusted count.
+- Fixed background music continuing to play when music toggle was turned off on the Home screen.
+
 ## [1.3.1] - 2026-05-08 (Build 6)
 
 ### New Features

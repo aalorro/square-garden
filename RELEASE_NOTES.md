@@ -43,7 +43,23 @@ FEATURES
 
 ---
 
-## Release Notes — Version 1.3.1 (What's New)
+## Release Notes — Version 1.4.0 (What's New)
+
+What's new in 1.4.0:
+
+- Celebratory music! Every win plays a segment from the celebration track. Perfect games get a special looping segment until you press Next Level.
+- Background music on the Home screen with a dedicated music toggle in Settings.
+- 9 unique goal-completion sounds — sampled clips and procedural patterns played at random.
+- Rich brass fanfare sound effects for wins with timpani, cymbal crashes, and multi-voice harmony.
+- Sad trombone sound on game loss.
+- Celebration overlays (confetti, balloons, stars) now rain down from the top in bigger, varied sizes.
+- Solid black grid lines on completed goals for better visibility.
+- Fixed Show Solution not completing all required moves.
+- Fixed music not stopping when toggled off.
+
+Happy gardening!
+
+## Release Notes — Version 1.3.1
 
 What's new in 1.3.1:
 
