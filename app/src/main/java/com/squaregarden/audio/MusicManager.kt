@@ -42,7 +42,7 @@ object MusicManager {
 
     /**
      * Start win celebration music.
-     * @param loop true for perfect-game (loops until stopped), false for regular win (~7 sec).
+     * @param loop true for perfect-game (loops until stopped), false for regular win (~8 sec with fade-out).
      */
     fun startWinMusic(context: Context, loop: Boolean) {
         stopWinMusic()
@@ -54,13 +54,33 @@ object MusicManager {
             }
         } catch (_: Exception) {}
         if (!loop) {
-            stopRunnable = Runnable { stopWinMusic() }
-            handler.postDelayed(stopRunnable!!, 7000)
+            // Start 1-second fade-out at 7 seconds, then stop at 8 seconds
+            val fadeRunnable = Runnable { fadeOutWinMusic() }
+            handler.postDelayed(fadeRunnable, 7000)
+            stopRunnable = fadeRunnable
         }
     }
 
+    private fun fadeOutWinMusic() {
+        val player = winPlayer ?: return
+        val steps = 20
+        val intervalMs = 1000L / steps // 50ms per step over 1 second
+        for (i in 1..steps) {
+            handler.postDelayed({
+                try {
+                    val vol = 0.7f * (1f - i.toFloat() / steps)
+                    player.setVolume(vol, vol)
+                } catch (_: Exception) {}
+            }, i * intervalMs)
+        }
+        // Stop after fade completes
+        val finalStop = Runnable { stopWinMusic() }
+        handler.postDelayed(finalStop, 1000L + 50)
+        stopRunnable = finalStop
+    }
+
     fun stopWinMusic() {
-        stopRunnable?.let { handler.removeCallbacks(it) }
+        handler.removeCallbacksAndMessages(null)
         stopRunnable = null
         try {
             winPlayer?.let {

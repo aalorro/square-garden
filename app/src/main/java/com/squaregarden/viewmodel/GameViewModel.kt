@@ -369,7 +369,7 @@ class GameViewModel(
         precomputedSolution = null
         viewModelScope.launch {
             val solution = withContext(Dispatchers.Default) {
-                HintSolver.findSolution(board, level.goals, adjustedMaxMoves)
+                HintSolver.findSolution(board, level.goals, level.maxMoves)
             }
             if (solution.isNotEmpty()) {
                 precomputedSolution = solution
@@ -767,7 +767,6 @@ class GameViewModel(
                     isPerfect = movesUsed <= current.level.goals.size && level.world >= 5
                     val perfectMultiplier = if (isPerfect) 2f else 1f
                     starsAwarded = (baseStars * difficulty.starMultiplier * gameDiff.starMultiplier * perfectMultiplier).roundToInt()
-                    audioManager.playWin(baseStars)
                     MusicManager.startWinMusic(context, loop = isPerfect)
                     val oldTotal = progressRepo.totalStarsFlow.first()
                     unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
@@ -886,7 +885,6 @@ class GameViewModel(
                     isPerfect = movesUsed <= current.level.goals.size && level.world >= 5
                     val perfectMultiplier = if (isPerfect) 2f else 1f
                     starsAwarded = (baseStars * difficulty.starMultiplier * gameDiff.starMultiplier * perfectMultiplier).roundToInt()
-                    audioManager.playWin(baseStars)
                     MusicManager.startWinMusic(context, loop = isPerfect)
                     val oldTotal = progressRepo.totalStarsFlow.first()
                     unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)

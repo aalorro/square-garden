@@ -705,7 +705,6 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                         val prior = listOf(shuffleTokenAwarded, passthroughTokenAwarded, unfreezeTokenAwarded, redoTokenAwarded).count { it }
                         delay(800L + prior * 800L)
                         pgScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.4f, stiffness = 250f))
-                        onPerfectGameSound()
                     }
                     Spacer(modifier = Modifier.height(6.dp))
                     Card(
