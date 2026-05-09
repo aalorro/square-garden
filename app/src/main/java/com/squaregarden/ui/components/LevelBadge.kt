@@ -35,7 +35,9 @@ fun PlayerBadge(
     modifier: Modifier = Modifier
 ) {
     var showMenu by remember { mutableStateOf(false) }
-    val isCompact = LocalConfiguration.current.screenWidthDp < 600
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    val isCompact = screenWidthDp < 600
+    val isLargeTablet = screenWidthDp >= 840
 
     // Animated star counter: counts up over max 5 seconds then snaps to total
     var displayedStars by remember { mutableIntStateOf(totalStars) }
@@ -54,26 +56,32 @@ fun PlayerBadge(
         }
     }
 
+    val avatarSize = when { isCompact -> 38.dp; isLargeTablet -> 80.dp; else -> 58.dp }
+    val cornerRadius = when { isCompact -> 10.dp; isLargeTablet -> 20.dp; else -> 16.dp }
+    val hPad = when { isCompact -> 5.dp; isLargeTablet -> 12.dp; else -> 8.dp }
+    val vPad = when { isCompact -> 3.dp; isLargeTablet -> 8.dp; else -> 6.dp }
+    val gap = when { isCompact -> 4.dp; isLargeTablet -> 8.dp; else -> 6.dp }
+    val levelFontSize = when { isCompact -> 13.sp; isLargeTablet -> 26.sp; else -> 20.sp }
+    val starFontSize = when { isCompact -> 12.sp; isLargeTablet -> 24.sp; else -> 18.sp }
+    val smallFontSize = when { isCompact -> 10.sp; isLargeTablet -> 18.sp; else -> 14.sp }
+
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
-                .shadow(4.dp, RoundedCornerShape(if (isCompact) 10.dp else 16.dp))
+                .shadow(4.dp, RoundedCornerShape(cornerRadius))
                 .background(
                     MaterialTheme.colorScheme.surface,
-                    RoundedCornerShape(if (isCompact) 10.dp else 16.dp)
+                    RoundedCornerShape(cornerRadius)
                 )
                 .clickable { showMenu = true }
-                .padding(
-                    horizontal = if (isCompact) 5.dp else 8.dp,
-                    vertical = if (isCompact) 3.dp else 6.dp
-                ),
+                .padding(horizontal = hPad, vertical = vPad),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(if (isCompact) 4.dp else 6.dp)
+            horizontalArrangement = Arrangement.spacedBy(gap)
         ) {
             // Avatar
             BasReliefAvatar(
                 emoji = avatarEmoji,
-                size = if (isCompact) 38.dp else 58.dp,
+                size = avatarSize,
                 animate = false,
                 imageBitmap = avatarImageBitmap
             )
@@ -81,7 +89,7 @@ fun PlayerBadge(
             // Level
             Text(
                 text = "Lv$playerLevel",
-                fontSize = if (isCompact) 13.sp else 20.sp,
+                fontSize = levelFontSize,
                 fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -89,7 +97,7 @@ fun PlayerBadge(
             // Stars (with position tracking)
             Text(
                 text = "$displayedStars\u2605",
-                fontSize = if (isCompact) 12.sp else 18.sp,
+                fontSize = starFontSize,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color(0xFFD4A017),
                 modifier = Modifier.onGloballyPositioned { coords ->
@@ -104,7 +112,7 @@ fun PlayerBadge(
             // Lives
             Text(
                 text = "\u2764".repeat(lives),
-                fontSize = if (isCompact) 10.sp else 14.sp,
+                fontSize = smallFontSize,
                 color = Color(0xFFE53935)
             )
 
@@ -112,7 +120,7 @@ fun PlayerBadge(
             if (perfectGames > 0) {
                 Text(
                     text = "\uD83C\uDFC6$perfectGames",
-                    fontSize = if (isCompact) 10.sp else 14.sp,
+                    fontSize = smallFontSize,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFD4A017)
                 )
