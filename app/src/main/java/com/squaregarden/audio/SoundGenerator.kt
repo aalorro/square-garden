@@ -55,6 +55,37 @@ object SoundGenerator {
         }
     }
 
+    // ---- Brass synthesis helpers ----
+
+    /** Brass instrument timbre: fundamental + harmonics for warm brassy tone */
+    private fun brass(freq: Float, i: Int, brightness: Float = 0.7f): Float {
+        val b = brightness.coerceIn(0f, 1f)
+        return (sine(freq, i) +
+                sine(freq * 2f, i) * 0.65f +
+                sine(freq * 3f, i) * 0.42f * b +
+                sine(freq * 4f, i) * 0.24f * b +
+                sine(freq * 5f, i) * 0.12f * b * b +
+                sine(freq * 6f, i) * 0.06f * b * b) / 2.49f
+    }
+
+    /** Three detuned brass voices for full section feel */
+    private fun brassChoir(freq: Float, i: Int, brightness: Float = 0.7f): Float {
+        return (brass(freq * 0.996f, i, brightness) +
+                brass(freq, i, brightness) +
+                brass(freq * 1.004f, i, brightness)) / 3f
+    }
+
+    /** Smooth envelope for individual notes within a larger piece */
+    private fun noteGate(progress: Float, start: Float, end: Float): Float {
+        if (progress < start || progress >= end) return 0f
+        val pos = (progress - start) / (end - start)
+        return when {
+            pos < 0.1f -> pos / 0.1f
+            pos > 0.8f -> (1f - pos) / 0.2f
+            else -> 1f
+        }.coerceIn(0f, 1f)
+    }
+
     /** Quick soft tap blip */
     fun generateTap(): ShortArray = generatePcm(80) { i, total ->
         val env = envelope(i, total, 5, 40)
@@ -75,106 +106,237 @@ object SoundGenerator {
         env * 0.6f * (sine(660f, i) * 0.5f + sine(990f, i) * 0.3f + sine(1320f, i) * 0.2f)
     }
 
-    /** 1-star: gentle 5-note ascending melody (~5 seconds) */
-    fun generateWin1Star(): ShortArray = generatePcm(5000) { i, total ->
-        val env = envelope(i, total, 40, 1200)
-        val progress = i.toFloat() / total
-        val freq = when {
-            progress < 0.18f -> 262f   // C4
-            progress < 0.34f -> 330f   // E4
-            progress < 0.50f -> 392f   // G4
-            progress < 0.70f -> 523f   // C5
-            else -> 659f               // E5
-        }
-        val vibrato = 1f + 0.003f * sine(4.5f, i)
-        val shimmer = if (progress > 0.65f) 0.08f * sine(2640f, i) * (1f - progress) * 2f else 0f
-        env * 0.5f * (
-            sine(freq * vibrato, i) * 0.5f +
-            sine(freq * 2f, i) * 0.25f +
-            sine(freq * 3f, i) * 0.1f +
-            sine(freq * 0.5f, i) * 0.15f +
-            shimmer
-        )
-    }
+    /** 1-star: warm brass fanfare with ascending Bb major arpeggio (~6.5 seconds) */
+    fun generateWin1Star(): ShortArray = generatePcm(6500) { i, total ->
+        val master = envelope(i, total, 60, 1800)
+        val p = i.toFloat() / total
+        val vib = 1f + 0.003f * sine(5f, i)
 
-    /** 2-star: rich 6-note arpeggio with shimmer (~5.5 seconds) */
-    fun generateWin2Star(): ShortArray = generatePcm(5500) { i, total ->
-        val env = envelope(i, total, 40, 1500)
-        val progress = i.toFloat() / total
-        val freq = when {
-            progress < 0.14f -> 440f   // A4
-            progress < 0.28f -> 554f   // C#5
-            progress < 0.42f -> 659f   // E5
-            progress < 0.58f -> 880f   // A5
-            progress < 0.75f -> 659f   // E5 (descend)
-            else -> 880f               // A5 (resolve)
-        }
-        val vibrato = 1f + 0.004f * sine(5f, i)
-        val shimmer = 0.06f * sine(2200f, i) * sin(progress * 10.0).toFloat().coerceIn(0f, 1f)
-        val sparkle = if (progress > 0.5f) 0.1f * sine(3520f, i) * (1f - progress) * 1.5f else 0f
-        env * 0.55f * (
-            sine(freq * vibrato, i) * 0.4f +
-            sine(freq * 2f, i) * 0.2f +
-            sine(freq * 3f, i) * 0.1f +
-            sine(freq * 0.5f, i) * 0.15f +
-            shimmer + sparkle
-        )
-    }
+        // Melody: ascending Bb major arpeggio, single brass building to choir
+        val melody = (
+            noteGate(p, 0.00f, 0.16f) * brass(349f * vib, i, 0.6f) +     // F4 pickup
+            noteGate(p, 0.13f, 0.29f) * brass(466f * vib, i, 0.7f) +     // Bb4
+            noteGate(p, 0.26f, 0.43f) * brass(587f * vib, i, 0.75f) +    // D5
+            noteGate(p, 0.40f, 0.58f) * brass(698f * vib, i, 0.8f) +     // F5
+            noteGate(p, 0.55f, 1.00f) * brassChoir(932f * vib, i, 0.85f) // Bb5 sustained
+        ) * 0.40f
 
-    /** 3-star: grand 7-note fanfare with full harmonics (~6 seconds) */
-    fun generateWin3Star(): ShortArray = generatePcm(6000) { i, total ->
-        val env = envelope(i, total, 50, 2000)
-        val progress = i.toFloat() / total
-        val freq = when {
-            progress < 0.10f -> 440f    // A4
-            progress < 0.20f -> 554f    // C#5
-            progress < 0.30f -> 659f    // E5
-            progress < 0.45f -> 880f    // A5
-            progress < 0.58f -> 1108f   // C#6
-            progress < 0.72f -> 1318f   // E6
-            else -> 880f                // settle A5
-        }
-        val vibrato = 1f + 0.005f * sine(5f, i)
-        val shimmer = 0.1f * sine(2640f, i) * sin(progress * 8.0).toFloat().coerceIn(0f, 1f)
-        val sparkle = if (progress > 0.4f) 0.12f * sine(3520f, i) * sin(progress * 14.0).toFloat().coerceIn(0f, 1f) else 0f
-        val chordSustain = if (progress > 0.72f) 0.08f * sine(554f, i) + 0.06f * sine(659f, i) else 0f
-        env * 0.6f * (
-            sine(freq * vibrato, i) * 0.3f +
-            sine(freq * 2f, i) * 0.15f +
-            sine(freq * 3f, i) * 0.1f +
-            sine(freq * 0.5f, i) * 0.15f +
-            shimmer + sparkle + chordSustain
-        )
-    }
+        // Bass: Bb3 pedal
+        val bass = noteGate(p, 0.13f, 1.00f) * brass(233f, i, 0.4f) * 0.20f
 
-    /** Perfect game: epic ascending fanfare with chord layers (~7 seconds) */
-    fun generatePerfectGame(): ShortArray = generatePcm(7000) { i, total ->
-        val env = envelope(i, total, 60, 2500)
-        val progress = i.toFloat() / total
-        val freq = when {
-            progress < 0.08f -> 440f    // A4
-            progress < 0.16f -> 554f    // C#5
-            progress < 0.24f -> 659f    // E5
-            progress < 0.34f -> 880f    // A5
-            progress < 0.44f -> 1108f   // C#6
-            progress < 0.54f -> 1318f   // E6
-            progress < 0.65f -> 1760f   // A6
-            else -> 880f                // triumphant A5 sustain
-        }
-        val vibrato = 1f + 0.006f * sine(4.5f, i)
-        val shimmer = 0.12f * sine(2640f, i) * sin(progress * 6.0).toFloat().coerceIn(0f, 1f)
-        val sparkle = if (progress > 0.3f) 0.1f * sine(4186f, i) * sin(progress * 16.0).toFloat().coerceIn(0f, 1f) else 0f
-        val sparkle2 = if (progress > 0.5f) 0.06f * sine(5274f, i) * sin(progress * 20.0).toFloat().coerceIn(0f, 1f) else 0f
-        val chord = if (progress > 0.65f) {
-            0.1f * sine(554f, i) + 0.08f * sine(659f, i) + 0.06f * sine(440f, i)
+        // Chord fill on sustain: D5 + F5
+        val harmony = if (p > 0.58f) {
+            val h = ((p - 0.58f) / 0.08f).coerceIn(0f, 1f) * ((1f - p) / 0.3f).coerceIn(0f, 1f)
+            h * (brass(587f * vib, i, 0.5f) * 0.10f + brass(698f * vib, i, 0.5f) * 0.08f)
         } else 0f
-        env * 0.55f * (
-            sine(freq * vibrato, i) * 0.25f +
-            sine(freq * 2f, i) * 0.12f +
-            sine(freq * 3f, i) * 0.08f +
-            sine(freq * 0.5f, i) * 0.15f +
-            shimmer + sparkle + sparkle2 + chord
+
+        // Soft cymbal shimmer on sustain
+        val cymbal = if (p > 0.55f) {
+            val c = ((p - 0.55f) / 0.06f).coerceIn(0f, 1f) * ((1f - p) / 0.35f).coerceIn(0f, 1f)
+            (Math.random().toFloat() - 0.5f) * 0.04f * c +
+            sine(6500f, i) * 0.02f * c * sine(0.5f, i)
+        } else 0f
+
+        master * (melody + bass + harmony + cymbal)
+    }
+
+    /** 2-star: triumphant brass section fanfare with timpani (~7.5 seconds) */
+    fun generateWin2Star(): ShortArray = generatePcm(7500) { i, total ->
+        val master = envelope(i, total, 60, 2000)
+        val p = i.toFloat() / total
+        val vib = 1f + 0.004f * sine(5.5f, i)
+
+        // Melody: bold ascending Bb major run with brass choir
+        val melody = (
+            noteGate(p, 0.00f, 0.10f) * brassChoir(349f * vib, i, 0.65f) +   // F4 pickup
+            noteGate(p, 0.08f, 0.19f) * brassChoir(466f * vib, i, 0.7f) +    // Bb4
+            noteGate(p, 0.17f, 0.28f) * brassChoir(587f * vib, i, 0.75f) +   // D5
+            noteGate(p, 0.26f, 0.38f) * brassChoir(698f * vib, i, 0.8f) +    // F5
+            noteGate(p, 0.35f, 0.50f) * brassChoir(932f * vib, i, 0.85f) +   // Bb5
+            noteGate(p, 0.47f, 0.60f) * brassChoir(1175f * vib, i, 0.9f) +   // D6
+            noteGate(p, 0.57f, 1.00f) * brassChoir(932f * vib, i, 0.9f)      // Bb5 resolve
+        ) * 0.35f
+
+        // Counter-melody harmony (thirds)
+        val harmony = (
+            noteGate(p, 0.35f, 0.50f) * brass(698f * vib, i, 0.6f) +         // F5 under Bb5
+            noteGate(p, 0.47f, 0.60f) * brass(932f * vib, i, 0.6f) +         // Bb5 under D6
+            noteGate(p, 0.57f, 1.00f) * brassChoir(698f * vib, i, 0.65f)     // F5 under Bb5
+        ) * 0.18f
+
+        // Bass voice: Bb3 then F3
+        val bass = (
+            noteGate(p, 0.08f, 0.45f) * brass(233f, i, 0.4f) +
+            noteGate(p, 0.45f, 1.00f) * brass(175f, i, 0.45f)
+        ) * 0.18f
+
+        // Timpani accent at climax
+        val timpani = if (p in 0.47f..0.58f) {
+            val t = ((0.58f - p) / 0.11f).coerceIn(0f, 1f)
+            sine(87f, i) * 0.15f * t * t
+        } else 0f
+
+        // Cymbal crash at D6 entry + sustain shimmer
+        val cymbal = if (p > 0.47f) {
+            val attack = ((p - 0.47f) / 0.02f).coerceIn(0f, 1f)
+            val decay = ((1f - p) / 0.45f).coerceIn(0f, 1f)
+            val c = attack * decay
+            (Math.random().toFloat() - 0.5f) * 0.06f * c +
+            sine(7200f, i) * 0.015f * c + sine(5800f, i) * 0.01f * c
+        } else 0f
+
+        master * (melody + harmony + bass + timpani + cymbal)
+    }
+
+    /** 3-star: grand brass section fanfare with percussion (~8.5 seconds) */
+    fun generateWin3Star(): ShortArray = generatePcm(8500) { i, total ->
+        val master = envelope(i, total, 80, 2500)
+        val p = i.toFloat() / total
+        val vib = 1f + 0.005f * sine(5f, i)
+
+        // Melody: full brass section grand ascending fanfare
+        val melody = (
+            noteGate(p, 0.00f, 0.07f) * brassChoir(233f * vib, i, 0.6f) +    // Bb3 intro
+            noteGate(p, 0.06f, 0.13f) * brassChoir(349f * vib, i, 0.65f) +   // F4
+            noteGate(p, 0.12f, 0.20f) * brassChoir(466f * vib, i, 0.7f) +    // Bb4
+            noteGate(p, 0.18f, 0.28f) * brassChoir(587f * vib, i, 0.75f) +   // D5
+            noteGate(p, 0.26f, 0.36f) * brassChoir(698f * vib, i, 0.8f) +    // F5
+            noteGate(p, 0.34f, 0.46f) * brassChoir(932f * vib, i, 0.85f) +   // Bb5
+            noteGate(p, 0.44f, 0.55f) * brassChoir(1175f * vib, i, 0.9f) +   // D6
+            noteGate(p, 0.53f, 0.64f) * brassChoir(1397f * vib, i, 0.95f) +  // F6 peak!
+            noteGate(p, 0.62f, 1.00f) * brassChoir(932f * vib, i, 0.9f)      // Bb5 grand resolve
+        ) * 0.30f
+
+        // Rich chord harmony on resolve
+        val harmony = if (p > 0.62f) {
+            val h = ((p - 0.62f) / 0.06f).coerceIn(0f, 1f) * ((1f - p) / 0.3f).coerceIn(0f, 1f)
+            h * (brassChoir(587f * vib, i, 0.6f) * 0.10f +
+                 brassChoir(698f * vib, i, 0.6f) * 0.08f +
+                 brassChoir(1175f * vib, i, 0.5f) * 0.06f)
+        } else 0f
+
+        // Counter-melody thirds on the way up
+        val counter = (
+            noteGate(p, 0.26f, 0.36f) * brass(587f * vib, i, 0.6f) +
+            noteGate(p, 0.34f, 0.46f) * brass(698f * vib, i, 0.6f) +
+            noteGate(p, 0.44f, 0.55f) * brass(932f * vib, i, 0.65f)
+        ) * 0.12f
+
+        // Bass: Bb2 pedal
+        val bass = noteGate(p, 0.06f, 1.00f) * brass(117f, i, 0.4f) * 0.18f
+
+        // Timpani hits on accent notes
+        val timpani = (
+            if (p in 0.34f..0.42f) sine(117f, i) * 0.10f * ((0.42f - p) / 0.08f).coerceIn(0f, 1f) else 0f
+        ) + (
+            if (p in 0.53f..0.62f) sine(87f, i) * 0.14f * ((0.62f - p) / 0.09f).coerceIn(0f, 1f) else 0f
         )
+
+        // Snare roll building to F6 climax
+        val snareRoll = if (p in 0.48f..0.53f) {
+            val intensity = ((p - 0.48f) / 0.05f).coerceIn(0f, 1f)
+            val roll = sin(p.toDouble() * 1200.0).toFloat().let { if (it > 0f) 1f else 0f }
+            (Math.random().toFloat() - 0.5f) * 0.10f * intensity * roll
+        } else 0f
+
+        // Grand cymbal crash at F6 peak + sustain shimmer
+        val cymbal = if (p > 0.53f) {
+            val attack = if (p < 0.55f) ((p - 0.53f) / 0.02f) else 1f
+            val decay = ((1f - p) / 0.4f).coerceIn(0f, 1f)
+            val c = attack.coerceIn(0f, 1f) * decay
+            (Math.random().toFloat() - 0.5f) * 0.07f * c +
+            sine(6800f, i) * 0.02f * c + sine(8200f, i) * 0.01f * c
+        } else 0f
+
+        master * (melody + harmony + counter + bass + timpani + snareRoll + cymbal)
+    }
+
+    /** Perfect game: epic two-part brass celebration with key change (~11 seconds) */
+    fun generatePerfectGame(): ShortArray = generatePcm(11000) { i, total ->
+        val master = envelope(i, total, 100, 3000)
+        val p = i.toFloat() / total
+        val vib = 1f + 0.005f * sine(4.5f, i)
+
+        // === PART 1 (0.0-0.45): Building fanfare in Bb major ===
+        val part1Melody = (
+            noteGate(p, 0.00f, 0.06f) * brassChoir(233f * vib, i, 0.65f) +   // Bb3
+            noteGate(p, 0.05f, 0.10f) * brassChoir(349f * vib, i, 0.7f) +    // F4
+            noteGate(p, 0.09f, 0.15f) * brassChoir(466f * vib, i, 0.75f) +   // Bb4
+            noteGate(p, 0.14f, 0.20f) * brassChoir(587f * vib, i, 0.8f) +    // D5
+            noteGate(p, 0.19f, 0.26f) * brassChoir(698f * vib, i, 0.85f) +   // F5
+            noteGate(p, 0.25f, 0.33f) * brassChoir(932f * vib, i, 0.9f) +    // Bb5
+            noteGate(p, 0.32f, 0.45f) * brassChoir(1175f * vib, i, 0.9f)     // D6 building...
+        ) * 0.28f
+
+        val part1Harmony = (
+            noteGate(p, 0.19f, 0.26f) * brass(466f * vib, i, 0.6f) +
+            noteGate(p, 0.25f, 0.33f) * brass(698f * vib, i, 0.6f) +
+            noteGate(p, 0.32f, 0.45f) * brass(932f * vib, i, 0.6f)
+        ) * 0.12f
+
+        // Dramatic timpani roll + snare transition (0.43-0.47)
+        val transitionRoll = if (p in 0.43f..0.47f) {
+            val intensity = ((p - 0.43f) / 0.04f).coerceIn(0f, 1f)
+            val roll = sin(p.toDouble() * 1500.0).toFloat().let { if (it > 0f) 1f else 0f }
+            sine(110f, i) * 0.12f * intensity +
+            (Math.random().toFloat() - 0.5f) * 0.10f * intensity * roll
+        } else 0f
+
+        // === PART 2 (0.47-1.0): Grand celebration in C major (key change!) ===
+        val part2Melody = (
+            noteGate(p, 0.47f, 0.53f) * brassChoir(523f * vib, i, 0.85f) +   // C5
+            noteGate(p, 0.52f, 0.58f) * brassChoir(659f * vib, i, 0.9f) +    // E5
+            noteGate(p, 0.57f, 0.63f) * brassChoir(784f * vib, i, 0.9f) +    // G5
+            noteGate(p, 0.62f, 0.70f) * brassChoir(1047f * vib, i, 0.95f) +  // C6
+            noteGate(p, 0.68f, 0.76f) * brassChoir(1319f * vib, i, 1.0f) +   // E6
+            noteGate(p, 0.74f, 1.00f) * brassChoir(1047f * vib, i, 0.95f)    // C6 grand sustain
+        ) * 0.28f
+
+        // Grand chord on final sustain: full C major voiced wide
+        val grandChord = if (p > 0.76f) {
+            val g = ((p - 0.76f) / 0.06f).coerceIn(0f, 1f) * ((1f - p) / 0.2f).coerceIn(0f, 1f)
+            g * (brassChoir(523f * vib, i, 0.7f) * 0.08f +
+                 brassChoir(659f * vib, i, 0.7f) * 0.07f +
+                 brassChoir(784f * vib, i, 0.65f) * 0.06f +
+                 brassChoir(1319f * vib, i, 0.6f) * 0.05f)
+        } else 0f
+
+        // Deep bass
+        val bass = (
+            noteGate(p, 0.00f, 0.45f) * brass(117f, i, 0.4f) * 0.15f +
+            noteGate(p, 0.47f, 1.00f) * brass(131f, i, 0.45f) * 0.18f
+        )
+
+        // Cymbal crash at part 2 entry
+        val cymbal1 = if (p in 0.47f..0.70f) {
+            val c = ((p - 0.47f) / 0.02f).coerceIn(0f, 1f) * ((0.70f - p) / 0.20f).coerceIn(0f, 1f)
+            (Math.random().toFloat() - 0.5f) * 0.07f * c +
+            sine(7500f, i) * 0.015f * c
+        } else 0f
+
+        // Second cymbal crash at grand chord
+        val cymbal2 = if (p > 0.74f) {
+            val c = ((p - 0.74f) / 0.02f).coerceIn(0f, 1f) * ((1f - p) / 0.22f).coerceIn(0f, 1f)
+            (Math.random().toFloat() - 0.5f) * 0.08f * c +
+            sine(6200f, i) * 0.02f * c + sine(8800f, i) * 0.01f * c
+        } else 0f
+
+        // Timpani accents in part 2
+        val timpani = (
+            if (p in 0.47f..0.54f) sine(131f, i) * 0.12f * ((0.54f - p) / 0.07f).coerceIn(0f, 1f) else 0f
+        ) + (
+            if (p in 0.62f..0.68f) sine(98f, i) * 0.10f * ((0.68f - p) / 0.06f).coerceIn(0f, 1f) else 0f
+        )
+
+        // Shimmering high overtones on final sustain
+        val shimmer = if (p > 0.78f) {
+            val s = ((p - 0.78f) / 0.05f).coerceIn(0f, 1f) * ((1f - p) / 0.18f).coerceIn(0f, 1f)
+            sine(4186f, i) * 0.03f * s * sine(2f, i) +
+            sine(5274f, i) * 0.02f * s * sine(3f, i)
+        } else 0f
+
+        master * (part1Melody + part1Harmony + transitionRoll + part2Melody + grandChord +
+                  bass + cymbal1 + cymbal2 + timpani + shimmer)
     }
 
     /** World unlock: mysterious sweep into triumphant chord (~4 seconds) */

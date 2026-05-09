@@ -28,11 +28,12 @@ class AudioManager(private val context: Context) {
     private val scramble4Pcm by lazy { SoundGenerator.generateScramble4() }
     private val scramble5Pcm by lazy { SoundGenerator.generateScramble5() }
 
-    // Sampled celebration sounds from Drift-Loop.mp3 snippets
-    private val win1Pcm by lazy { SoundGenerator.loadRawResource(context, R.raw.win1_sample) }
-    private val win2Pcm by lazy { SoundGenerator.loadRawResource(context, R.raw.win2_sample) }
-    private val win3Pcm by lazy { SoundGenerator.loadRawResource(context, R.raw.win3_sample) }
-    private val perfectGamePcm by lazy { SoundGenerator.loadRawResource(context, R.raw.perfect_sample) }
+    // Procedural brass celebration sounds
+    private val win1Pcm by lazy { SoundGenerator.generateWin1Star() }
+    private val win2Pcm by lazy { SoundGenerator.generateWin2Star() }
+    private val win3Pcm by lazy { SoundGenerator.generateWin3Star() }
+    private val perfectGamePcm by lazy { SoundGenerator.generatePerfectGame() }
+    // Sampled world unlock sound
     private val worldUnlockPcm by lazy { SoundGenerator.loadRawResource(context, R.raw.unlock_sample) }
 
     fun observeSettings(scope: CoroutineScope) {
