@@ -438,32 +438,33 @@ class GameViewModel(
     }
 
     private suspend fun animateScramble(finalBoard: Board) {
+        // Total animation = 4000ms to match scramble sound duration
         audioManager.playScramble()
         var displayBoard = randomizeBoard(finalBoard)
         _state.value = _state.value.copy(board = displayBoard, phase = GamePhase.SCRAMBLING)
 
-        // Fast phase: ~30 swaps over 2.5s
-        repeat(30) {
+        // Fast phase: 25 swaps over 2000ms
+        repeat(25) {
             displayBoard = randomSwap(displayBoard)
             _state.value = _state.value.copy(board = displayBoard)
-            delay(83)
+            delay(80)
         }
-        // Slow phase: ~7 swaps over 1s
-        repeat(7) {
+        // Slow phase: 8 swaps over 1000ms
+        repeat(8) {
             displayBoard = randomSwap(displayBoard)
             _state.value = _state.value.copy(board = displayBoard)
-            delay(143)
+            delay(125)
         }
-        // Settle phase: progressively place tiles into their final positions
+        // Settle phase: 1000ms — progressively place tiles into final positions
         val misplaced = findMisplacedTiles(displayBoard, finalBoard).toMutableList()
         misplaced.shuffle()
-        val settleCount = misplaced.size.coerceAtMost(8)
+        val settleCount = misplaced.size.coerceAtMost(10)
+        val settleInterval = if (settleCount > 0) 1000L / settleCount else 0L
         for (idx in 0 until settleCount) {
             displayBoard = placeCorrectTile(displayBoard, finalBoard, misplaced[idx])
             _state.value = _state.value.copy(board = displayBoard)
-            delay(60L + idx * 20L)
+            delay(settleInterval)
         }
-        // Final board — should be very close now, seamless transition
         _state.value = _state.value.copy(board = finalBoard, phase = GamePhase.PLAYING)
     }
 
