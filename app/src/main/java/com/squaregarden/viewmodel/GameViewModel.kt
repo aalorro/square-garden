@@ -51,6 +51,7 @@ class GameViewModel(
     private val audioManager = AudioManager(context)
     private var usedPowerUpThisGame: Boolean = false
     private var blitzTimerJob: Job? = null
+    private var blitzTimerStarted: Boolean = false
     var activity: Activity? = null
 
     private val _state = MutableStateFlow(
@@ -75,7 +76,7 @@ class GameViewModel(
 
             val challengeType = ChallengeType.fromId(levelId)
             if (challengeType != null) {
-                level = ChallengeGenerator.generateLevel(challengeType)
+                level = ChallengeGenerator.generateLevel(challengeType, difficulty)
                 adjustedMaxMoves = level.maxMoves // No difficulty adjustment for challenges
                 initLevel(challengeType)
             } else {
@@ -432,10 +433,6 @@ class GameViewModel(
             )
             computeSolutionAsync(board)
         } else {
-            val (board, solution) = generateBoardWithSolution(adjustedMaxMoves)
-            precomputedSolution = solution
-            val adjustedLevel = level.copy(maxMoves = adjustedMaxMoves)
-
             val chalState = when (challengeType) {
                 ChallengeType.BLITZ -> ChallengeState(type = ChallengeType.BLITZ, timerMillisRemaining = 60_000L)
                 ChallengeType.OVERGROWN -> ChallengeState(type = ChallengeType.OVERGROWN)
@@ -443,6 +440,23 @@ class GameViewModel(
                 ChallengeType.MEMORY -> ChallengeState(type = ChallengeType.MEMORY)
                 null -> null
             }
+
+            // Blitz uses the board directly from ChallengeGenerator (goals verified not pre-met)
+            val board: Board
+            val solution: List<Pair<CellPos, CellPos>>?
+            if (challengeType == ChallengeType.BLITZ) {
+                board = Board(
+                    width = level.boardWidth, height = level.boardHeight,
+                    tiles = level.initialTiles.map { row -> row.map { Tile(it) } }
+                )
+                solution = null
+            } else {
+                val result = generateBoardWithSolution(adjustedMaxMoves)
+                board = result.first
+                solution = result.second
+            }
+            precomputedSolution = solution
+            val adjustedLevel = level.copy(maxMoves = adjustedMaxMoves)
 
             _state.value = GameState(
                 level = adjustedLevel, board = board,
@@ -454,11 +468,10 @@ class GameViewModel(
                 challengeState = chalState
             )
             // If reverse-construction failed, try solver in background
-            if (solution == null) computeSolutionAsync(board)
+            if (solution == null && challengeType != ChallengeType.BLITZ) computeSolutionAsync(board)
             viewModelScope.launch {
                 animateScramble(board)
                 // Start challenge-specific setup after scramble
-                if (challengeType == ChallengeType.BLITZ) startBlitzTimer()
                 if (challengeType == ChallengeType.MEMORY) startMemoryReveal()
             }
         }
@@ -753,6 +766,12 @@ class GameViewModel(
 
         // Pro blocks swaps touching goal cells (passthrough skip handled before reaching here)
         if (crossesBorder && difficulty == Difficulty.HARD) return
+
+        // Start Blitz timer on first swap
+        if (!blitzTimerStarted && current.challengeState?.type == ChallengeType.BLITZ) {
+            blitzTimerStarted = true
+            startBlitzTimer()
+        }
 
         hasMovedSinceReset = true
         _state.value = current.copy(
@@ -1348,7 +1367,7 @@ class GameViewModel(
         val current = _state.value
         val cs = current.challengeState ?: return
         if (cs.type != ChallengeType.BLITZ) return
-        val newGoals = ChallengeGenerator.generateBlitzGoalSet(current.board)
+        val newGoals = ChallengeGenerator.generateBlitzGoalSet(current.board, difficulty)
         val newGoalCount = cs.goalsCleared + 1
         val newCombo = cs.comboCount + 1
         val newMultiplier = when {
