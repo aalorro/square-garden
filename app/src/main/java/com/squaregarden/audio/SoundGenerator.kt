@@ -280,31 +280,114 @@ object SoundGenerator {
         env * 0.6f * (crack + chime + sparkle)
     }
 
-    /** Glitchy computer hum for level-transition tile scramble (~4 seconds) */
-    fun generateScramble(): ShortArray = generatePcm(4000) { i, total ->
+    /** Common scramble envelope: 10ms attack, fade out last 500ms of 4s */
+    private fun scrambleEnv(i: Int, total: Int): Float {
         val progress = i.toFloat() / total
-        // Fade out in last 500ms
-        val env = when {
+        return when {
             i < SAMPLE_RATE * 10 / 1000 -> i.toFloat() / (SAMPLE_RATE * 10 / 1000)
             progress > 0.875f -> (1f - progress) / 0.125f
             else -> 1f
         }.coerceIn(0f, 1f)
-        // Low-frequency base hum with wobble (80-120Hz rising)
+    }
+
+    /** Scramble 1: Low hum with digital glitch bursts */
+    fun generateScramble1(): ShortArray = generatePcm(4000) { i, total ->
+        val progress = i.toFloat() / total
+        val env = scrambleEnv(i, total)
         val baseFreq = 80f + 40f * progress
         val wobble = 1f + 0.08f * sine(3f + 2f * progress, i)
         val hum = sine(baseFreq * wobble, i) * 0.35f + sine(baseFreq * 2f * wobble, i) * 0.15f
-        // Digital glitch bursts — periodic noise pops
-        val glitchCycle = sin(progress * 47.0).toFloat() // pseudo-random trigger
+        val glitchCycle = sin(progress * 47.0).toFloat()
         val glitch = if (glitchCycle > 0.7f) {
             (Math.random().toFloat() - 0.5f) * 0.4f * (glitchCycle - 0.7f) / 0.3f
         } else 0f
-        // Rising mid-frequency buzz (tension building)
         val buzzFreq = 200f + 300f * progress
         val buzz = sine(buzzFreq, i) * 0.12f * progress
-        // High-freq digital artifacts
         val artifact = sine(1800f + 600f * sin(progress * 23.0).toFloat(), i) * 0.06f *
             sin(progress * 31.0).toFloat().coerceIn(0f, 1f)
         env * 0.7f * (hum + glitch + buzz + artifact)
+    }
+
+    /** Scramble 2: Stuttering dial-up modem — rapid bit-crush pulses */
+    fun generateScramble2(): ShortArray = generatePcm(4000) { i, total ->
+        val progress = i.toFloat() / total
+        val env = scrambleEnv(i, total)
+        // Carrier tone sweeping up like a modem handshake
+        val carrier = sine(600f + 1400f * progress, i) * 0.3f
+        // Stutter: square-wave gate at increasing rate
+        val gateRate = 8f + 20f * progress
+        val gate = if (sine(gateRate, i) > 0f) 1f else 0.15f
+        // Bit-crush noise bursts every ~400ms
+        val burstPhase = (progress * 10f) % 1f
+        val burst = if (burstPhase < 0.2f) {
+            (Math.random().toFloat() - 0.5f) * 0.35f * (1f - burstPhase / 0.2f)
+        } else 0f
+        // Undertone hum
+        val hum = sine(60f, i) * 0.15f
+        env * 0.65f * (carrier * gate + burst + hum)
+    }
+
+    /** Scramble 3: Warped tape / vinyl wobble — pitch-bending drone */
+    fun generateScramble3(): ShortArray = generatePcm(4000) { i, total ->
+        val progress = i.toFloat() / total
+        val env = scrambleEnv(i, total)
+        // Wobbly drone that sounds like a warped record
+        val warpSpeed = 2f + 4f * progress
+        val warpDepth = 0.25f + 0.15f * sine(0.5f, i)
+        val baseFreq = 150f + 50f * progress
+        val warpedFreq = baseFreq * (1f + warpDepth * sine(warpSpeed, i))
+        val drone = sine(warpedFreq, i) * 0.3f + sine(warpedFreq * 1.5f, i) * 0.15f
+        // Crackle — sparse random pops like vinyl
+        val crackle = if (Math.random() < 0.003 + 0.007 * progress) {
+            (Math.random().toFloat() - 0.5f) * 0.5f
+        } else 0f
+        // Sub-bass rumble
+        val sub = sine(40f + 10f * sine(0.3f, i), i) * 0.2f
+        // Ghostly high overtone fading in
+        val ghost = sine(1200f * (1f + 0.1f * sine(1.5f, i)), i) * 0.05f * progress
+        env * 0.7f * (drone + crackle + sub + ghost)
+    }
+
+    /** Scramble 4: Electric buzz saw — harsh sawtooth with resonant sweep */
+    fun generateScramble4(): ShortArray = generatePcm(4000) { i, total ->
+        val progress = i.toFloat() / total
+        val env = scrambleEnv(i, total)
+        // Sawtooth wave (buzzy, electric)
+        val sawFreq = 100f + 60f * progress
+        val sawPhase = (i.toFloat() * sawFreq / SAMPLE_RATE) % 1f
+        val saw = (sawPhase * 2f - 1f) * 0.25f
+        // Resonant filter sweep — sine modulated amplitude at sweeping freq
+        val resFreq = 400f + 800f * (0.5f + 0.5f * sine(1.2f, i))
+        val resonance = sine(resFreq, i) * 0.2f * (0.5f + 0.5f * sine(0.8f, i))
+        // Electrical spark pops — irregular bursts
+        val sparkTrigger = sin(progress * 53.0 + 7.0).toFloat()
+        val spark = if (sparkTrigger > 0.85f) {
+            (Math.random().toFloat() - 0.5f) * 0.45f * (sparkTrigger - 0.85f) / 0.15f
+        } else 0f
+        // Power-line 60Hz undertone
+        val powerLine = sine(60f, i) * 0.1f + sine(120f, i) * 0.05f
+        env * 0.65f * (saw + resonance + spark + powerLine)
+    }
+
+    /** Scramble 5: Data corruption — rapid digital chirps with static */
+    fun generateScramble5(): ShortArray = generatePcm(4000) { i, total ->
+        val progress = i.toFloat() / total
+        val env = scrambleEnv(i, total)
+        // Rapid chirps — short sine bursts at semi-random frequencies
+        val chirpRate = 12f + 8f * progress
+        val chirpPhase = (progress * chirpRate) % 1f
+        val chirpFreq = 800f + 1200f * sin(progress * 37.0).toFloat().coerceIn(0f, 1f)
+        val chirp = if (chirpPhase < 0.4f) {
+            sine(chirpFreq, i) * 0.3f * (1f - chirpPhase / 0.4f)
+        } else 0f
+        // Static noise bed, thickening over time
+        val staticNoise = (Math.random().toFloat() - 0.5f) * (0.08f + 0.12f * progress)
+        // Low digital rumble
+        val rumble = sine(70f + 30f * sine(0.7f, i), i) * 0.2f
+        // Descending data-dump tone
+        val dataTone = sine(2000f - 1200f * progress, i) * 0.06f *
+            sin(progress * 19.0).toFloat().coerceIn(0f, 1f)
+        env * 0.7f * (chirp + staticNoise + rumble + dataTone)
     }
 
     /** Sad descending tone for losing */
