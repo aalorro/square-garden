@@ -1,19 +1,31 @@
 package com.squaregarden.audio
 
+import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import kotlin.math.*
 
 /**
- * Generates game sound effects procedurally using sine-wave synthesis.
- * No audio asset files needed.
+ * Generates game sound effects procedurally using sine-wave synthesis,
+ * and loads sampled audio snippets from raw resources.
  */
 object SoundGenerator {
 
     private const val SAMPLE_RATE = 22050
+
+    /** Load a raw PCM resource (16-bit signed LE mono @ 22050Hz) into a ShortArray. */
+    fun loadRawResource(context: Context, resId: Int): ShortArray {
+        val bytes = context.resources.openRawResource(resId).use { it.readBytes() }
+        val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+        val shorts = ShortArray(bytes.size / 2)
+        buffer.asShortBuffer().get(shorts)
+        return shorts
+    }
 
     private fun generatePcm(
         durationMs: Int,

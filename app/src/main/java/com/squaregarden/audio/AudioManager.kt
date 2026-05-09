@@ -1,6 +1,7 @@
 package com.squaregarden.audio
 
 import android.content.Context
+import com.squaregarden.R
 import com.squaregarden.data.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -15,15 +16,17 @@ class AudioManager(private val context: Context) {
     private val tapPcm by lazy { SoundGenerator.generateTap() }
     private val swapPcm by lazy { SoundGenerator.generateSwap() }
     private val matchPcm by lazy { SoundGenerator.generateMatch() }
-    private val win1Pcm by lazy { SoundGenerator.generateWin1Star() }
-    private val win2Pcm by lazy { SoundGenerator.generateWin2Star() }
-    private val win3Pcm by lazy { SoundGenerator.generateWin3Star() }
     private val losePcm by lazy { SoundGenerator.generateLose() }
     private val starCollectPcm by lazy { SoundGenerator.generateStarCollect() }
     private val lifeRestoredPcm by lazy { SoundGenerator.generateLifeRestored() }
     private val shufflePcm by lazy { SoundGenerator.generateShuffle() }
-    private val perfectGamePcm by lazy { SoundGenerator.generatePerfectGame() }
-    private val worldUnlockPcm by lazy { SoundGenerator.generateWorldUnlock() }
+
+    // Sampled celebration sounds from Drift-Loop.mp3 snippets
+    private val win1Pcm by lazy { SoundGenerator.loadRawResource(context, R.raw.win1_sample) }
+    private val win2Pcm by lazy { SoundGenerator.loadRawResource(context, R.raw.win2_sample) }
+    private val win3Pcm by lazy { SoundGenerator.loadRawResource(context, R.raw.win3_sample) }
+    private val perfectGamePcm by lazy { SoundGenerator.loadRawResource(context, R.raw.perfect_sample) }
+    private val worldUnlockPcm by lazy { SoundGenerator.loadRawResource(context, R.raw.unlock_sample) }
 
     fun observeSettings(scope: CoroutineScope) {
         this.scope = scope

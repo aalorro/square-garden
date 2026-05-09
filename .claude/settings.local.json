@@ -18,7 +18,8 @@
       "Bash(\"/c/Users/arman/AppData/Local/Android/Sdk/platform-tools/adb.exe\" devices:*)",
       "Bash(\"$ADB\":*)",
       "Bash(/c/Users/arman/AppData/Local/Android/Sdk/platform-tools/adb.exe:*)",
-      "Bash(keytool:*)"
+      "Bash(keytool:*)",
+      "Bash(ffmpeg:*)"
     ]
   }
 }
