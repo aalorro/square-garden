@@ -208,7 +208,7 @@ private fun GoalBox(
                     .background(dimColor, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                // White grid lines showing cell structure
+                // White grid cells showing tile structure
                 Canvas(modifier = Modifier.fillMaxSize().padding(4.dp)) {
                     val availW = size.width
                     val availH = size.height
@@ -217,19 +217,27 @@ private fun GoalBox(
                     val totalH = shapeRows * cellSize
                     val offsetX = (availW - totalW) / 2f
                     val offsetY = (availH - totalH) / 2f
-                    val gridColor = Color.White.copy(alpha = 0.6f)
-                    val lineWidth = (cellSize * 0.06f).coerceIn(1f, 3f)
+                    val gap = (cellSize * 0.12f).coerceAtLeast(1.5f)
+                    val cr = androidx.compose.ui.geometry.CornerRadius(cellSize * 0.18f)
 
-                    // Draw outline around each occupied cell
                     for (cell in cells) {
-                        val x = offsetX + cell.col * cellSize
-                        val y = offsetY + cell.row * cellSize
+                        val x = offsetX + cell.col * cellSize + gap / 2f
+                        val y = offsetY + cell.row * cellSize + gap / 2f
+                        val s = cellSize - gap
+                        // Filled white cell with high visibility
                         drawRoundRect(
-                            color = gridColor,
+                            color = Color.White.copy(alpha = 0.45f),
                             topLeft = Offset(x, y),
-                            size = Size(cellSize, cellSize),
-                            cornerRadius = androidx.compose.ui.geometry.CornerRadius(cellSize * 0.18f),
-                            style = Stroke(width = lineWidth)
+                            size = Size(s, s),
+                            cornerRadius = cr
+                        )
+                        // Bold white border
+                        drawRoundRect(
+                            color = Color.White.copy(alpha = 0.9f),
+                            topLeft = Offset(x, y),
+                            size = Size(s, s),
+                            cornerRadius = cr,
+                            style = Stroke(width = (cellSize * 0.1f).coerceIn(2f, 5f))
                         )
                     }
                 }
