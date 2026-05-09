@@ -11,12 +11,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
+import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
+import com.squaregarden.data.SettingsRepository
 import com.squaregarden.model.Difficulty
 import com.squaregarden.model.PlayerProgress
 import com.squaregarden.model.UserProfile
@@ -39,12 +44,30 @@ fun HomeScreen(navController: NavHostController) {
     var profile by remember { mutableStateOf(UserProfile()) }
     var currentWorld by remember { mutableIntStateOf(1) }
 
+    val settingsRepo = remember { SettingsRepository(context) }
+    val soundEnabled by settingsRepo.soundEnabled.collectAsState(initial = true)
+
     LaunchedEffect(Unit) {
         profile = profileRepo.loadProfile()
         val progress = progressRepo.loadProgress()
         val difficulty = Difficulty.fromId(profile.difficulty)
         val highestUnlocked = progress.highestUnlockedLevel(difficulty.startingLevel)
         currentWorld = ((highestUnlocked - 1) / 9) + 1
+    }
+
+    // Intro music: plays while HomeScreen is visible, respects sound toggle
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, soundEnabled) {
+        if (soundEnabled) MusicManager.startIntro(context)
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) MusicManager.stopIntro()
+            if (event == Lifecycle.Event.ON_RESUME && soundEnabled) MusicManager.startIntro(context)
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            MusicManager.stopIntro()
+        }
     }
 
     Column(

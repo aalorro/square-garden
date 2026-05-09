@@ -552,12 +552,45 @@ object SoundGenerator {
         env * 0.7f * (chirp + staticNoise + rumble + dataTone)
     }
 
-    /** Sad descending tone for losing */
-    fun generateLose(): ShortArray = generatePcm(700) { i, total ->
-        val env = envelope(i, total, 20, 300)
-        val progress = i.toFloat() / total
-        val freq = 440f - 120f * progress
-        env * 0.45f * (sine(freq, i) * 0.6f + sine(freq * 0.5f, i) * 0.4f)
+    /** Sad trombone: descending "wah wah wah wahhh" */
+    fun generateLose(): ShortArray = generatePcm(2500) { i, total ->
+        val master = envelope(i, total, 30, 600)
+        val p = i.toFloat() / total
+        val vib = 1f + 0.008f * sine(4f, i)
+
+        // Four descending notes: Bb4 → A4 → Ab4 → G4 sliding down to E4
+        val freq = when {
+            p < 0.18f -> 466f                                     // Bb4
+            p < 0.36f -> 440f                                     // A4
+            p < 0.54f -> 415f                                     // Ab4
+            else -> 392f - (p - 0.54f) / 0.46f * 62f             // G4 → E4 slide
+        }
+
+        // Per-note envelope for separated articulation
+        val noteEnv = when {
+            p < 0.18f -> {
+                val n = p / 0.18f
+                if (n < 0.08f) n / 0.08f else if (n > 0.85f) (1f - n) / 0.15f else 1f
+            }
+            p < 0.36f -> {
+                val n = (p - 0.18f) / 0.18f
+                if (n < 0.08f) n / 0.08f else if (n > 0.85f) (1f - n) / 0.15f else 1f
+            }
+            p < 0.54f -> {
+                val n = (p - 0.36f) / 0.18f
+                if (n < 0.08f) n / 0.08f else if (n > 0.85f) (1f - n) / 0.15f else 1f
+            }
+            else -> {
+                // Final long note with slow decay
+                val n = (p - 0.54f) / 0.46f
+                if (n < 0.05f) n / 0.05f else 1f - n * 0.3f
+            }
+        }
+
+        // Muted brass timbre (low brightness for womp-womp quality)
+        val tone = brass(freq * vib, i, 0.35f)
+
+        master * noteEnv.coerceIn(0f, 1f) * tone * 0.55f
     }
 
     suspend fun playPcm(pcm: ShortArray, volume: Float = 1f) = withContext(Dispatchers.IO) {

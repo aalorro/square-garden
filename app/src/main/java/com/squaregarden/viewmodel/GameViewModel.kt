@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import android.app.Activity
 import com.squaregarden.audio.AudioManager
+import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.PlayGamesManager
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
@@ -767,6 +768,7 @@ class GameViewModel(
                     val perfectMultiplier = if (isPerfect) 2f else 1f
                     starsAwarded = (baseStars * difficulty.starMultiplier * gameDiff.starMultiplier * perfectMultiplier).roundToInt()
                     audioManager.playWin(baseStars)
+                    MusicManager.startWinMusic(context, loop = isPerfect)
                     val oldTotal = progressRepo.totalStarsFlow.first()
                     unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
                     winResultCommitted = false
@@ -885,6 +887,7 @@ class GameViewModel(
                     val perfectMultiplier = if (isPerfect) 2f else 1f
                     starsAwarded = (baseStars * difficulty.starMultiplier * gameDiff.starMultiplier * perfectMultiplier).roundToInt()
                     audioManager.playWin(baseStars)
+                    MusicManager.startWinMusic(context, loop = isPerfect)
                     val oldTotal = progressRepo.totalStarsFlow.first()
                     unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
                     winResultCommitted = false

@@ -1,6 +1,7 @@
 package com.squaregarden.audio
 
 import android.content.Context
+import android.media.MediaPlayer
 import com.squaregarden.R
 import com.squaregarden.data.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +17,6 @@ class AudioManager(private val context: Context) {
     // Pre-generate PCM data so playback is instant
     private val tapPcm by lazy { SoundGenerator.generateTap() }
     private val swapPcm by lazy { SoundGenerator.generateSwap() }
-    private val matchPcm by lazy { SoundGenerator.generateMatch() }
     private val losePcm by lazy { SoundGenerator.generateLose() }
     private val starCollectPcm by lazy { SoundGenerator.generateStarCollect() }
     private val lifeRestoredPcm by lazy { SoundGenerator.generateLifeRestored() }
@@ -36,6 +36,12 @@ class AudioManager(private val context: Context) {
     private val perfectGamePcm by lazy { SoundGenerator.generatePerfectGame() }
     // Sampled world unlock sound
     private val worldUnlockPcm by lazy { SoundGenerator.loadRawResource(context, R.raw.unlock_sample) }
+
+    // Congratulatory sounds for goal completion (played at random via MediaPlayer)
+    private val congratsSounds = listOf(
+        R.raw.congrats_1, R.raw.congrats_2, R.raw.congrats_3,
+        R.raw.congrats_4, R.raw.congrats_5
+    )
 
     fun observeSettings(scope: CoroutineScope) {
         this.scope = scope
@@ -58,7 +64,17 @@ class AudioManager(private val context: Context) {
 
     fun playTap() = play(tapPcm, 0.5f)
     fun playSwap() = play(swapPcm, 0.7f)
-    fun playMatch() = play(matchPcm, 0.8f)
+    fun playMatch() {
+        if (!soundEnabled) return
+        val resId = congratsSounds.random()
+        try {
+            MediaPlayer.create(context, resId)?.apply {
+                setVolume(0.8f, 0.8f)
+                setOnCompletionListener { it.release() }
+                start()
+            }
+        } catch (_: Exception) {}
+    }
     fun playWin(stars: Int = 1) {
         val pcm = when (stars) {
             3 -> win3Pcm
@@ -87,6 +103,6 @@ class AudioManager(private val context: Context) {
     fun playWorldUnlock() = play(worldUnlockPcm, 0.9f)
 
     fun release() {
-        // No SoundPool to release anymore
+        MusicManager.stopWinMusic()
     }
 }

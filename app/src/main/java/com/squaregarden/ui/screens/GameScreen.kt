@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.logic.BoardEngine
 import com.squaregarden.logic.PatternMatcher
@@ -52,6 +53,9 @@ fun GameScreen(
     var isFavorite by remember { mutableStateOf(false) }
     val lives by progressRepo.livesFlow.collectAsState(initial = 3)
     val cooldownUntil by progressRepo.cooldownUntilFlow.collectAsState(initial = 0L)
+
+    // Stop any music when GameScreen exits
+    DisposableEffect(Unit) { onDispose { MusicManager.stopAll() } }
 
     // Safety net: if cooldown is active, pop back immediately
     LaunchedEffect(lives, cooldownUntil) {
@@ -267,6 +271,7 @@ fun GameScreen(
             onWorldUnlockSound = { viewModel.playWorldUnlockSound() },
             onNext = if (state.level.id < 90) {
                 {
+                    MusicManager.stopWinMusic()
                     viewModel.commitWinResult()
                     val nextId = state.level.id + 1
                     navController.navigate(Screen.Game.create(nextId)) {
@@ -275,6 +280,7 @@ fun GameScreen(
                 }
             } else null,
             onMenu = {
+                MusicManager.stopWinMusic()
                 viewModel.commitWinResult()
                 navController.popBackStack()
             }
