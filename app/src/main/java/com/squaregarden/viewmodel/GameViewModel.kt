@@ -865,7 +865,7 @@ class GameViewModel(
                             GamePhase.PLAYING
                         } else {
                             starsAwarded = BoardEngine.calculateStars(newMoves, current.level.starThresholds).coerceAtLeast(1)
-                            MusicManager.startWinMusic(context, perfectGame = false)
+                            MusicManager.startWinMusic(context, perfectGame = true)
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
                             pendingWinStars = starsAwarded
@@ -1056,7 +1056,7 @@ class GameViewModel(
                     if (isChallenge) {
                         blitzTimerJob?.cancel()
                         starsAwarded = BoardEngine.calculateStars(newMoves, current.level.starThresholds).coerceAtLeast(1)
-                        MusicManager.startWinMusic(context, perfectGame = false)
+                        MusicManager.startWinMusic(context, perfectGame = true)
                     } else {
                         val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
                         val gameDiff = _state.value.gameDifficulty
@@ -1387,7 +1387,7 @@ class GameViewModel(
                     pendingWinStars = cs.blitzStarScore.coerceAtLeast(1)
                     pendingWinLevelId = ChallengeType.BLITZ.id
                     winResultCommitted = false
-                    MusicManager.startWinMusic(context, perfectGame = cs.blitzStarScore >= 15)
+                    MusicManager.startWinMusic(context, perfectGame = true)
                     _state.value = s.copy(
                         challengeState = cs.copy(timerMillisRemaining = 0),
                         phase = GamePhase.WON,

@@ -183,12 +183,13 @@ fun GameScreen(
                 ),
                 label = "challengeGlow"
             )
+            val isTablet = LocalConfiguration.current.screenWidthDp >= 600
             Text(
                 text = "CHALLENGE ROUND",
-                fontSize = 16.sp,
+                fontSize = if (isTablet) 32.sp else 16.sp,
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = 2.sp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = glowAlpha),
+                color = TileYellow.copy(alpha = glowAlpha),
                 modifier = Modifier.padding(vertical = 4.dp)
             )
         }
