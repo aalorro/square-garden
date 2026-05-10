@@ -362,7 +362,7 @@ class ProgressRepository(private val context: Context) {
         var triggered = false
         context.dataStore.edit { prefs ->
             val streak = (prefs[NO_POWERUP_WINS_KEY] ?: 0) + 1
-            if (streak >= 3) {
+            if (streak >= 5) {
                 prefs[NO_POWERUP_WINS_KEY] = 0
                 triggered = true
             } else {

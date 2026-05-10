@@ -1401,6 +1401,10 @@ class GameViewModel(
                 return@launch
             }
 
+            // Check if world was already complete BEFORE saving this win
+            val worldForTrigger = (pendingWinLevelId - 1) / 9 + 1
+            val worldWasAlreadyComplete = progressRepo.checkWorldComplete(worldForTrigger)
+
             progressRepo.saveLevelResult(pendingWinLevelId, pendingWinStars)
             val result = progressRepo.recordWin(difficulty.ordinal, pendingWinLevelId)
             profileRepo.incrementPlayerLevel()
@@ -1459,8 +1463,10 @@ class GameViewModel(
                     _state.value.perfectGame -> ChallengeType.MEMORY
                     progressRepo.recordProgressiveWin(pendingWinLevelId) -> ChallengeType.BLITZ
                     run {
-                        val worldComplete = progressRepo.checkWorldComplete(world)
-                        worldComplete && !progressRepo.hasOvergrownTriggered(world)
+                        // Only trigger if THIS win is what completed the world
+                        !worldWasAlreadyComplete &&
+                            progressRepo.checkWorldComplete(world) &&
+                            !progressRepo.hasOvergrownTriggered(world)
                     } -> {
                         progressRepo.markOvergrownTriggered(world)
                         ChallengeType.OVERGROWN
