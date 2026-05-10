@@ -133,9 +133,9 @@ object ChallengeGenerator {
         val goals = pickMixedGoals(colors, goalCount, skill)
         val tiles = generateRandomTiles(w, h, colors)
         val frozenCount = when (skill) {
-            Difficulty.EASY -> 10
-            Difficulty.MEDIUM -> 12
-            Difficulty.HARD -> 14
+            Difficulty.EASY -> 8
+            Difficulty.MEDIUM -> 10
+            Difficulty.HARD -> 12
         }
         val frozen = pickFrozenCells(w, h, frozenCount)
         return Level(
@@ -226,10 +226,14 @@ object ChallengeGenerator {
         val shuffled = colors.shuffled()
         val simpleShapes = listOf(ShapeType.L_SHAPE, ShapeType.T_SHAPE)
         val hardShapes = listOf(ShapeType.CROSS, ShapeType.Z_SHAPE, ShapeType.U_SHAPE)
-        return (0 until count).map { i ->
-            val color = shuffled[i % shuffled.size]
+        val picked = mutableListOf<Goal>()
+        var colorIdx = 0
+        var retries = 0
+        while (picked.size < count && retries < count * 10) {
+            val color = shuffled[colorIdx % shuffled.size]
+            colorIdx++
             val roll = Math.random()
-            when (skill) {
+            val candidate = when (skill) {
                 Difficulty.EASY -> when {
                     roll < 0.6 -> Goal.Line(color, 3)
                     roll < 0.85 -> Goal.Square(color)
@@ -248,7 +252,25 @@ object ChallengeGenerator {
                     else -> Goal.Shape(color, hardShapes.random())
                 }
             }
+            // Skip duplicate goals (same color + same type/shape)
+            val isDuplicate = picked.any { existing ->
+                when {
+                    existing is Goal.Line && candidate is Goal.Line ->
+                        existing.color == candidate.color && existing.length == candidate.length
+                    existing is Goal.Square && candidate is Goal.Square ->
+                        existing.color == candidate.color
+                    existing is Goal.Shape && candidate is Goal.Shape ->
+                        existing.color == candidate.color && existing.shapeType == candidate.shapeType
+                    else -> false
+                }
+            }
+            if (!isDuplicate) {
+                picked.add(candidate)
+            } else {
+                retries++
+            }
         }
+        return picked
     }
 
     private fun generateRandomTiles(w: Int, h: Int, colors: List<TileColor>): List<List<TileColor>> {

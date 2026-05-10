@@ -1446,7 +1446,11 @@ class GameViewModel(
     fun overgrownAcceptRetry() {
         val cs = _state.value.challengeState ?: return
         if (cs.type != ChallengeType.OVERGROWN || cs.triesRemaining <= 1) return
-        overgrownRetry(cs.triesRemaining - 1)
+        // Show loading state while generating board off main thread
+        _state.value = _state.value.copy(phase = GamePhase.SCRAMBLING)
+        viewModelScope.launch {
+            overgrownRetry(cs.triesRemaining - 1)
+        }
     }
 
     fun overgrownDeclineRetry() {
@@ -1462,23 +1466,30 @@ class GameViewModel(
         )
     }
 
-    private fun overgrownRetry(triesLeft: Int) {
+    private suspend fun overgrownRetry(triesLeft: Int) {
         // Stars reset per try — player forfeits this try's stars by choosing retry
         val prevChalState = _state.value.challengeState
         val nextMultiplier = (prevChalState?.overgrownTryMultiplier ?: 1) + 1
 
-        // Regenerate level until we get a solvable board
-        var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
-        var attempts = 0
-        do {
-            if (attempts > 0) {
-                level = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
-                adjustedMaxMoves = level.maxMoves
-            }
-            result = generateBoardWithSolution(adjustedMaxMoves)
-            attempts++
-        } while (result.second == null && attempts < 20)
-        val (board, solution) = result
+        // Generate solvable board off main thread
+        val genResult = withContext(Dispatchers.Default) {
+            var curLevel = level
+            var curMoves = adjustedMaxMoves
+            var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
+            var attempts = 0
+            do {
+                if (attempts > 0) {
+                    curLevel = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
+                    curMoves = curLevel.maxMoves
+                }
+                result = generateBoardWithSolution(curMoves)
+                attempts++
+            } while (result.second == null && attempts < 20)
+            Triple(curLevel, curMoves, result)
+        }
+        level = genResult.first
+        adjustedMaxMoves = genResult.second
+        val (board, solution) = genResult.third
         precomputedSolution = solution
         _state.value = GameState(
             level = level.copy(maxMoves = adjustedMaxMoves),
