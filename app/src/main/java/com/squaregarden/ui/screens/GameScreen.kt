@@ -370,6 +370,7 @@ fun GameScreen(
     // Win overlay with confetti + balloons + star burst + star trail + dialog
     if (state.phase == GamePhase.WON) {
         val stars = state.starsAwarded
+        var challengeCelebrationReady by remember { mutableStateOf(!state.isChallenge) }
 
         // Fullscreen overlay card (renders first = behind celebration particles)
         WinOverlay(
@@ -385,7 +386,11 @@ fun GameScreen(
             onAllStarsLanded = { viewModel.commitWinResult() },
             onPerfectGameSound = { viewModel.playPerfectGameSound() },
             onWorldUnlockSound = { viewModel.playWorldUnlockSound() },
-            onChallengeMusic = { viewModel.playChallengeMusic() },
+            onChallengeCountUp = { viewModel.playMatchSound() },
+            onChallengeMusic = {
+                viewModel.playChallengeMusic()
+                challengeCelebrationReady = true
+            },
             isChallenge = state.isChallenge,
             challengeGoalsCleared = state.challengeState?.goalsCleared ?: 0,
             onNext = if (!state.isChallenge && state.level.id < 90) {
@@ -406,9 +411,11 @@ fun GameScreen(
         )
 
         // Celebration layers in the foreground, raining down over the card
-        ConfettiOverlay(stars = stars, perfectGame = state.perfectGame)
-        BalloonOverlay(stars = stars, perfectGame = state.perfectGame)
-        StarBurstOverlay(stars = stars, perfectGame = state.perfectGame)
+        if (challengeCelebrationReady) {
+            ConfettiOverlay(stars = stars, perfectGame = state.perfectGame)
+            BalloonOverlay(stars = stars, perfectGame = state.perfectGame)
+            StarBurstOverlay(stars = stars, perfectGame = state.perfectGame)
+        }
     }
 
     // Life restored celebration splash
@@ -589,7 +596,7 @@ fun GameScreen(
 }
 
 @Composable
-private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onChallengeMusic: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
+private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onChallengeCountUp: () -> Unit = {}, onChallengeMusic: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
     // Pulsing scale animation for the star display
     val infiniteTransition = rememberInfiniteTransition(label = "starPulse")
     val starScale by infiniteTransition.animateFloat(
@@ -624,6 +631,7 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
     if (isChallenge) {
         LaunchedEffect(stars) {
             delay(1000) // 1 second pause
+            onChallengeCountUp() // sound FX at count-up start
             challengeCountScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 200f))
             // Count up from 0 to stars
             val countDuration = (stars * 80L).coerceIn(800L, 2500L)
@@ -632,9 +640,9 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                 challengeCountValue = i
                 delay(stepDelay)
             }
-            delay(400) // brief pause after count finishes
-            onChallengeMusic()
+            delay(600) // pause after count finishes
             challengeCountUpDone = true
+            onChallengeMusic() // music + confetti start with the card
         }
     }
 
@@ -1038,8 +1046,14 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    if (isChallenge) {
+                        Button(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {
+                            Text("Back to Game")
+                        }
+                    } else {
                     OutlinedButton(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {
                         Text("Menu")
+                    }
                     }
                     if (onNext != null) {
                         Button(onClick = onNext, shape = RoundedCornerShape(20.dp)) {
