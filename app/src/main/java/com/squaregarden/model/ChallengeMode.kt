@@ -2,7 +2,7 @@ package com.squaregarden.model
 
 enum class ChallengeType(val id: Int, val title: String, val description: String) {
     BLITZ(-1, "Blitz Garden", "60-second time attack! Clear as many goals as possible."),
-    OVERGROWN(-2, "Overgrown Garden", "Conquer a massive 9\u00D79 board with 8 goals and razor-tight moves."),
+    OVERGROWN(-2, "Overgrown Garden", "Conquer a massive 9\u00D79 board with 16 moves and 3 tries."),
     SHIFTING(-3, "Shifting Sands", "Every 3 moves, uncompleted tiles scramble!"),
     MEMORY(-4, "Memory Garden", "Tiles are hidden! Reveal them by swapping nearby.");
 
@@ -18,6 +18,8 @@ data class ChallengeState(
     val goalsCleared: Int = 0,
     val comboCount: Int = 0,
     val comboMultiplier: Int = 1,
+    // Overgrown Garden
+    val triesRemaining: Int = 3,
     // Shifting Sands
     val movesSinceLastScramble: Int = 0,
     // Memory Garden

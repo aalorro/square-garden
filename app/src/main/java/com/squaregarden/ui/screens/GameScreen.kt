@@ -141,6 +141,31 @@ fun GameScreen(
                 )
         )
 
+        // Overgrown tries remaining
+        val overgrownTries = state.challengeState?.takeIf { it.type == ChallengeType.OVERGROWN }?.triesRemaining
+        if (overgrownTries != null) {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Tries:",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                repeat(3) { i ->
+                    Text(
+                        text = "\u2764",
+                        fontSize = 14.sp,
+                        color = if (i < overgrownTries) MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+                    )
+                }
+            }
+        }
+
         // Game board — full width on phones & 7" tablets, padded on 10"+
         val boardHPad = if (LocalConfiguration.current.screenWidthDp < 800) 0.dp else 12.dp
         // Memory Garden fog: all cells minus revealed cells (after initial reveal)
@@ -256,6 +281,28 @@ fun GameScreen(
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
+        }
+
+        // Challenge banner
+        if (state.isChallenge) {
+            val infiniteTransition = rememberInfiniteTransition(label = "challengePulse")
+            val bannerAlpha by infiniteTransition.animateFloat(
+                initialValue = 0.5f,
+                targetValue = 1f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(800, easing = EaseInOutCubic),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "bannerAlpha"
+            )
+            Text(
+                text = "\u2694\uFE0F ${state.level.name} \u2694\uFE0F",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = bannerAlpha),
+                letterSpacing = 1.sp,
+                modifier = Modifier.padding(bottom = 6.dp)
+            )
         }
     }
 

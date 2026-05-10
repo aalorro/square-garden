@@ -139,6 +139,25 @@ fun InstructionsScreen(navController: NavHostController) {
                 "Favorited levels show a \u2605 marker on the level select screen for easy access."
         )
 
+        InstructionSection(
+            title = "Challenge Rounds",
+            body = "Starting from World 5, special challenge rounds can be unlocked by exceptional play. " +
+                "Challenges cost no lives and award bonus stars + one of every power-up token on completion.\n\n" +
+                "\u23F1 Blitz Garden — 60-second time attack! Clear as many goal sets as possible before time runs out. " +
+                "Timer starts on your first swap. Clear 5+ goals to win. " +
+                "Build combos for score multipliers (2\u00D7 at 3, 3\u00D7 at 6).\n" +
+                "Trigger: 8 consecutive progressive level wins on World 5+.\n\n" +
+                "\uD83C\uDF3F Overgrown Garden — Conquer a massive 9\u00D79 board loaded with goals and frozen tiles " +
+                "in just 16 moves. You get 3 tries with a fresh board each time.\n" +
+                "Trigger: Complete all 9 levels in a world (once per world).\n\n" +
+                "\uD83C\uDF0A Shifting Sands — Every 3 swaps, all uncompleted tiles scramble into new positions! " +
+                "Plan your moves around the chaos.\n" +
+                "Trigger: Win 3 levels in a row without using any power-ups.\n\n" +
+                "\uD83E\uDDE0 Memory Garden — Tiles are hidden! They reveal briefly at the start, " +
+                "then you can only see tiles near where you swap. Remember the layout!\n" +
+                "Trigger: Every perfect game (immediate)."
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(

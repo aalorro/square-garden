@@ -121,7 +121,7 @@ object ChallengeGenerator {
             name = ChallengeType.OVERGROWN.title,
             boardWidth = w,
             boardHeight = h,
-            maxMoves = 12,
+            maxMoves = 16,
             initialTiles = tiles,
             goals = goals,
             starThresholds = StarThresholds(twoStar = 3, threeStar = 6),

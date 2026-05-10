@@ -888,10 +888,17 @@ class GameViewModel(
                     }
                 }
                 lost -> {
-                    audioManager.playLose()
-                    if (!isChallenge) progressRepo.loseLife(difficulty.ordinal)
-                    blitzTimerJob?.cancel()
-                    GamePhase.LOST
+                    val cs = current.challengeState
+                    if (cs?.type == ChallengeType.OVERGROWN && cs.triesRemaining > 1) {
+                        // Overgrown retry — will reset after state update
+                        audioManager.playLose()
+                        GamePhase.PLAYING // temporary, reset below
+                    } else {
+                        audioManager.playLose()
+                        if (!isChallenge) progressRepo.loseLife(difficulty.ordinal)
+                        blitzTimerJob?.cancel()
+                        GamePhase.LOST
+                    }
                 }
                 else -> GamePhase.PLAYING
             }
@@ -945,6 +952,13 @@ class GameViewModel(
                     }
                     else -> {}
                 }
+            }
+
+            // Overgrown retry: reset board with decremented tries
+            if (lost && current.challengeState?.type == ChallengeType.OVERGROWN
+                && current.challengeState.triesRemaining > 1) {
+                delay(800) // brief pause so player sees they lost
+                overgrownRetry(current.challengeState.triesRemaining - 1)
             }
         }
     }
@@ -1053,10 +1067,17 @@ class GameViewModel(
                     GamePhase.WON
                 }
                 lost -> {
-                    audioManager.playLose()
-                    if (!isChallenge) progressRepo.loseLife(difficulty.ordinal)
-                    blitzTimerJob?.cancel()
-                    GamePhase.LOST
+                    val cs = current.challengeState
+                    if (cs?.type == ChallengeType.OVERGROWN && cs.triesRemaining > 1) {
+                        // Overgrown retry — will reset after state update
+                        audioManager.playLose()
+                        GamePhase.PLAYING // temporary, reset below
+                    } else {
+                        audioManager.playLose()
+                        if (!isChallenge) progressRepo.loseLife(difficulty.ordinal)
+                        blitzTimerJob?.cancel()
+                        GamePhase.LOST
+                    }
                 }
                 else -> GamePhase.PLAYING
             }
@@ -1322,6 +1343,28 @@ class GameViewModel(
     }
 
     // ── Challenge-specific methods ──
+
+    private fun overgrownRetry(triesLeft: Int) {
+        val (board, solution) = generateBoardWithSolution(adjustedMaxMoves)
+        precomputedSolution = solution
+        _state.value = GameState(
+            level = level.copy(maxMoves = adjustedMaxMoves),
+            board = board,
+            movesRemaining = adjustedMaxMoves,
+            difficulty = difficulty,
+            gameDifficulty = computeGameDifficulty(board),
+            initialBoard = board,
+            hasSolution = solution != null,
+            shuffleTokens = shuffleTokens,
+            passthroughTokens = passthroughTokens,
+            unfreezeTokens = unfreezeTokens,
+            redoTokens = redoTokens,
+            phase = GamePhase.SCRAMBLING,
+            challengeState = ChallengeState(type = ChallengeType.OVERGROWN, triesRemaining = triesLeft)
+        )
+        if (solution == null) computeSolutionAsync(board)
+        viewModelScope.launch { animateScramble(board) }
+    }
 
     private fun startBlitzTimer() {
         blitzTimerJob = viewModelScope.launch {
