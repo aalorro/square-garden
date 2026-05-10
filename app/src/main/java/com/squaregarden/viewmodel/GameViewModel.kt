@@ -1447,7 +1447,7 @@ class GameViewModel(
         val cs = _state.value.challengeState ?: return
         if (cs.type != ChallengeType.OVERGROWN || cs.triesRemaining <= 1) return
         // Show loading state while generating board off main thread
-        _state.value = _state.value.copy(phase = GamePhase.SCRAMBLING)
+        _state.value = _state.value.copy(phase = GamePhase.SCRAMBLING, overgrownGenerating = true)
         viewModelScope.launch {
             overgrownRetry(cs.triesRemaining - 1)
         }

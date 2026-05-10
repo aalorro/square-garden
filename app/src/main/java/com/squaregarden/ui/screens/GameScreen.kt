@@ -492,6 +492,33 @@ fun GameScreen(
         }
     }
 
+    // Overgrown board generation loading overlay
+    if (state.overgrownGenerating) {
+        Dialog(onDismissRequest = {}) {
+            Card(
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = SoftWhite)
+            ) {
+                Column(
+                    modifier = Modifier.padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Text(
+                        text = "Generating new board...",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = WarmBrown
+                    )
+                }
+            }
+        }
+    }
+
     // Lose dialog
     if (state.phase == GamePhase.LOST) {
         val cs = state.challengeState

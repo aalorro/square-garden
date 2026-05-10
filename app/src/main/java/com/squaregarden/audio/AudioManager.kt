@@ -49,6 +49,9 @@ class AudioManager(private val context: Context) {
         R.raw.congrats_4, R.raw.congrats_5
     )
 
+    // Sampled fail sounds (played at random via MediaPlayer)
+    private val failSounds = listOf(R.raw.fail1, R.raw.fail2, R.raw.fail3, R.raw.fail4)
+
     fun observeSettings(scope: CoroutineScope) {
         this.scope = scope
         scope.launch {
@@ -98,7 +101,19 @@ class AudioManager(private val context: Context) {
         }
         play(pcm, 1f)
     }
-    fun playLose() = play(losePcm, 0.8f)
+    fun playLose() {
+        if (!soundEnabled) return
+        val resId = failSounds.random()
+        try {
+            MediaPlayer.create(context, resId)?.apply {
+                setVolume(0.8f, 0.8f)
+                setOnCompletionListener { it.release() }
+                start()
+            }
+        } catch (_: Exception) {
+            play(losePcm, 0.8f)
+        }
+    }
     fun playStarCollect() = play(starCollectPcm, 0.6f)
     fun playLifeRestored() = play(lifeRestoredPcm, 1f)
     fun playShuffle() = play(shufflePcm, 0.7f)
