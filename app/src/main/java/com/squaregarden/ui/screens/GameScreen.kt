@@ -406,7 +406,11 @@ fun GameScreen(
             onMenu = {
                 MusicManager.stopWinMusic()
                 viewModel.commitWinResult()
+                // Pop challenge, then skip underlying game WON screen if present
                 navController.popBackStack()
+                if (state.isChallenge && navController.currentBackStackEntry?.destination?.route == Screen.Game.route) {
+                    navController.popBackStack()
+                }
             }
         )
 
@@ -493,7 +497,13 @@ fun GameScreen(
         if (state.isChallenge) {
             LoseDialog(
                 onRetry = null,
-                onMenu = { navController.popBackStack() },
+                onMenu = {
+                    // Pop challenge, then skip underlying game WON screen if present
+                    navController.popBackStack()
+                    if (navController.currentBackStackEntry?.destination?.route == Screen.Game.route) {
+                        navController.popBackStack()
+                    }
+                },
                 onShowSolution = null
             )
         } else {
@@ -1137,7 +1147,7 @@ private fun LoseDialog(onRetry: (() -> Unit)?, onMenu: () -> Unit, onShowSolutio
                         onClick = onMenu,
                         shape = RoundedCornerShape(20.dp)
                     ) {
-                        Text("Back to Menu", fontSize = 13.sp)
+                        Text("Back to Game", fontSize = 13.sp)
                     }
                 }
             }
