@@ -52,8 +52,8 @@ private val worlds = listOf(
     WorldInfo(8, "Starfall Summit", "Levels 64-72", 145, Color(0xFF7C4DFF)),
     WorldInfo(9, "Abyssal Depths", "Levels 73-81", 185, Color(0xFF00897B)),
     WorldInfo(10, "Prism Citadel", "Levels 82-90", 230, Color(0xFFE91E63)),
-    // TODO: Temporary test world — remove before release
-    WorldInfo(11, "Challenge Lab", "4 Challenge Modes", 0, Color(0xFFFF5722))
+    // TODO: Challenge Lab — uncomment to re-enable for testing
+    // WorldInfo(11, "Challenge Lab", "4 Challenge Modes", 0, Color(0xFFFF5722))
 )
 
 @Composable

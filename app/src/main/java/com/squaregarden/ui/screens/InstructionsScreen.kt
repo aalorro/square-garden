@@ -149,15 +149,26 @@ fun InstructionsScreen(navController: NavHostController) {
                 "Trigger: 8 consecutive progressive level wins on World 5+.\n\n" +
                 "\uD83C\uDF3F Overgrown Garden — Conquer a massive 9\u00D79 board loaded with goals and frozen tiles " +
                 "in 16 moves. You get 3 tries with increasing multipliers (1\u00D7, 2\u00D7, 3\u00D7). " +
-                "Each goal earns stars \u00D7 your current multiplier. " +
+                "Each goal earns stars \u00D7 your current multiplier. Completing all goals gives a 2\u00D7 win bonus! " +
                 "After each failed attempt, choose to retry (forfeit this round\u2019s stars) or keep your score.\n" +
                 "Trigger: Complete all 9 levels in a world (once per world).\n\n" +
                 "\uD83C\uDF0A Shifting Sands — Every 3 swaps, all uncompleted tiles scramble into new positions! " +
-                "Plan your moves around the chaos.\n" +
+                "Plan your moves around the chaos. Stars earned are doubled (2\u00D7).\n" +
                 "Trigger: Win 3 levels in a row without using any power-ups.\n\n" +
                 "\uD83E\uDDE0 Memory Garden — Tiles are hidden! They reveal briefly at the start, " +
-                "then you can only see tiles near where you swap. Remember the layout!\n" +
+                "then you can only see tiles near where you swap. Remember the layout! " +
+                "Stars earned are tripled (3\u00D7).\n" +
                 "Trigger: Every perfect game (immediate)."
+        )
+
+        InstructionSection(
+            title = "Challenge Criteria Summary",
+            body = "All challenges require playing on World 5 or higher. " +
+                "Wins on Worlds 1\u20134 do not count toward any challenge trigger.\n\n" +
+                "\u2022 Blitz Garden — Win 8 levels in a row where each level is the next one after the previous (e.g. 37, 38, 39...). All 8 wins must be on World 5+.\n\n" +
+                "\u2022 Overgrown Garden — Complete all 9 levels in any single world (earn at least 1 star on each). Only triggers on World 5+ completions. Once per world.\n\n" +
+                "\u2022 Shifting Sands — Win 3 consecutive levels without using any power-ups (no Shuffle, Passthrough, Unfreeze, or Redo). All 3 wins must be on World 5+.\n\n" +
+                "\u2022 Memory Garden — Achieve a perfect game on World 5+ (complete all goals in a number of moves equal to or fewer than the goal count). Triggers immediately."
         )
 
         Spacer(modifier = Modifier.height(16.dp))
