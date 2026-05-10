@@ -865,7 +865,7 @@ class GameViewModel(
                             GamePhase.PLAYING
                         } else {
                             starsAwarded = BoardEngine.calculateStars(newMoves, current.level.starThresholds).coerceAtLeast(1)
-                            MusicManager.startWinMusic(context, perfectGame = true)
+                            // Music delayed — triggered after count-up animation in UI
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
                             pendingWinStars = starsAwarded
@@ -1056,7 +1056,7 @@ class GameViewModel(
                     if (isChallenge) {
                         blitzTimerJob?.cancel()
                         starsAwarded = BoardEngine.calculateStars(newMoves, current.level.starThresholds).coerceAtLeast(1)
-                        MusicManager.startWinMusic(context, perfectGame = true)
+                        // Music delayed — triggered after count-up animation in UI
                     } else {
                         val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
                         val gameDiff = _state.value.gameDifficulty
@@ -1203,6 +1203,7 @@ class GameViewModel(
     fun playWinSound(stars: Int = 1) { audioManager.playWin(stars) }
     fun playPerfectGameSound() { audioManager.playPerfectGame() }
     fun playWorldUnlockSound() { audioManager.playWorldUnlock() }
+    fun playChallengeMusic() { MusicManager.startWinMusic(context, perfectGame = true) }
 
     fun advanceTutorial() {
         val current = _state.value
@@ -1387,7 +1388,7 @@ class GameViewModel(
                     pendingWinStars = cs.blitzStarScore.coerceAtLeast(1)
                     pendingWinLevelId = ChallengeType.BLITZ.id
                     winResultCommitted = false
-                    MusicManager.startWinMusic(context, perfectGame = true)
+                    // Music delayed — triggered after count-up animation in UI
                     _state.value = s.copy(
                         challengeState = cs.copy(timerMillisRemaining = 0),
                         phase = GamePhase.WON,

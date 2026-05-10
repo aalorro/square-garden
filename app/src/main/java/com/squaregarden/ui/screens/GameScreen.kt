@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -384,6 +385,7 @@ fun GameScreen(
             onAllStarsLanded = { viewModel.commitWinResult() },
             onPerfectGameSound = { viewModel.playPerfectGameSound() },
             onWorldUnlockSound = { viewModel.playWorldUnlockSound() },
+            onChallengeMusic = { viewModel.playChallengeMusic() },
             isChallenge = state.isChallenge,
             challengeGoalsCleared = state.challengeState?.goalsCleared ?: 0,
             onNext = if (!state.isChallenge && state.level.id < 90) {
@@ -587,7 +589,7 @@ fun GameScreen(
 }
 
 @Composable
-private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
+private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onChallengeMusic: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
     // Pulsing scale animation for the star display
     val infiniteTransition = rememberInfiniteTransition(label = "starPulse")
     val starScale by infiniteTransition.animateFloat(
@@ -614,6 +616,28 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
         }
     }
 
+    // Challenge count-up animation: 1s pause → count from 0 to stars → music starts → show card
+    var challengeCountUpDone by remember { mutableStateOf(!isChallenge) }
+    var challengeCountValue by remember { mutableIntStateOf(0) }
+    val challengeCountScale = remember { Animatable(0f) }
+
+    if (isChallenge) {
+        LaunchedEffect(stars) {
+            delay(1000) // 1 second pause
+            challengeCountScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 200f))
+            // Count up from 0 to stars
+            val countDuration = (stars * 80L).coerceIn(800L, 2500L)
+            val stepDelay = countDuration / stars.coerceAtLeast(1)
+            for (i in 1..stars) {
+                challengeCountValue = i
+                delay(stepDelay)
+            }
+            delay(400) // brief pause after count finishes
+            onChallengeMusic()
+            challengeCountUpDone = true
+        }
+    }
+
     // Fullscreen overlay (same window layer — not a Dialog)
     Box(
         modifier = Modifier
@@ -621,7 +645,32 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
             .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.5f)),
         contentAlignment = Alignment.Center
     ) {
+        // Challenge count-up animation (before card appears)
+        if (isChallenge && !challengeCountUpDone) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "\u2B50 +$challengeCountValue",
+                    fontSize = 56.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = TileYellow,
+                    modifier = Modifier.scale(challengeCountScale.value)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "STARS EARNED",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 3.sp,
+                    color = Color.White.copy(alpha = 0.8f)
+                )
+            }
+        }
+
         // Scrollable wrapper so content is reachable on small screens
+        if (challengeCountUpDone) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -1009,6 +1058,7 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
             onComplete = onAllStarsLanded,
             onStarLanded = onStarLanded
         )
+        } // end challengeCountUpDone
     }
 }
 
