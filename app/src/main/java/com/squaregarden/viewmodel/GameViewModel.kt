@@ -450,6 +450,19 @@ class GameViewModel(
                     tiles = level.initialTiles.map { row -> row.map { Tile(it) } }
                 )
                 solution = null
+            } else if (challengeType == ChallengeType.OVERGROWN) {
+                // Overgrown must be solvable — regenerate level until we get a guaranteed solution
+                var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
+                var attempts = 0
+                do {
+                    if (attempts > 0) {
+                        level = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
+                    }
+                    result = generateBoardWithSolution(adjustedMaxMoves)
+                    attempts++
+                } while (result.second == null && attempts < 20)
+                board = result.first
+                solution = result.second
             } else {
                 val result = generateBoardWithSolution(adjustedMaxMoves)
                 board = result.first
@@ -1353,7 +1366,18 @@ class GameViewModel(
     // ── Challenge-specific methods ──
 
     private fun overgrownRetry(triesLeft: Int) {
-        val (board, solution) = generateBoardWithSolution(adjustedMaxMoves)
+        // Regenerate level until we get a solvable board
+        var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
+        var attempts = 0
+        do {
+            if (attempts > 0) {
+                level = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
+                adjustedMaxMoves = level.maxMoves
+            }
+            result = generateBoardWithSolution(adjustedMaxMoves)
+            attempts++
+        } while (result.second == null && attempts < 20)
+        val (board, solution) = result
         precomputedSolution = solution
         _state.value = GameState(
             level = level.copy(maxMoves = adjustedMaxMoves),

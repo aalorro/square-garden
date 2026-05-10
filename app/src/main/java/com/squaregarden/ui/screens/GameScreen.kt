@@ -580,9 +580,7 @@ fun GameScreen(
                             onClick = {
                                 MusicManager.stopWinMusic()
                                 viewModel.dismissChallenge()
-                                navController.navigate(Screen.Game.create(pendingChallenge.id)) {
-                                    popUpTo(Screen.Game.route) { inclusive = true }
-                                }
+                                navController.navigate(Screen.Game.create(pendingChallenge.id))
                             },
                             shape = RoundedCornerShape(20.dp)
                         ) {
