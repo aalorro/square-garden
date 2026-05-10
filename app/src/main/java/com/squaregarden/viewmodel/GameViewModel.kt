@@ -103,7 +103,15 @@ class GameViewModel(
         val grid = Array(h) { arrayOfNulls<TileColor>(w) }
 
         // Place each goal's pattern (shuffled order for variety)
-        for (goal in level.goals.shuffled()) {
+        // Sort larger/harder goals first — they need more space
+        val sortedGoals = level.goals.shuffled().sortedByDescending { goal ->
+            when (goal) {
+                is Goal.Line -> goal.length
+                is Goal.Shape -> goal.shapeType.offsets.size + 1
+                is Goal.Square -> 4
+            }
+        }
+        for (goal in sortedGoals) {
             if (!placeGoalOnGrid(grid, w, h, goal, voids)) return null
         }
 
@@ -241,7 +249,9 @@ class GameViewModel(
      * Falls back to random board + async solver if construction fails.
      */
     private fun generateBoardWithSolution(moves: Int): Pair<Board, List<Pair<CellPos, CellPos>>?> {
-        repeat(50) {
+        // More attempts for complex levels (many goals or large boards)
+        val maxAttempts = if (level.goals.size >= 5 || level.boardWidth >= 8) 300 else 100
+        repeat(maxAttempts) {
             val solved = buildSolvedBoard() ?: return@repeat
             // Verify all goals actually met
             if (BoardEngine.evaluateGoals(solved, level.goals).size != level.goals.size) return@repeat
