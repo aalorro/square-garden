@@ -920,7 +920,13 @@ class GameViewModel(
                             pendingWinStars = finalStars
                             GamePhase.WON
                         } else {
-                            starsAwarded = BoardEngine.calculateStars(newMoves, current.level.starThresholds).coerceAtLeast(1)
+                            // Memory: 3x multiplier, Shifting: 2x multiplier
+                            val challengeMultiplier = when (cs.type) {
+                                ChallengeType.MEMORY -> 3
+                                ChallengeType.SHIFTING -> 2
+                                else -> 1
+                            }
+                            starsAwarded = (BoardEngine.calculateStars(newMoves, current.level.starThresholds) * challengeMultiplier).coerceAtLeast(1)
                             // Music delayed — triggered after count-up animation in UI
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
@@ -1127,7 +1133,13 @@ class GameViewModel(
                             pendingWinStars = finalStars
                             GamePhase.WON
                         } else {
-                            starsAwarded = BoardEngine.calculateStars(newMoves, current.level.starThresholds).coerceAtLeast(1)
+                            // Memory: 3x multiplier, Shifting: 2x multiplier
+                            val challengeMultiplier = when (cs.type) {
+                                ChallengeType.MEMORY -> 3
+                                ChallengeType.SHIFTING -> 2
+                                else -> 1
+                            }
+                            starsAwarded = (BoardEngine.calculateStars(newMoves, current.level.starThresholds) * challengeMultiplier).coerceAtLeast(1)
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
                             pendingWinStars = starsAwarded
