@@ -406,7 +406,7 @@ class GameViewModel(
         )
     }
 
-    private fun initLevel(challengeType: ChallengeType? = null) {
+    private suspend fun initLevel(challengeType: ChallengeType? = null) {
         usedPowerUpThisGame = false
         val hasTutorial = level.tutorialSteps != null
 
@@ -451,18 +451,25 @@ class GameViewModel(
                 )
                 solution = null
             } else if (challengeType == ChallengeType.OVERGROWN) {
-                // Overgrown must be solvable — regenerate level until we get a guaranteed solution
-                var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
-                var attempts = 0
-                do {
-                    if (attempts > 0) {
-                        level = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
-                    }
-                    result = generateBoardWithSolution(adjustedMaxMoves)
-                    attempts++
-                } while (result.second == null && attempts < 20)
-                board = result.first
-                solution = result.second
+                // Show loading indicator while generating solvable board
+                _state.value = _state.value.copy(overgrownGenerating = true)
+                val genResult = withContext(Dispatchers.Default) {
+                    var curLevel = level
+                    var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
+                    var attempts = 0
+                    do {
+                        if (attempts > 0) {
+                            curLevel = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
+                        }
+                        result = generateBoardWithSolution(curLevel.maxMoves)
+                        attempts++
+                    } while (result.second == null && attempts < 20)
+                    Triple(curLevel, result.first, result.second)
+                }
+                level = genResult.first
+                adjustedMaxMoves = level.maxMoves
+                board = genResult.second
+                solution = genResult.third
             } else {
                 val result = generateBoardWithSolution(adjustedMaxMoves)
                 board = result.first
@@ -877,9 +884,9 @@ class GameViewModel(
                             blitzReplenish = true
                             GamePhase.PLAYING
                         } else if (cs.type == ChallengeType.OVERGROWN) {
-                            // Overgrown win: use accumulated star score (goals already tracked per-swap)
+                            // Overgrown win: accumulated stars + last goals, with 2x win bonus
                             val completedGoalStars = newlyCompleted.size * cs.overgrownTryMultiplier
-                            val finalStars = (cs.overgrownStarScore + completedGoalStars).coerceAtLeast(1)
+                            val finalStars = ((cs.overgrownStarScore + completedGoalStars) * 2).coerceAtLeast(1)
                             starsAwarded = finalStars
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
@@ -1084,8 +1091,9 @@ class GameViewModel(
                             blitzReplenishPt = true
                             GamePhase.PLAYING
                         } else if (cs.type == ChallengeType.OVERGROWN) {
+                            // Overgrown win: accumulated stars + last goals, with 2x win bonus
                             val completedGoalStars = newlyCompletedPt.size * cs.overgrownTryMultiplier
-                            val finalStars = (cs.overgrownStarScore + completedGoalStars).coerceAtLeast(1)
+                            val finalStars = ((cs.overgrownStarScore + completedGoalStars) * 2).coerceAtLeast(1)
                             starsAwarded = finalStars
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
