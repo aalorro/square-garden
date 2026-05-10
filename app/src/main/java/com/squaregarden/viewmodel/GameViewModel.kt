@@ -911,18 +911,10 @@ class GameViewModel(
                 }
                 lost -> {
                     val cs = current.challengeState
-                    if (cs?.type == ChallengeType.OVERGROWN && cs.triesRemaining > 1) {
-                        // Overgrown retry — will reset after state update
+                    if (cs?.type == ChallengeType.OVERGROWN) {
+                        // Overgrown: always LOST — dialog will offer retry or take score
                         audioManager.playLose()
-                        GamePhase.PLAYING // temporary, reset below
-                    } else if (cs?.type == ChallengeType.OVERGROWN) {
-                        // Last Overgrown try — always win with accumulated stars
-                        val finalStars = cs.overgrownStarScore.coerceAtLeast(1)
-                        starsAwarded = finalStars
-                        pendingWinLevelId = current.level.id
-                        pendingWinStars = finalStars
-                        winResultCommitted = false
-                        GamePhase.WON
+                        GamePhase.LOST
                     } else {
                         audioManager.playLose()
                         if (!isChallenge) progressRepo.loseLife(difficulty.ordinal)
@@ -933,8 +925,9 @@ class GameViewModel(
                 else -> GamePhase.PLAYING
             }
 
-            // Update challenge state after swap
-            val updatedChalState = if (isChallenge && (phase == GamePhase.PLAYING || phase == GamePhase.WON)) {
+            // Update challenge state after swap (include Overgrown LOST to track final goals)
+            val updatedChalState = if (isChallenge && (phase == GamePhase.PLAYING || phase == GamePhase.WON
+                        || (phase == GamePhase.LOST && current.challengeState?.type == ChallengeType.OVERGROWN))) {
                 val cs = current.challengeState!!
                 when (cs.type) {
                     ChallengeType.BLITZ -> {
@@ -998,12 +991,6 @@ class GameViewModel(
                 }
             }
 
-            // Overgrown retry: reset board with decremented tries
-            if (lost && current.challengeState?.type == ChallengeType.OVERGROWN
-                && current.challengeState.triesRemaining > 1) {
-                delay(800) // brief pause so player sees they lost
-                overgrownRetry(current.challengeState.triesRemaining - 1)
-            }
         }
     }
 
@@ -1129,18 +1116,9 @@ class GameViewModel(
                 }
                 lost -> {
                     val cs = current.challengeState
-                    if (cs?.type == ChallengeType.OVERGROWN && cs.triesRemaining > 1) {
+                    if (cs?.type == ChallengeType.OVERGROWN) {
                         audioManager.playLose()
-                        GamePhase.PLAYING // temporary, reset below
-                    } else if (cs?.type == ChallengeType.OVERGROWN) {
-                        // Last Overgrown try — always win with accumulated stars
-                        val completedGoalStars = newlyCompletedPt.size * cs.overgrownTryMultiplier
-                        val finalStars = (cs.overgrownStarScore + completedGoalStars).coerceAtLeast(1)
-                        starsAwarded = finalStars
-                        winResultCommitted = false
-                        pendingWinLevelId = current.level.id
-                        pendingWinStars = finalStars
-                        GamePhase.WON
+                        GamePhase.LOST
                     } else {
                         audioManager.playLose()
                         if (!isChallenge) progressRepo.loseLife(difficulty.ordinal)
@@ -1151,8 +1129,9 @@ class GameViewModel(
                 else -> GamePhase.PLAYING
             }
 
-            // Update challenge state after passthrough swap
-            val updatedChalStatePt = if (isChallenge && (phase == GamePhase.PLAYING || phase == GamePhase.WON)) {
+            // Update challenge state after passthrough swap (include Overgrown LOST)
+            val updatedChalStatePt = if (isChallenge && (phase == GamePhase.PLAYING || phase == GamePhase.WON
+                        || (phase == GamePhase.LOST && current.challengeState?.type == ChallengeType.OVERGROWN))) {
                 val cs = current.challengeState!!
                 when (cs.type) {
                     ChallengeType.BLITZ -> {
@@ -1214,12 +1193,6 @@ class GameViewModel(
                 }
             }
 
-            // Overgrown retry (passthrough): reset board with decremented tries
-            if (lost && current.challengeState?.type == ChallengeType.OVERGROWN
-                && current.challengeState.triesRemaining > 1) {
-                delay(800)
-                overgrownRetry(current.challengeState.triesRemaining - 1)
-            }
         }
     }
 
@@ -1470,11 +1443,28 @@ class GameViewModel(
 
     // ── Challenge-specific methods ──
 
+    fun overgrownAcceptRetry() {
+        val cs = _state.value.challengeState ?: return
+        if (cs.type != ChallengeType.OVERGROWN || cs.triesRemaining <= 1) return
+        overgrownRetry(cs.triesRemaining - 1)
+    }
+
+    fun overgrownDeclineRetry() {
+        val cs = _state.value.challengeState ?: return
+        if (cs.type != ChallengeType.OVERGROWN) return
+        val finalStars = cs.overgrownStarScore.coerceAtLeast(1)
+        winResultCommitted = false
+        pendingWinLevelId = _state.value.level.id
+        pendingWinStars = finalStars
+        _state.value = _state.value.copy(
+            phase = GamePhase.WON,
+            starsAwarded = finalStars
+        )
+    }
+
     private fun overgrownRetry(triesLeft: Int) {
-        // Carry over accumulated star score and bump multiplier
+        // Stars reset per try — player forfeits this try's stars by choosing retry
         val prevChalState = _state.value.challengeState
-        val carryOverStars = prevChalState?.overgrownStarScore ?: 0
-        val carryOverGoals = prevChalState?.goalsCleared ?: 0
         val nextMultiplier = (prevChalState?.overgrownTryMultiplier ?: 1) + 1
 
         // Regenerate level until we get a solvable board
@@ -1506,8 +1496,8 @@ class GameViewModel(
             challengeState = ChallengeState(
                 type = ChallengeType.OVERGROWN,
                 triesRemaining = triesLeft,
-                overgrownStarScore = carryOverStars,
-                goalsCleared = carryOverGoals,
+                overgrownStarScore = 0,
+                goalsCleared = 0,
                 overgrownTryMultiplier = nextMultiplier
             )
         )

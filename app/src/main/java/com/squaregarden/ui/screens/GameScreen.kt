@@ -494,7 +494,23 @@ fun GameScreen(
 
     // Lose dialog
     if (state.phase == GamePhase.LOST) {
-        if (state.isChallenge) {
+        val cs = state.challengeState
+        if (cs?.type == ChallengeType.OVERGROWN) {
+            // Overgrown: ask retry or take score
+            OvergrownRetryDialog(
+                triesRemaining = cs.triesRemaining - 1,
+                currentStars = cs.overgrownStarScore,
+                nextMultiplier = cs.overgrownTryMultiplier + 1,
+                onRetry = { viewModel.overgrownAcceptRetry() },
+                onTakeScore = { viewModel.overgrownDeclineRetry() },
+                onBackToGame = {
+                    navController.popBackStack()
+                    if (navController.currentBackStackEntry?.destination?.route == Screen.Game.route) {
+                        navController.popBackStack()
+                    }
+                }
+            )
+        } else if (state.isChallenge) {
             LoseDialog(
                 onRetry = null,
                 onMenu = {
@@ -1148,6 +1164,108 @@ private fun LoseDialog(onRetry: (() -> Unit)?, onMenu: () -> Unit, onShowSolutio
                         shape = RoundedCornerShape(20.dp)
                     ) {
                         Text("Back to Game", fontSize = 13.sp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OvergrownRetryDialog(
+    triesRemaining: Int,
+    currentStars: Int,
+    nextMultiplier: Int,
+    onRetry: () -> Unit,
+    onTakeScore: () -> Unit,
+    onBackToGame: () -> Unit
+) {
+    Dialog(onDismissRequest = {}) {
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = SoftWhite)
+        ) {
+            Column(
+                modifier = Modifier.padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Out of Moves",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TileRed
+                )
+
+                if (triesRemaining > 0) {
+                    Text(
+                        text = "You earned $currentStars star${if (currentStars != 1) "s" else ""} this round.\n\n" +
+                                "Retry with ${nextMultiplier}\u00D7 multiplier?\n" +
+                                "($triesRemaining ${if (triesRemaining == 1) "try" else "tries"} remaining)\n\n" +
+                                "Warning: retrying forfeits this round\u2019s stars.",
+                        fontSize = 14.sp,
+                        color = WarmBrown,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = onTakeScore,
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                "Take $currentStars \u2B50",
+                                maxLines = 1,
+                                fontSize = 13.sp
+                            )
+                        }
+                        Button(
+                            onClick = onRetry,
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                "Retry ${nextMultiplier}\u00D7",
+                                maxLines = 1,
+                                fontSize = 13.sp
+                            )
+                        }
+                    }
+                } else {
+                    // Last try — no retry option
+                    Text(
+                        text = "You earned $currentStars star${if (currentStars != 1) "s" else ""} total.\nNo tries remaining.",
+                        fontSize = 14.sp,
+                        color = WarmBrown,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = onBackToGame,
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("Back to Game", maxLines = 1, fontSize = 13.sp)
+                        }
+                        Button(
+                            onClick = onTakeScore,
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                "Take $currentStars \u2B50",
+                                maxLines = 1,
+                                fontSize = 13.sp
+                            )
+                        }
                     }
                 }
             }

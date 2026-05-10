@@ -120,7 +120,7 @@ object ChallengeGenerator {
         )
     }
 
-    // ── Overgrown: 9×9, 8 mixed goals, 12 moves, ~15 frozen ──
+    // ── Overgrown: 9×9, 8 mixed goals, 16 moves, 10-14 frozen ──
 
     private fun generateOvergrown(skill: Difficulty): Level {
         val w = 9; val h = 9
@@ -134,8 +134,8 @@ object ChallengeGenerator {
         val tiles = generateRandomTiles(w, h, colors)
         val frozenCount = when (skill) {
             Difficulty.EASY -> 10
-            Difficulty.MEDIUM -> 15
-            Difficulty.HARD -> 20
+            Difficulty.MEDIUM -> 12
+            Difficulty.HARD -> 14
         }
         val frozen = pickFrozenCells(w, h, frozenCount)
         return Level(
