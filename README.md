@@ -32,13 +32,32 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 
 ### Difficulty Modes
 
-| | Moves | Stars | Starting World | Border Behavior |
-|---|---|---|---|---|
-| **Easy** | 1.5x | 1x | World 1 | Cosmetic |
-| **Medium** | 1.0x | 2x | World 2 | Breaks on cross |
-| **Hard** | 0.7x | 3x | World 3 | Locks tiles |
+| | Moves | Stars | Starting World | Pass Through Goals | Tile Sharing |
+|---|---|---|---|---|---|
+| **Casual** | 1.25x | 1x | World 1 | Yes (breaks goal) | Multi-move |
+| **Standard** | 1.0x | 2x | World 2 | No (blocked) | Multi-move |
+| **Pro** | 0.7x | 3x | World 3 | No (locked) | One-move only |
+
+- **Pass Through Goals**: Casual can swap through completed goal cells (but the goal breaks). Standard and Pro block swaps touching completed goals.
+- **Tile Sharing**: Casual and Standard allow completed goal tiles to count toward new goals over multiple moves. Pro only allows tile sharing when two goals complete simultaneously from one swap.
+- **Passthrough Power-Up**: Overrides blocking on all difficulties — jumps over completed goal cells and frozen tiles.
 
 Players start at a world matching their skill level — no grinding through easy content. Skill is locked after profile creation; reset progress in Settings to change.
+
+### World Unlock Stars
+
+| World | Name | Casual (×1) | Standard (×2) | Pro (×3) |
+|-------|------|-------------|---------------|----------|
+| 1 | Seedling Garden | 0 | 0 | 0 |
+| 2 | Blooming Meadow | 8 | 16 | 24 |
+| 3 | Ancient Grove | 20 | 40 | 60 |
+| 4 | Crystal Cavern | 35 | 70 | 105 |
+| 5 | Shattered Isles | 55 | 110 | 165 |
+| 6 | Void Fortress | 80 | 160 | 240 |
+| 7 | Molten Core | 110 | 220 | 330 |
+| 8 | Starfall Summit | 145 | 290 | 435 |
+| 9 | Abyssal Depths | 185 | 370 | 555 |
+| 10 | Prism Citadel | 230 | 460 | 690 |
 
 ### Power-Ups
 - **Shuffle** — Randomize the board when stuck (completed goals stay put)

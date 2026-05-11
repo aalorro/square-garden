@@ -834,8 +834,9 @@ class GameViewModel(
         val borderedCells = allGoalCells()
         val crossesBorder = from in borderedCells || to in borderedCells
 
-        // Pro blocks swaps touching goal cells (passthrough skip handled before reaching here)
-        if (crossesBorder && difficulty == Difficulty.HARD) return
+        // Standard and Pro block swaps touching goal cells (passthrough skip handled before reaching here)
+        // Casual can pass through but the touched goal breaks
+        if (crossesBorder && difficulty != Difficulty.EASY) return
 
         // Start Blitz timer on first swap
         if (!blitzTimerStarted && current.challengeState?.type == ChallengeType.BLITZ) {
@@ -865,7 +866,7 @@ class GameViewModel(
             var baseGoalIds = current.completedGoalIds
             var baseGoalCells = current.completedGoalCells
             var invalidatedGoals = emptySet<String>()
-            if (crossesBorder && (difficulty == Difficulty.EASY || difficulty == Difficulty.MEDIUM)) {
+            if (crossesBorder && difficulty == Difficulty.EASY) {
                 invalidatedGoals = current.completedGoalCells.filter { (_, cells) ->
                     from in cells || to in cells
                 }.keys
@@ -874,13 +875,28 @@ class GameViewModel(
             }
 
             val goalsToCheck = current.level.goals.filter { it.id !in invalidatedGoals }
-            val metGoalIds = BoardEngine.evaluateGoals(newBoard, goalsToCheck)
+            // Pro: previously completed goal cells can't count toward new goals (one-move sharing only)
+            val metGoalIds: Set<String>
+            val excludedCells: Set<CellPos>
+            if (difficulty == Difficulty.HARD && baseGoalCells.isNotEmpty()) {
+                excludedCells = baseGoalCells.values.flatten().toSet()
+                val alreadyCompleted = goalsToCheck.filter { it.id in baseGoalIds }
+                val uncompleted = goalsToCheck.filter { it.id !in baseGoalIds }
+                val stillMet = BoardEngine.evaluateGoals(newBoard, alreadyCompleted)
+                val newlyMet = BoardEngine.evaluateGoals(newBoard, uncompleted, excludedCells)
+                metGoalIds = stillMet + newlyMet
+            } else {
+                excludedCells = emptySet()
+                metGoalIds = BoardEngine.evaluateGoals(newBoard, goalsToCheck)
+            }
             val newCompleted = baseGoalIds + metGoalIds
 
             val newGoalCells = baseGoalCells.toMutableMap()
             for (goal in current.level.goals) {
                 if (goal.id in newCompleted) {
-                    val cells = PatternMatcher.findGoalPositions(newBoard, goal)
+                    // For Pro, find positions excluding previously completed goal cells
+                    val findExcluded = if (goal.id !in baseGoalIds) excludedCells else emptySet()
+                    val cells = PatternMatcher.findGoalPositions(newBoard, goal, findExcluded)
                     if (cells != null) newGoalCells[goal.id] = cells
                 } else {
                     newGoalCells.remove(goal.id)
@@ -1089,13 +1105,27 @@ class GameViewModel(
             val newMoves = current.movesRemaining - 1
 
             // Re-evaluate goals (no invalidation — goal cells stayed in place)
-            val metGoalIds = BoardEngine.evaluateGoals(newBoard, current.level.goals)
+            // Pro: previously completed goal cells can't count toward new goals
+            val metGoalIds: Set<String>
+            val ptExcludedCells: Set<CellPos>
+            if (difficulty == Difficulty.HARD && current.completedGoalCells.isNotEmpty()) {
+                ptExcludedCells = current.completedGoalCells.values.flatten().toSet()
+                val alreadyCompleted = current.level.goals.filter { it.id in current.completedGoalIds }
+                val uncompleted = current.level.goals.filter { it.id !in current.completedGoalIds }
+                val stillMet = BoardEngine.evaluateGoals(newBoard, alreadyCompleted)
+                val newlyMet = BoardEngine.evaluateGoals(newBoard, uncompleted, ptExcludedCells)
+                metGoalIds = stillMet + newlyMet
+            } else {
+                ptExcludedCells = emptySet()
+                metGoalIds = BoardEngine.evaluateGoals(newBoard, current.level.goals)
+            }
             val newCompleted = current.completedGoalIds + metGoalIds
 
             val newGoalCells = current.completedGoalCells.toMutableMap()
             for (goal in current.level.goals) {
                 if (goal.id in newCompleted) {
-                    val cells = PatternMatcher.findGoalPositions(newBoard, goal)
+                    val findExcluded = if (goal.id !in current.completedGoalIds) ptExcludedCells else emptySet()
+                    val cells = PatternMatcher.findGoalPositions(newBoard, goal, findExcluded)
                     if (cells != null) newGoalCells[goal.id] = cells
                 } else {
                     newGoalCells.remove(goal.id)

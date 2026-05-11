@@ -5,18 +5,18 @@ import kotlin.math.abs
 
 object PatternMatcher {
 
-    fun isGoalMet(board: Board, goal: Goal): Boolean = when (goal) {
-        is Goal.Line -> hasLine(board, goal.color, goal.length)
-        is Goal.Square -> hasSquare(board, goal.color)
-        is Goal.Shape -> hasShape(board, goal.color, goal.shapeType)
+    fun isGoalMet(board: Board, goal: Goal, excludedCells: Set<CellPos> = emptySet()): Boolean = when (goal) {
+        is Goal.Line -> hasLine(board, goal.color, goal.length, excludedCells)
+        is Goal.Square -> hasSquare(board, goal.color, excludedCells)
+        is Goal.Shape -> hasShape(board, goal.color, goal.shapeType, excludedCells)
     }
 
-    fun hasLine(board: Board, color: TileColor, length: Int): Boolean {
+    fun hasLine(board: Board, color: TileColor, length: Int, excludedCells: Set<CellPos> = emptySet()): Boolean {
         // Horizontal scan
         for (r in 0 until board.height) {
             var run = 0
             for (c in 0 until board.width) {
-                if (!board.isVoid(r, c) && board.tileAt(r, c).color == color) {
+                if (!board.isVoid(r, c) && board.tileAt(r, c).color == color && CellPos(r, c) !in excludedCells) {
                     run++
                     if (run >= length) return true
                 } else run = 0
@@ -26,7 +26,7 @@ object PatternMatcher {
         for (c in 0 until board.width) {
             var run = 0
             for (r in 0 until board.height) {
-                if (!board.isVoid(r, c) && board.tileAt(r, c).color == color) {
+                if (!board.isVoid(r, c) && board.tileAt(r, c).color == color && CellPos(r, c) !in excludedCells) {
                     run++
                     if (run >= length) return true
                 } else run = 0
@@ -35,11 +35,13 @@ object PatternMatcher {
         return false
     }
 
-    fun hasSquare(board: Board, color: TileColor): Boolean {
+    fun hasSquare(board: Board, color: TileColor, excludedCells: Set<CellPos> = emptySet()): Boolean {
         for (r in 0 until board.height - 1) {
             for (c in 0 until board.width - 1) {
                 if (board.isVoid(r, c) || board.isVoid(r, c + 1) ||
                     board.isVoid(r + 1, c) || board.isVoid(r + 1, c + 1)) continue
+                val cells = listOf(CellPos(r, c), CellPos(r, c + 1), CellPos(r + 1, c), CellPos(r + 1, c + 1))
+                if (cells.any { it in excludedCells }) continue
                 if (board.tileAt(r, c).color == color &&
                     board.tileAt(r, c + 1).color == color &&
                     board.tileAt(r + 1, c).color == color &&
@@ -50,7 +52,7 @@ object PatternMatcher {
         return false
     }
 
-    fun hasShape(board: Board, color: TileColor, shapeType: ShapeType): Boolean {
+    fun hasShape(board: Board, color: TileColor, shapeType: ShapeType, excludedCells: Set<CellPos> = emptySet()): Boolean {
         val rotations = generateRotations(shapeType.offsets)
         for (rotation in rotations) {
             for (r in 0 until board.height) {
@@ -61,7 +63,8 @@ object PatternMatcher {
                             tr in 0 until board.height &&
                                     tc in 0 until board.width &&
                                     !board.isVoid(tr, tc) &&
-                                    board.tileAt(tr, tc).color == color
+                                    board.tileAt(tr, tc).color == color &&
+                                    CellPos(tr, tc) !in excludedCells
                         }) return true
                 }
             }
@@ -71,18 +74,18 @@ object PatternMatcher {
 
     // ── Position-returning variants ──
 
-    fun findGoalPositions(board: Board, goal: Goal): Set<CellPos>? = when (goal) {
-        is Goal.Line -> findLinePositions(board, goal.color, goal.length)
-        is Goal.Square -> findSquarePositions(board, goal.color)
-        is Goal.Shape -> findShapePositions(board, goal.color, goal.shapeType)
+    fun findGoalPositions(board: Board, goal: Goal, excludedCells: Set<CellPos> = emptySet()): Set<CellPos>? = when (goal) {
+        is Goal.Line -> findLinePositions(board, goal.color, goal.length, excludedCells)
+        is Goal.Square -> findSquarePositions(board, goal.color, excludedCells)
+        is Goal.Shape -> findShapePositions(board, goal.color, goal.shapeType, excludedCells)
     }
 
-    fun findLinePositions(board: Board, color: TileColor, length: Int): Set<CellPos>? {
+    fun findLinePositions(board: Board, color: TileColor, length: Int, excludedCells: Set<CellPos> = emptySet()): Set<CellPos>? {
         // Horizontal scan
         for (r in 0 until board.height) {
             var run = 0
             for (c in 0 until board.width) {
-                if (!board.isVoid(r, c) && board.tileAt(r, c).color == color) {
+                if (!board.isVoid(r, c) && board.tileAt(r, c).color == color && CellPos(r, c) !in excludedCells) {
                     run++
                     if (run >= length) {
                         return (c - length + 1..c).map { CellPos(r, it) }.toSet()
@@ -94,7 +97,7 @@ object PatternMatcher {
         for (c in 0 until board.width) {
             var run = 0
             for (r in 0 until board.height) {
-                if (!board.isVoid(r, c) && board.tileAt(r, c).color == color) {
+                if (!board.isVoid(r, c) && board.tileAt(r, c).color == color && CellPos(r, c) !in excludedCells) {
                     run++
                     if (run >= length) {
                         return (r - length + 1..r).map { CellPos(it, c) }.toSet()
@@ -105,24 +108,26 @@ object PatternMatcher {
         return null
     }
 
-    fun findSquarePositions(board: Board, color: TileColor): Set<CellPos>? {
+    fun findSquarePositions(board: Board, color: TileColor, excludedCells: Set<CellPos> = emptySet()): Set<CellPos>? {
         for (r in 0 until board.height - 1) {
             for (c in 0 until board.width - 1) {
                 if (board.isVoid(r, c) || board.isVoid(r, c + 1) ||
                     board.isVoid(r + 1, c) || board.isVoid(r + 1, c + 1)) continue
+                val cells = listOf(CellPos(r, c), CellPos(r, c + 1), CellPos(r + 1, c), CellPos(r + 1, c + 1))
+                if (cells.any { it in excludedCells }) continue
                 if (board.tileAt(r, c).color == color &&
                     board.tileAt(r, c + 1).color == color &&
                     board.tileAt(r + 1, c).color == color &&
                     board.tileAt(r + 1, c + 1).color == color
                 ) {
-                    return setOf(CellPos(r, c), CellPos(r, c + 1), CellPos(r + 1, c), CellPos(r + 1, c + 1))
+                    return cells.toSet()
                 }
             }
         }
         return null
     }
 
-    fun findShapePositions(board: Board, color: TileColor, shapeType: ShapeType): Set<CellPos>? {
+    fun findShapePositions(board: Board, color: TileColor, shapeType: ShapeType, excludedCells: Set<CellPos> = emptySet()): Set<CellPos>? {
         val rotations = generateRotations(shapeType.offsets)
         for (rotation in rotations) {
             for (r in 0 until board.height) {
@@ -133,7 +138,8 @@ object PatternMatcher {
                             tr in 0 until board.height &&
                                     tc in 0 until board.width &&
                                     !board.isVoid(tr, tc) &&
-                                    board.tileAt(tr, tc).color == color
+                                    board.tileAt(tr, tc).color == color &&
+                                    CellPos(tr, tc) !in excludedCells
                         }) {
                         return rotation.map { CellPos(r + it.row, c + it.col) }.toSet()
                     }

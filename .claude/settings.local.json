@@ -24,7 +24,8 @@
       "Bash(curl:*)",
       "Bash(ls:*)",
       "Bash(mv web:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(grep:*)"
     ]
   }
 }

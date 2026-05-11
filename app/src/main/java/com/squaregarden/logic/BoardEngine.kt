@@ -20,8 +20,8 @@ object BoardEngine {
         return board.withSwap(a.row, a.col, b.row, b.col)
     }
 
-    fun evaluateGoals(board: Board, goals: List<Goal>): Set<String> {
-        return goals.filter { PatternMatcher.isGoalMet(board, it) }
+    fun evaluateGoals(board: Board, goals: List<Goal>, excludedCells: Set<CellPos> = emptySet()): Set<String> {
+        return goals.filter { PatternMatcher.isGoalMet(board, it, excludedCells) }
             .map { it.id }
             .toSet()
     }
