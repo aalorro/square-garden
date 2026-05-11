@@ -71,14 +71,20 @@ fun InstructionsScreen(navController: NavHostController) {
             title = "Stars & Difficulty",
             body = "Earn up to 3 stars per level based on moves remaining. " +
                 "Each game is rated Easy to Extremely Hard based on the randomized board. " +
-                "Harder games multiply your stars — up to 2\u00D7 on Extremely Hard!"
+                "Harder games multiply your stars — up to 2\u00D7 on Extremely Hard!\n\n" +
+                "Replaying a level may give you different goals each time, so no two replays are exactly alike."
         )
 
         InstructionSection(
-            title = "Borders",
-            body = "When you complete a goal, those tiles become bordered. " +
-                "Swapping through bordered tiles breaks that goal and you'll need to re-form it. " +
-                "Pro players cannot swap through borders at all."
+            title = "Borders & Tile Sharing",
+            body = "When you complete a goal, those tiles become bordered.\n\n" +
+                "\u2022 Casual — swapping through bordered tiles breaks that goal, but you can re-form it. " +
+                "Completed goal tiles can count toward new goals over multiple moves.\n" +
+                "\u2022 Standard — swaps through bordered tiles are blocked. " +
+                "Completed goal tiles can still count toward new goals over multiple moves.\n" +
+                "\u2022 Pro — swaps through bordered tiles are blocked. " +
+                "Completed goal tiles can only be shared when two goals complete simultaneously from one swap.\n\n" +
+                "The Passthrough power-up overrides blocking on all skill levels."
         )
 
         InstructionSection(
@@ -97,10 +103,12 @@ fun InstructionsScreen(navController: NavHostController) {
         InstructionSection(
             title = "Skill",
             body = "Choose your skill level when creating your profile:\n" +
-                "\u2022 Casual — more moves, start at World 1\n" +
-                "\u2022 Standard — balanced, start at World 2\n" +
-                "\u2022 Pro — fewer moves, start at World 3\n\n" +
-                "Skill is locked after creation. Reset progress in Settings to change."
+                "\u2022 Casual — 1.25\u00D7 moves, 1\u00D7 stars, start at World 1\n" +
+                "\u2022 Standard — 1\u00D7 moves, 2\u00D7 stars, start at World 2\n" +
+                "\u2022 Pro — 0.7\u00D7 moves, 3\u00D7 stars, start at World 3\n\n" +
+                "You can upgrade your skill anytime in Settings (but not downgrade). " +
+                "Your progress and unlocked worlds are preserved. " +
+                "To change to a lower skill, reset progress in Settings."
         )
 
         InstructionSection(

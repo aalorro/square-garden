@@ -42,7 +42,7 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 - **Tile Sharing**: Casual and Standard allow completed goal tiles to count toward new goals over multiple moves. Pro only allows tile sharing when two goals complete simultaneously from one swap.
 - **Passthrough Power-Up**: Overrides blocking on all difficulties — jumps over completed goal cells and frozen tiles.
 
-Players start at a world matching their skill level — no grinding through easy content. Skill is locked after profile creation; reset progress in Settings to change.
+Players start at a world matching their skill level — no grinding through easy content. Players can upgrade their skill anytime in Settings (but not downgrade) — progress and unlocked worlds are preserved. Reset progress in Settings to change to a lower skill.
 
 ### World Unlock Stars
 
@@ -79,6 +79,8 @@ Special reward events triggered by exceptional play. Challenges cost no lives an
 
 ### Features
 - Difficulty-based starting worlds (skip easy content if you're experienced)
+- Skill upgrade anytime from Settings (upgrade only, no downgrade)
+- Randomized goal sets per level — replaying a level gives different goals each time
 - Drag-to-swap with animated sliding
 - Vivid beveled tile rendering with embossed 3D effect and unique motifs per color
 - Visual goal grid — goals shown as mini tile shapes instead of text
