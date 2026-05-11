@@ -43,7 +43,21 @@ FEATURES
 
 ---
 
-## Release Notes — Version 1.5.0 (What's New)
+## Release Notes — Version 1.5.1 (What's New)
+
+What's new in 1.5.1:
+
+- Upgrade your skill anytime! Go to Settings to upgrade from Casual to Standard or Pro (or Standard to Pro). Your progress and unlocked worlds are preserved.
+- Randomized goals on replay — each level now has 4 goal sets, so replaying a level gives you fresh challenges.
+- Skill-specific rules for completed goals: Casual can swap through them (breaks the goal), Standard and Pro are blocked. Casual and Standard share tiles from completed goals; Pro only shares on simultaneous completions.
+- Casual move multiplier adjusted from 1.5x to 1.25x for better balance.
+- Fixed win clapping sound looping endlessly.
+- Fixed a rare bug where Challenge Lab appeared from the Play button after completing all levels.
+- Updated How to Play with detailed skill differences and tile sharing rules.
+
+Happy gardening!
+
+## Release Notes — Version 1.5.0
 
 What's new in 1.5.0:
 

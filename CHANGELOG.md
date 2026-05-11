@@ -2,6 +2,26 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.5.1] - 2026-05-11 (Build 9)
+
+### New Features
+- **Skill upgrade from Settings** — Players can upgrade their skill level anytime (Casual to Standard or Pro, Standard to Pro) without losing progress or unlocked worlds. Downgrade requires a full progress reset.
+- **Randomized goal sets** — Each level now has 4 goal sets. Replaying a level may give different goals each time for variety. Tutorial levels (1-3) always use original goals.
+
+### Gameplay
+- **Difficulty-specific tile behaviors** — Skill levels now have distinct rules for completed goals:
+  - Casual: can swap through completed goals (breaks them), tiles from completed goals count toward new goals over multiple moves.
+  - Standard: swaps through completed goals are blocked, but tiles from completed goals can still count toward new goals.
+  - Pro: swaps through completed goals are blocked, and completed goal tiles can only be shared when two goals complete simultaneously from one swap.
+- **Casual move multiplier** — Changed from 1.5x to 1.25x for better balance.
+
+### Bug Fixes
+- Fixed win clapping sound looping indefinitely instead of playing once.
+- Fixed Challenge Lab (World 11) appearing when hitting Play after completing all 90 levels — world now capped at 10.
+
+### UI/UX
+- Updated How to Play with skill upgrade info, detailed borders & tile sharing rules per skill level, and randomized goal set mention.
+
 ## [1.5.0] - 2026-05-10 (Build 8)
 
 ### New Features
