@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Square Garden - Tile-Swap Puzzle Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="logo-text">Square Garden</h1>
+      <p class="tagline">A calm tile-swap puzzle. Slide, match, and garden your way through 90 levels.</p>
+    </div>
+  </section>
+
+  <!-- Game Demo Section -->
+  <section class="demo-section">
+    <h2 class="section-title">Watch It In Action</h2>
+    <div class="demo-wrapper">
+      <!-- Phone frame -->
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <!-- Top bar -->
+          <div class="top-bar">
+            <span class="back-arrow">&#8592;</span>
+            <span class="world-name">Ancient Grove</span>
+            <div class="player-badge">
+              <div class="avatar">&#127812;</div>
+              <span class="badge-text">Lv21 48&#9733; &#10084;&#10084;&#10084;</span>
+            </div>
+          </div>
+
+          <!-- Goal Panel -->
+          <div class="goal-panel">
+            <div class="goal-card" id="goal-0">
+              <div class="goal-mini-grid line-goal">
+                <span class="mini-tile blue"></span>
+                <span class="mini-tile blue"></span>
+                <span class="mini-tile blue"></span>
+              </div>
+              <div class="goal-check">&#10003;</div>
+            </div>
+            <div class="goal-card" id="goal-1">
+              <div class="goal-mini-grid square-goal">
+                <span class="mini-tile green"></span>
+                <span class="mini-tile green"></span>
+                <span class="mini-tile green"></span>
+                <span class="mini-tile green"></span>
+              </div>
+              <div class="goal-check">&#10003;</div>
+            </div>
+            <div class="goal-card" id="goal-2">
+              <div class="goal-mini-grid l-goal">
+                <span class="mini-tile red"></span>
+                <span class="mini-tile empty"></span>
+                <span class="mini-tile red"></span>
+                <span class="mini-tile empty"></span>
+                <span class="mini-tile red"></span>
+                <span class="mini-tile red"></span>
+              </div>
+              <div class="goal-check">&#10003;</div>
+            </div>
+          </div>
+
+          <!-- Moves Row -->
+          <div class="moves-row">
+            <div class="moves-left">MOVES <span class="moves-big" id="moves-display">12</span> <span class="moves-total">/12</span></div>
+            <div class="difficulty-label">Hard</div>
+          </div>
+
+          <!-- Board -->
+          <div class="board-wrapper">
+            <div class="board" id="game-board"></div>
+            <div class="hand-cursor" id="hand-cursor">&#128070;</div>
+            <canvas id="confetti-canvas"></canvas>
+          </div>
+
+          <!-- Power-up bar -->
+          <div class="powerup-bar">
+            <div class="powerup-btn hint-btn"><span class="pu-icon">&#128161;</span></div>
+            <div class="powerup-btn shuffle-btn"><span class="pu-icon">&#128256;</span><span class="pu-count">&times;3</span></div>
+            <div class="powerup-btn pass-btn"><span class="pu-icon">&#128737;</span><span class="pu-count">&times;2</span></div>
+            <div class="powerup-btn freeze-btn"><span class="pu-icon">&#10052;</span><span class="pu-count">&times;1</span></div>
+            <div class="powerup-btn redo-btn"><span class="pu-icon">&#8635;</span><span class="pu-count">&times;1</span></div>
+          </div>
+
+          <!-- Win Overlay -->
+          <div class="win-overlay" id="win-overlay">
+            <div class="win-content">
+              <h2 class="win-title">Level Complete!</h2>
+              <div class="stars-row">
+                <span class="win-star" id="star-1">&#9733;</span>
+                <span class="win-star" id="star-2">&#9733;</span>
+                <span class="win-star" id="star-3">&#9733;</span>
+              </div>
+              <p class="win-sub">Ancient Grove - Level 21</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="demo-hint">The demo plays automatically &mdash; sit back and watch!</p>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <h2 class="section-title light">Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-emoji">&#127793;</div>
+        <h3>10 Worlds</h3>
+        <p>From Seedling Garden to Prism Citadel, each with unique themes and increasing challenge.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">&#127912;</div>
+        <h3>5 Tile Colors</h3>
+        <p>Red, Blue, Yellow, Green, and Orange tiles with vivid 3D beveled rendering.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">&#129513;</div>
+        <h3>7 Patterns</h3>
+        <p>Lines, Squares, L-shapes, T-shapes, Crosses, Z-shapes, and U-shapes to master.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">&#128171;</div>
+        <h3>Power-Ups</h3>
+        <p>Shuffle, Passthrough, Unfreeze, and Redo tokens earned through skilled play.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">&#127942;</div>
+        <h3>4 Challenges</h3>
+        <p>Blitz Garden, Overgrown Garden, Shifting Sands, and Memory Garden on World 5+.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">&#127925;</div>
+        <h3>Rich Audio</h3>
+        <p>Procedural brass fanfares, celebration music, and unique sound effects for every action.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Worlds Section -->
+  <section class="worlds-section">
+    <h2 class="section-title">Explore 10 Worlds</h2>
+    <div class="worlds-strip">
+      <div class="world-chip" style="--accent:#8FBC8F">Seedling Garden</div>
+      <div class="world-chip" style="--accent:#1E88E5">Blooming Meadow</div>
+      <div class="world-chip" style="--accent:#8B7355">Ancient Grove</div>
+      <div class="world-chip" style="--accent:#81D4FA">Crystal Cavern</div>
+      <div class="world-chip" style="--accent:#CE93D8">Shattered Isles</div>
+      <div class="world-chip" style="--accent:#78909C">Void Fortress</div>
+      <div class="world-chip" style="--accent:#FF6D00">Molten Core</div>
+      <div class="world-chip" style="--accent:#7C4DFF">Starfall Summit</div>
+      <div class="world-chip" style="--accent:#00897B">Abyssal Depths</div>
+      <div class="world-chip" style="--accent:#E91E63">Prism Citadel</div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2 class="cta-title">Ready to Play?</h2>
+    <p class="cta-sub">No ads. No in-app purchases. Just puzzles.</p>
+    <a href="#" class="cta-button">
+      <span class="cta-icon">&#9654;</span> Get it on Google Play
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Square Garden. Made with &#127793;</p>
+  </footer>
+
+  <script src="game.js"></script>
+</body>
+</html>

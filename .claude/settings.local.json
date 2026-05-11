@@ -20,7 +20,9 @@
       "Bash(/c/Users/arman/AppData/Local/Android/Sdk/platform-tools/adb.exe:*)",
       "Bash(keytool:*)",
       "Bash(ffmpeg:*)",
-      "Bash(ffprobe:*)"
+      "Bash(ffprobe:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)"
     ]
   }
 }
