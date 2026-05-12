@@ -10,7 +10,6 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -325,15 +324,13 @@ fun GameBoardCanvas(
                         // Bold green border
                         drawRoundRect(Color(0xFF2E7D32), Offset(bx, by), Size(bw, bh), bcr, style = Stroke(width = 3.dp.toPx()))
                     }
-                    // White dotted outline to clearly distinguish from frozen tiles
-                    val dotLen = cs * 0.08f
-                    val gapLen = cs * 0.06f
+                    // Solid black border to clearly distinguish from frozen tiles
                     drawRoundRect(
-                        color = Color.White.copy(alpha = 0.85f),
+                        color = Color.Black,
                         topLeft = Offset(bx, by),
                         size = Size(bw, bh),
                         cornerRadius = bcr,
-                        style = Stroke(width = 1.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(dotLen, gapLen)))
+                        style = Stroke(width = 2.dp.toPx())
                     )
                 }
             }
