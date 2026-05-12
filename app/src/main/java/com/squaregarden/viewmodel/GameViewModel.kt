@@ -997,11 +997,11 @@ class GameViewModel(
                                 else -> 1
                             }
                             starsAwarded = (BoardEngine.calculateStars(newMoves, current.level.starThresholds) * challengeMultiplier).coerceAtLeast(1)
-                            // Music delayed — triggered after count-up animation in UI
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
                             pendingWinStars = starsAwarded
-                            GamePhase.WON
+                            // Memory: delay WON to show revealed board first
+                            if (cs.type == ChallengeType.MEMORY) GamePhase.PLAYING else GamePhase.WON
                         }
                     } else {
                         val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
@@ -1096,7 +1096,14 @@ class GameViewModel(
                         }
                     }
                     ChallengeType.MEMORY -> {
-                        revealAroundSwap(from, to)
+                        if (won) {
+                            // Reveal entire board before celebration
+                            revealAllCells()
+                            delay(3000)
+                            _state.value = _state.value.copy(phase = GamePhase.WON)
+                        } else {
+                            revealAroundSwap(from, to)
+                        }
                     }
                     else -> {}
                 }
@@ -1228,7 +1235,8 @@ class GameViewModel(
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
                             pendingWinStars = starsAwarded
-                            GamePhase.WON
+                            // Memory: delay WON to show revealed board first
+                            if (cs.type == ChallengeType.MEMORY) GamePhase.PLAYING else GamePhase.WON
                         }
                     } else {
                         val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
@@ -1320,7 +1328,14 @@ class GameViewModel(
                         }
                     }
                     ChallengeType.MEMORY -> {
-                        revealAroundSwap(from, landing)
+                        if (won) {
+                            // Reveal entire board before celebration
+                            revealAllCells()
+                            delay(3000)
+                            _state.value = _state.value.copy(phase = GamePhase.WON)
+                        } else {
+                            revealAroundSwap(from, landing)
+                        }
                     }
                     else -> {}
                 }
@@ -1733,6 +1748,20 @@ class GameViewModel(
                 challengeState = cState.copy(revealedCells = emptySet(), initialRevealDone = true)
             )
         }
+    }
+
+    private fun revealAllCells() {
+        val current = _state.value
+        val cs = current.challengeState ?: return
+        val all = mutableSetOf<CellPos>()
+        for (r in 0 until current.board.height) {
+            for (c in 0 until current.board.width) {
+                if (!current.board.isVoid(r, c)) all.add(CellPos(r, c))
+            }
+        }
+        _state.value = current.copy(
+            challengeState = cs.copy(revealedCells = all)
+        )
     }
 
     private fun revealAroundSwap(from: CellPos, to: CellPos) {
