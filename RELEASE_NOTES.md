@@ -43,7 +43,22 @@ FEATURES
 
 ---
 
-## Release Notes — Version 1.5.1 (What's New)
+## Release Notes — Version 1.5.2 (What's New)
+
+What's new in 1.5.2:
+
+- Collapsible player badge — swipe the avatar to collapse or expand it. Tap the avatar for the menu.
+- "Next World" button at the bottom of each world's level list — jump to the next world without going back.
+- Leaderboards moved to the Welcome page for quick access. Scores now sync immediately with Google Play before opening.
+- Tutorial levels (1 & 2) now have 2 goals each. Casual players always get at least 3 goals after tutorials.
+- Memory challenge shows the completed board for a few seconds before the win celebration.
+- Solution replay now shows a hand indicator sliding tiles, with beep sounds and clapping.
+- Board generation loading indicator for all levels, not just Overgrown challenge.
+- Extended win clapping and clearer solid black borders on completed goals.
+
+Happy gardening!
+
+## Release Notes — Version 1.5.1
 
 What's new in 1.5.1:
 

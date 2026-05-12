@@ -2,6 +2,25 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.5.2] - 2026-05-12 (Build 10)
+
+### New Features
+- **Collapsible Player Badge** — Swipe the avatar left/right to collapse or expand the badge. Tap the avatar for the Settings/Exit menu.
+- **Next World button** — A "Next World" button at the bottom of each level select screen lets you jump directly to the next world without going back to the world menu.
+- **Leaderboards on Home screen** — Moved Leaderboards button from Settings to the Welcome page for quicker access.
+
+### Gameplay
+- **Tutorial levels now have 2 goals** — Levels 1 and 2 each have 2 goals instead of 1, introducing multi-goal play from the start.
+- **Casual minimum 3 goals** — After tutorials, Casual players always get at least 3 goals per level for a richer experience.
+
+### Improvements
+- **Leaderboard refresh** — Scores are now submitted immediately to Google Play servers (using `submitScoreImmediate`) before opening the leaderboard, ensuring you see the latest data.
+- **Memory challenge reveal** — In Memory challenge, the completed board is fully revealed for 3 seconds before the win celebration plays.
+- **Solution replay hand indicator** — A hand emoji follows the tile during animated solution replays, with a simple beep on goal completion and clapping at the end.
+- **Board generation loading** — A loading indicator now shows when any board takes time to generate, not just Overgrown challenge boards.
+- **Extended win clapping** — Clapping sound plays twice for a fuller celebration.
+- **Completed goal borders** — Changed from white dotted outlines to solid black borders for clearer visibility.
+
 ## [1.5.1] - 2026-05-11 (Build 9)
 
 ### New Features
