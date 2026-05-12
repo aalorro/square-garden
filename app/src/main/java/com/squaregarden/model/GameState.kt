@@ -34,7 +34,7 @@ data class GameState(
     val perfectGame: Boolean = false,
     val challengeState: ChallengeState? = null,
     val pendingChallenge: ChallengeType? = null,
-    val overgrownGenerating: Boolean = false
+    val boardGenerating: Boolean = false
 ) {
     val isChallenge: Boolean get() = challengeState != null
 }

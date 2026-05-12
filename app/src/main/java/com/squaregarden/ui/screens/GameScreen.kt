@@ -493,7 +493,7 @@ fun GameScreen(
     }
 
     // Overgrown board generation loading overlay
-    if (state.overgrownGenerating) {
+    if (state.boardGenerating) {
         Dialog(onDismissRequest = {}) {
             Card(
                 shape = RoundedCornerShape(24.dp),

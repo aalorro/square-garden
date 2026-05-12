@@ -469,7 +469,7 @@ class GameViewModel(
                 solution = null
             } else if (challengeType == ChallengeType.OVERGROWN) {
                 // Show loading indicator while generating solvable board
-                _state.value = _state.value.copy(overgrownGenerating = true)
+                _state.value = _state.value.copy(boardGenerating = true)
                 val genResult = withContext(Dispatchers.Default) {
                     var curLevel = level
                     var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
@@ -488,7 +488,10 @@ class GameViewModel(
                 board = genResult.second
                 solution = genResult.third
             } else {
-                val result = generateBoardWithSolution(adjustedMaxMoves)
+                _state.value = _state.value.copy(boardGenerating = true)
+                val result = withContext(Dispatchers.Default) {
+                    generateBoardWithSolution(adjustedMaxMoves)
+                }
                 board = result.first
                 solution = result.second
             }
@@ -661,6 +664,45 @@ class GameViewModel(
             level = baseLevel.copy(goals = goalSets.random())
         }
 
+        if (!hasTutorial && hasMovedSinceReset) {
+            // New board generation — may be slow, run async with loading indicator
+            val genMoves = when (difficulty) {
+                Difficulty.EASY -> adjustedMaxMoves
+                Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
+                Difficulty.HARD -> adjustedMaxMoves
+            }
+            val capturedMovesRemaining = current.movesRemaining
+            val capturedRedoFullReset = redoFullReset
+            _state.value = current.copy(boardGenerating = true)
+            viewModelScope.launch {
+                val result = withContext(Dispatchers.Default) {
+                    generateBoardWithSolution(genMoves)
+                }
+                val board = result.first
+                val solution = result.second
+                precomputedSolution = solution
+                val moves = if (capturedRedoFullReset) adjustedMaxMoves else when (difficulty) {
+                    Difficulty.EASY -> adjustedMaxMoves
+                    Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
+                    Difficulty.HARD -> if (capturedMovesRemaining > 0) capturedMovesRemaining else adjustedMaxMoves
+                }
+                hasMovedSinceReset = false
+                val adjustedLevel = level.copy(maxMoves = adjustedMaxMoves)
+                _state.value = GameState(
+                    level = adjustedLevel, board = board,
+                    movesRemaining = moves, difficulty = difficulty,
+                    gameDifficulty = computeGameDifficulty(board),
+                    initialBoard = board, hasSolution = solution != null,
+                    shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens,
+                    phase = GamePhase.SCRAMBLING
+                )
+                if (solution == null) computeSolutionAsync(board)
+                animateScramble(board)
+            }
+            return
+        }
+
+        // Fast path: tutorial or same board (no generation needed)
         val board: Board
         var solution: List<Pair<CellPos, CellPos>>? = null
 
@@ -675,15 +717,6 @@ class GameViewModel(
                 },
                 voids = level.voidCells
             )
-        } else if (hasMovedSinceReset) {
-            val moves = when (difficulty) {
-                Difficulty.EASY -> adjustedMaxMoves
-                Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
-                Difficulty.HARD -> adjustedMaxMoves
-            }
-            val result = generateBoardWithSolution(moves)
-            board = result.first
-            solution = result.second
         } else {
             board = current.board
             solution = precomputedSolution
@@ -695,7 +728,6 @@ class GameViewModel(
             Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
             Difficulty.HARD -> if (current.movesRemaining > 0) current.movesRemaining else adjustedMaxMoves
         }
-        val shouldScramble = !hasTutorial && hasMovedSinceReset
         hasMovedSinceReset = false
         val adjustedLevel = level.copy(maxMoves = adjustedMaxMoves)
         _state.value = GameState(
@@ -704,10 +736,9 @@ class GameViewModel(
             gameDifficulty = computeGameDifficulty(board),
             initialBoard = board, hasSolution = solution != null,
             shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens,
-            phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else if (shouldScramble) GamePhase.SCRAMBLING else GamePhase.PLAYING
+            phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )
         if (solution == null) computeSolutionAsync(board)
-        if (shouldScramble) viewModelScope.launch { animateScramble(board) }
     }
 
     // ── Gameplay ──
@@ -1562,7 +1593,7 @@ class GameViewModel(
         val cs = _state.value.challengeState ?: return
         if (cs.type != ChallengeType.OVERGROWN || cs.triesRemaining <= 1) return
         // Show loading state while generating board off main thread
-        _state.value = _state.value.copy(phase = GamePhase.SCRAMBLING, overgrownGenerating = true)
+        _state.value = _state.value.copy(phase = GamePhase.SCRAMBLING, boardGenerating = true)
         viewModelScope.launch {
             overgrownRetry(cs.triesRemaining - 1)
         }

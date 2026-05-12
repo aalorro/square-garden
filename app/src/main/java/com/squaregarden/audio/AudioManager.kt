@@ -124,7 +124,12 @@ class AudioManager(private val context: Context) {
         try {
             MediaPlayer.create(context, resId)?.apply {
                 setVolume(0.7f, 0.7f)
-                setOnCompletionListener { it.release() }
+                setOnCompletionListener { first ->
+                    // Replay once for extended clapping
+                    first.seekTo(0)
+                    first.setOnCompletionListener { it.release() }
+                    first.start()
+                }
                 start()
             }
         } catch (_: Exception) {}
