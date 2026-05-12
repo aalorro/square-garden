@@ -92,6 +92,12 @@ object SoundGenerator {
         env * 0.5f * sine(880f, i)
     }
 
+    /** Simple beep for solution replay goal completion */
+    fun generateBeep(): ShortArray = generatePcm(120) { i, total ->
+        val env = envelope(i, total, 5, 60)
+        env * 0.5f * sine(1047f, i) // C6 — clean, simple
+    }
+
     /** Smooth slide whoosh */
     fun generateSwap(): ShortArray = generatePcm(200) { i, total ->
         val env = envelope(i, total, 15, 80)

@@ -23,6 +23,7 @@ class AudioManager(private val context: Context) {
     private val shufflePcm by lazy { SoundGenerator.generateShuffle() }
     private val passthroughPcm by lazy { SoundGenerator.generatePassthrough() }
     private val unfreezePcm by lazy { SoundGenerator.generateUnfreeze() }
+    private val beepPcm by lazy { SoundGenerator.generateBeep() }
     private val scramble1Pcm by lazy { SoundGenerator.generateScramble1() }
     private val scramble2Pcm by lazy { SoundGenerator.generateScramble2() }
     private val scramble3Pcm by lazy { SoundGenerator.generateScramble3() }
@@ -128,6 +129,7 @@ class AudioManager(private val context: Context) {
             }
         } catch (_: Exception) {}
     }
+    fun playBeep() = play(beepPcm, 0.6f)
     fun playStarCollect() = play(starCollectPcm, 0.6f)
     fun playLifeRestored() = play(lifeRestoredPcm, 1f)
     fun playShuffle() = play(shufflePcm, 0.7f)

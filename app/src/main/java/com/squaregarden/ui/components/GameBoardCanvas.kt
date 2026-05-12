@@ -11,6 +11,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.squaregarden.model.Board
@@ -30,6 +31,7 @@ fun GameBoardCanvas(
     completedGoalCells: Set<CellPos>,
     passthroughActive: Boolean = false,
     foggedCells: Set<CellPos> = emptySet(),
+    handCell: CellPos? = null,
     onDragSwap: (from: CellPos, to: CellPos) -> Unit,
     onCellTapped: ((row: Int, col: Int) -> Unit)? = null,
     modifier: Modifier = Modifier
@@ -354,6 +356,29 @@ fun GameBoardCanvas(
             val toY = animTo.row * cs - dy
             drawEmbossedTile(toTile.color, toX, toY, cs, cornerR)
             drawTileMotif(toTile.color, toX, toY, cs)
+        }
+
+        // Hand indicator for solution replay
+        if (handCell != null) {
+            val hx: Float
+            val hy: Float
+            if (animFrom != null && animTo != null && handCell == animFrom) {
+                // During animation: hand follows the "from" tile
+                val adx = (animTo.col - animFrom.col) * cs * animProgress
+                val ady = (animTo.row - animFrom.row) * cs * animProgress
+                hx = animFrom.col * cs + adx + cs / 2f
+                hy = animFrom.row * cs + ady + cs
+            } else {
+                // At rest: hand sits at handCell
+                hx = handCell.col * cs + cs / 2f
+                hy = handCell.row * cs + cs
+            }
+            val handPaint = android.graphics.Paint().apply {
+                textSize = cs * 0.55f
+                textAlign = android.graphics.Paint.Align.CENTER
+                isAntiAlias = true
+            }
+            drawContext.canvas.nativeCanvas.drawText("\u261D\uFE0F", hx, hy + cs * 0.15f, handPaint)
         }
     }
 }

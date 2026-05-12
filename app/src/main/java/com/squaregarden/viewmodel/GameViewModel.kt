@@ -1393,6 +1393,8 @@ class GameViewModel(
     fun playStarCollect() { audioManager.playStarCollect() }
     fun playSwapSound() { audioManager.playSwap() }
     fun playMatchSound() { audioManager.playMatch() }
+    fun playBeepSound() { audioManager.playBeep() }
+    fun playClapSound() { audioManager.playWinClap() }
     fun playWinSound(stars: Int = 1) { audioManager.playWin(stars) }
     fun playPerfectGameSound() { audioManager.playPerfectGame() }
     fun playWorldUnlockSound() { audioManager.playWorldUnlock() }

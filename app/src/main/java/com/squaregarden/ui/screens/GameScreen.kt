@@ -569,7 +569,8 @@ fun GameScreen(
             onReplay = {},
             onClose = { viewModel.dismissSolution() },
             onSwapSound = { viewModel.playSwapSound() },
-            onMatchSound = { viewModel.playMatchSound() },
+            onBeepSound = { viewModel.playBeepSound() },
+            onClapSound = { viewModel.playClapSound() },
             onWinSound = { viewModel.playWinSound() }
         )
     }
@@ -1309,7 +1310,8 @@ private fun SolutionReplayOverlay(
     onReplay: () -> Unit,
     onClose: () -> Unit,
     onSwapSound: () -> Unit = {},
-    onMatchSound: () -> Unit = {},
+    onBeepSound: () -> Unit = {},
+    onClapSound: () -> Unit = {},
     onWinSound: () -> Unit = {}
 ) {
     var currentStep by remember { mutableIntStateOf(-1) }
@@ -1317,6 +1319,7 @@ private fun SolutionReplayOverlay(
     var completedGoalIds by remember { mutableStateOf(emptySet<String>()) }
     var completedGoalCells by remember { mutableStateOf<Map<String, Set<CellPos>>>(emptyMap()) }
     var swapAnim by remember { mutableStateOf<SwapAnimation?>(null) }
+    var handCell by remember { mutableStateOf<CellPos?>(null) }
     var replayKey by remember { mutableIntStateOf(0) }
     var finished by remember { mutableStateOf(false) }
 
@@ -1327,6 +1330,7 @@ private fun SolutionReplayOverlay(
         completedGoalIds = emptySet()
         completedGoalCells = emptyMap()
         swapAnim = null
+        handCell = null
         finished = false
 
         delay(600)
@@ -1335,6 +1339,10 @@ private fun SolutionReplayOverlay(
             currentStep = i
             val from = steps[i].first
             val to = steps[i].second
+
+            // Show hand at source before animating
+            handCell = from
+            delay(300)
 
             // Animate swap
             val animSteps = 15
@@ -1349,6 +1357,7 @@ private fun SolutionReplayOverlay(
             // Apply swap
             replayBoard = BoardEngine.executeSwap(replayBoard, from, to)
             swapAnim = null
+            handCell = to
             onSwapSound()
 
             // Evaluate goals cumulatively (once met, stays met — matches game behavior)
@@ -1356,7 +1365,7 @@ private fun SolutionReplayOverlay(
             val metNow = BoardEngine.evaluateGoals(replayBoard, goals)
             completedGoalIds = completedGoalIds + metNow
             if ((completedGoalIds - prevCompleted).isNotEmpty()) {
-                onMatchSound()
+                onBeepSound()
             }
             val updatedGoalCells = completedGoalCells.toMutableMap()
             for (goal in goals) {
@@ -1370,12 +1379,15 @@ private fun SolutionReplayOverlay(
             // Check if all goals met
             if (BoardEngine.checkWin(completedGoalIds, goals)) {
                 finished = true
+                handCell = null
                 onWinSound()
+                onClapSound()
                 break
             }
 
             delay(500)
         }
+        handCell = null
         if (!finished) finished = true
     }
 
@@ -1426,6 +1438,7 @@ private fun SolutionReplayOverlay(
                     hintCells = emptySet(),
                     swapAnim = swapAnim,
                     completedGoalCells = completedGoalCells.values.flatten().toSet(),
+                    handCell = handCell,
                     onDragSwap = { _, _ -> },
                     modifier = Modifier
                         .fillMaxWidth()
