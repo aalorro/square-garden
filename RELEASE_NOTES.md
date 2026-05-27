@@ -43,6 +43,16 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.5.3 (What's New)
+
+What's new in 1.5.3:
+
+- Fresh new welcome music with a perfectly seamless loop — no more audible cut between iterations.
+- Huge-win celebrations now randomize between two new high-energy music clips for more variety after perfect games and challenge completions.
+- All other sound effects (clapping, cheers, fanfares) are unchanged.
+
+Happy gardening!
+
 ## Release Notes — Version 1.5.2 (What's New)
 
 What's new in 1.5.2:

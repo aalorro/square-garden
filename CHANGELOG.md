@@ -2,6 +2,12 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.5.3] - 2026-05-26 (Build 11)
+
+### Audio
+- **New welcome music** — Replaced the Home screen intro with a new "Parade" loop, now using gapless `setNextMediaPlayer` chaining (two MediaPlayer instances alternating) for a truly seamless loop with no audible cut between iterations.
+- **Randomized huge-win celebratory music** — Perfect-game wins and challenge completions now play a randomly chosen celebratory clip selected from the most climactic sections of two new tracks (Puzzle and Bitcrush), each with a clean fade-out. Clapping/cheers sound effects are unchanged.
+
 ## [1.5.2] - 2026-05-12 (Build 10)
 
 ### New Features
