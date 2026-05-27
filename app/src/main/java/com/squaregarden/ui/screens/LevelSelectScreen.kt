@@ -342,9 +342,18 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
 
         // Previous / Next world navigation row.
         // Worlds 1-14 are consecutive (Pro+ continues 11-14 after Standard's 10).
-        // World 0 (Challenge Lab) has no prev/next.
+        // World 0 (Challenge Lab) has no prev/next. Previous-world navigation is
+        // clamped to the player's visibility floor — they cannot dip below their
+        // skill's starting world (Pro+ players can revisit 9-10 to farm stars
+        // toward Pro+ unlock thresholds, mirroring WorldSelectScreen).
+        val skillMultiplier = difficulty?.starMultiplier ?: 1
+        val overrideLevel = profile?.overrideStartingLevel ?: 0
+        val effectiveStart = if (overrideLevel > 0) overrideLevel else (difficulty?.startingLevel ?: 1)
+        val startingWorld = (effectiveStart - 1) / 9 + 1
+        val visibilityFloor = if (difficulty == Difficulty.PRO_PLUS) 9 else startingWorld
+
         val prevWorld: Int? = when {
-            worldId in 2..14 -> worldId - 1
+            worldId in 2..14 && worldId - 1 >= visibilityFloor -> worldId - 1
             else -> null
         }
         val nextWorld: Int? = when {
@@ -355,10 +364,6 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
         }
 
         if (prevWorld != null || nextWorld != null) {
-            val skillMultiplier = difficulty?.starMultiplier ?: 1
-            val overrideLevel = profile?.overrideStartingLevel ?: 0
-            val effectiveStart = if (overrideLevel > 0) overrideLevel else (difficulty?.startingLevel ?: 1)
-            val startingWorld = (effectiveStart - 1) / 9 + 1
 
             Row(
                 modifier = Modifier
