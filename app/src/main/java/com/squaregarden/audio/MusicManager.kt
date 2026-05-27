@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 object MusicManager {
 
     private var introPlayer: MediaPlayer? = null
+    private var introNextPlayer: MediaPlayer? = null
+    private var introChainActive = false
     private var winPlayer: MediaPlayer? = null
     private val handler = Handler(Looper.getMainLooper())
     private var musicEnabled = true
@@ -40,28 +42,64 @@ object MusicManager {
     // Perfect game gets its own dedicated segment, loops until Next Level
     private const val PERFECT_SEGMENT_START = 120_000
 
-    /** Start looping intro music (HomeScreen). No-op if already playing or music disabled. */
+    /**
+     * Start gapless looping intro music (HomeScreen). No-op if already playing or music disabled.
+     * Uses two MediaPlayer instances chained via setNextMediaPlayer() for truly gapless looping —
+     * MediaPlayer's built-in isLooping=true inserts a small audible gap between iterations.
+     */
     fun startIntro(context: Context) {
         if (!musicEnabled) return
-        if (introPlayer?.isPlaying == true) return
-        stopAll()
-        try {
-            introPlayer = MediaPlayer.create(context, R.raw.intro_music)?.apply {
-                isLooping = true
+        if (introChainActive) return
+        stopIntro()
+        val first = createIntroPlayer(context) ?: return
+        val second = createIntroPlayer(context) ?: run {
+            try { first.release() } catch (_: Exception) {}
+            return
+        }
+        introPlayer = first
+        introNextPlayer = second
+        try { first.setNextMediaPlayer(second) } catch (_: Exception) {}
+        setupIntroChainCompletion(context, first)
+        introChainActive = true
+        try { first.start() } catch (_: Exception) {}
+    }
+
+    private fun createIntroPlayer(context: Context): MediaPlayer? {
+        return try {
+            MediaPlayer.create(context, R.raw.intro_music)?.apply {
                 setVolume(0.5f, 0.5f)
-                start()
             }
-        } catch (_: Exception) {}
+        } catch (_: Exception) { null }
+    }
+
+    private fun setupIntroChainCompletion(context: Context, player: MediaPlayer) {
+        player.setOnCompletionListener { completed ->
+            try { completed.release() } catch (_: Exception) {}
+            if (!introChainActive) return@setOnCompletionListener
+            // The 'next' player has already begun playing automatically (gapless).
+            // Promote it to current, then queue a fresh next behind it.
+            val newCurrent = introNextPlayer ?: return@setOnCompletionListener
+            introPlayer = newCurrent
+            val newNext = createIntroPlayer(context)
+            introNextPlayer = newNext
+            if (newNext != null) {
+                try { newCurrent.setNextMediaPlayer(newNext) } catch (_: Exception) {}
+            }
+            setupIntroChainCompletion(context, newCurrent)
+        }
     }
 
     fun stopIntro() {
+        introChainActive = false
         try {
             introPlayer?.let {
                 if (it.isPlaying) it.stop()
                 it.release()
             }
         } catch (_: Exception) {}
+        try { introNextPlayer?.release() } catch (_: Exception) {}
         introPlayer = null
+        introNextPlayer = null
     }
 
     /**
