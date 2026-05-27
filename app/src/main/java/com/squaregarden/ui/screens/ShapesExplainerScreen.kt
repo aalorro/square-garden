@@ -91,6 +91,20 @@ private val shapeDemos = listOf(
         tileColor = TileColor.BLUE,
         gridWidth = 3, gridHeight = 2,
         cells = ShapeType.U_SHAPE.offsets
+    ),
+    ShapeDemo(
+        title = ShapeType.X_SHAPE.label,
+        description = "A diagonal X / cross formation of one color (Pro+)",
+        tileColor = TileColor.VIOLET,
+        gridWidth = 3, gridHeight = 3,
+        cells = ShapeType.X_SHAPE.offsets
+    ),
+    ShapeDemo(
+        title = ShapeType.Y_SHAPE.label,
+        description = "A Y-shaped formation of one color (Pro+)",
+        tileColor = TileColor.VIOLET,
+        gridWidth = 3, gridHeight = 4,
+        cells = ShapeType.Y_SHAPE.offsets
     )
 )
 

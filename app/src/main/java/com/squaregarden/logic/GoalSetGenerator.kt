@@ -15,7 +15,17 @@ object GoalSetGenerator {
     )
 
     private val FOUR_COLORS = listOf(TileColor.RED, TileColor.BLUE, TileColor.GREEN, TileColor.YELLOW)
-    private val FIVE_COLORS = TileColor.entries.toList()
+    private val FIVE_COLORS = listOf(
+        TileColor.RED, TileColor.BLUE, TileColor.YELLOW, TileColor.GREEN, TileColor.ORANGE
+    )
+    private val SIX_COLORS = listOf(
+        TileColor.RED, TileColor.BLUE, TileColor.YELLOW, TileColor.GREEN, TileColor.ORANGE, TileColor.VIOLET
+    )
+
+    // Pre-Pro+ worlds (1-10) use shapes excluding X/Y (Pro+ exclusive)
+    private val PRE_PRO_PLUS_SHAPES = listOf(
+        ShapeType.L_SHAPE, ShapeType.T_SHAPE, ShapeType.CROSS, ShapeType.Z_SHAPE, ShapeType.U_SHAPE
+    )
 
     private val worldConstraints = mapOf(
         1 to WorldConstraints(FOUR_COLORS, setOf(GoalType.LINE), 3..5, emptyList()),
@@ -30,26 +40,44 @@ object GoalSetGenerator {
         ),
         5 to WorldConstraints(
             FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 3..5,
-            ShapeType.entries.toList()
+            PRE_PRO_PLUS_SHAPES
         ),
         6 to WorldConstraints(
             FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 3..5,
-            ShapeType.entries.toList()
+            PRE_PRO_PLUS_SHAPES
         ),
         7 to WorldConstraints(
             FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 5..6,
-            ShapeType.entries.toList()
+            PRE_PRO_PLUS_SHAPES
         ),
         8 to WorldConstraints(
             FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 5..6,
-            ShapeType.entries.toList()
+            PRE_PRO_PLUS_SHAPES
         ),
         9 to WorldConstraints(
             FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 5..7,
-            ShapeType.entries.toList()
+            PRE_PRO_PLUS_SHAPES
         ),
         10 to WorldConstraints(
             FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 6..7,
+            PRE_PRO_PLUS_SHAPES
+        ),
+        // Pro+ worlds (11-14): 6-color palette + X/Y shapes available.
+        // Strict consecutive numbering; the Challenge Lab lives at world 0.
+        11 to WorldConstraints(
+            SIX_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 6..7,
+            PRE_PRO_PLUS_SHAPES + ShapeType.X_SHAPE
+        ),
+        12 to WorldConstraints(
+            SIX_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 6..8,
+            ShapeType.entries.toList()
+        ),
+        13 to WorldConstraints(
+            SIX_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 7..8,
+            ShapeType.entries.toList()
+        ),
+        14 to WorldConstraints(
+            SIX_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 7..9,
             ShapeType.entries.toList()
         )
     )

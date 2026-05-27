@@ -113,6 +113,10 @@ object PlayGamesManager {
         Difficulty.EASY -> "casual"
         Difficulty.MEDIUM -> "standard"
         Difficulty.HARD -> "pro"
+        // Pro+ leaderboard string resources may not exist yet in Google Play Console;
+        // getStringRes() returns null for missing/PLACEHOLDER entries and the
+        // submit calls early-return safely.
+        Difficulty.PRO_PLUS -> "pro_plus"
     }
 
     private fun getStringRes(context: Context, name: String): String? {

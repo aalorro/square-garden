@@ -30,7 +30,8 @@ enum class Gender(val id: String, val label: String) {
 enum class Difficulty(val id: String, val label: String, val moveMultiplier: Float, val starMultiplier: Int, val startingLevel: Int) {
     EASY("easy", "Casual", 1.25f, 1, 1),
     MEDIUM("medium", "Standard", 1.0f, 2, 10),
-    HARD("hard", "Pro", 0.7f, 3, 19);
+    HARD("hard", "Pro", 0.7f, 3, 19),
+    PRO_PLUS("pro_plus", "Pro+", 0.55f, 4, 91);
 
     val startingWorld: Int get() = ((startingLevel - 1) / 9) + 1
 

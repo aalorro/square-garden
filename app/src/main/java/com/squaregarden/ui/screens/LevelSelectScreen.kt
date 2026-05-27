@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
+import com.squaregarden.DevFlags
 import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
@@ -38,8 +39,12 @@ import com.squaregarden.ui.theme.*
 import kotlinx.coroutines.launch
 
 private val worldStarsToUnlock = mapOf(
+    // World 0 = Challenge Lab (dev/test only, free to access)
+    0 to 0,
     1 to 0, 2 to 8, 3 to 20, 4 to 35, 5 to 55,
-    6 to 80, 7 to 110, 8 to 145, 9 to 185, 10 to 230
+    6 to 80, 7 to 110, 8 to 145, 9 to 185, 10 to 230,
+    // Pro+ worlds 11-14 (strict consecutive numbering)
+    11 to 280, 12 to 335, 13 to 395, 14 to 460
 )
 
 // World theme colors: (tile background, tile text, accent/star color, gradient)
@@ -72,9 +77,18 @@ private val worldThemes = mapOf(
         listOf(Color(0xFF0F4C5C), Color(0xFF0A2540), Color(0xFF000814))),
     10 to WorldTheme(Color(0xFFF48FB1), Color(0xFFF8BBD0), Color(0xFF880E4F), Color(0xFFFFE082),
         listOf(Color(0xFFFFD3E0), Color(0xFFC9B8FF), Color(0xFFA0E4FF))),
-    // TODO: Temporary test world — remove before release
-    11 to WorldTheme(Color(0xFFFF7043), Color(0xFFFFAB91), Color(0xFFBF360C), Color(0xFFFFD600),
-        listOf(Color(0xFFFF5722), Color(0xFFE64A19), Color(0xFFBF360C)))
+    // World 0 = Challenge Lab (testing) — bright orange theme
+    0 to WorldTheme(Color(0xFFFF8A65), Color(0xFFFFAB91), Color(0xFFBF360C), Color(0xFFFFD600),
+        listOf(Color(0xFFFF5722), Color(0xFFE64A19), Color(0xFFBF360C))),
+    // Pro+ worlds (11-14)
+    11 to WorldTheme(Color(0xFFBA68C8), Color(0xFFCE93D8), Color(0xFF4A148C), Color(0xFFFFD600),
+        listOf(Color(0xFF1A0B2E), Color(0xFF4A148C), Color(0xFF7E57C2))),
+    12 to WorldTheme(Color(0xFF4DD0E1), Color(0xFF80DEEA), Color(0xFF006064), Color(0xFFFFE082),
+        listOf(Color(0xFF002730), Color(0xFF006E80), Color(0xFF26C6DA))),
+    13 to WorldTheme(Color(0xFFF06292), Color(0xFFF8BBD0), Color(0xFF880E4F), Color(0xFFFFD740),
+        listOf(Color(0xFF1A0014), Color(0xFF6A0033), Color(0xFFEC407A))),
+    14 to WorldTheme(Color(0xFFFFD54F), Color(0xFFFFECB3), Color(0xFFFF6F00), Color(0xFFFF8F00),
+        listOf(Color(0xFF1A1500), Color(0xFF7A5C00), Color(0xFFFFD600)))
 )
 
 @Composable
@@ -92,23 +106,24 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
     val cooldownActive = lives <= 0 && cooldownUntil > System.currentTimeMillis()
     val totalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
 
-    // TODO: World 11 challenge lab — remove before release
+    // TODO: World 0 challenge lab — dev/test access only, remove before release
     val challengeEntries = remember {
-        if (worldId == 11) ChallengeType.entries.toList() else emptyList()
+        if (worldId == 0) ChallengeType.entries.toList() else emptyList()
     }
 
     LaunchedEffect(Unit) {
         progress = progressRepo.loadProgress()
-        if (worldId != 11) {
+        if (worldId != 0) {
             levels = LevelLoader.loadAllLevels(context).filter { it.world == worldId }
         }
     }
 
     val worldNames = mapOf(
+        0 to "Challenge Lab",
         1 to "Seedling Garden", 2 to "Blooming Meadow", 3 to "Ancient Grove",
         4 to "Crystal Cavern", 5 to "Shattered Isles", 6 to "Void Fortress",
         7 to "Molten Core", 8 to "Starfall Summit", 9 to "Abyssal Depths", 10 to "Prism Citadel",
-        11 to "Challenge Lab"
+        11 to "Nebula Verge", 12 to "Quantum Lattice", 13 to "Singularity Spire", 14 to "Infinity Prism"
     )
 
     val theme = worldThemes[worldId] ?: worldThemes[1]!!
@@ -183,14 +198,14 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(if (worldId == 11) 2 else 3),
+            columns = GridCells.Fixed(if (worldId == 0) 2 else 3),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
             contentPadding = PaddingValues(top = 60.dp, bottom = 16.dp)
         ) {
             // TODO: Challenge lab cards — remove before release
-            if (worldId == 11) {
+            if (worldId == 0) {
                 items(challengeEntries) { challenge ->
                     Card(
                         onClick = { navController.navigate(Screen.Game.create(challenge.id)) },
@@ -325,42 +340,107 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
             }
         }
 
-        // "Next World" button at the bottom
-        if (worldId in 1..9) {
-            val nextWorld = worldId + 1
-            val nextThreshold = worldStarsToUnlock[nextWorld] ?: Int.MAX_VALUE
+        // Previous / Next world navigation row.
+        // Worlds 1-14 are consecutive (Pro+ continues 11-14 after Standard's 10).
+        // World 0 (Challenge Lab) has no prev/next.
+        val prevWorld: Int? = when {
+            worldId in 2..14 -> worldId - 1
+            else -> null
+        }
+        val nextWorld: Int? = when {
+            worldId in 1..9 -> worldId + 1
+            worldId == 10 && difficulty == Difficulty.PRO_PLUS -> 11
+            worldId in 11..13 -> worldId + 1
+            else -> null
+        }
+
+        if (prevWorld != null || nextWorld != null) {
             val skillMultiplier = difficulty?.starMultiplier ?: 1
-            val starsNeeded = nextThreshold * skillMultiplier
             val overrideLevel = profile?.overrideStartingLevel ?: 0
             val effectiveStart = if (overrideLevel > 0) overrideLevel else (difficulty?.startingLevel ?: 1)
             val startingWorld = (effectiveStart - 1) / 9 + 1
-            val nextUnlocked = nextWorld <= startingWorld || totalStars >= starsNeeded
 
-            val nextWorldNames = mapOf(
-                2 to "Blooming Meadow", 3 to "Ancient Grove", 4 to "Crystal Cavern",
-                5 to "Shattered Isles", 6 to "Void Fortress", 7 to "Molten Core",
-                8 to "Starfall Summit", 9 to "Abyssal Depths", 10 to "Prism Citadel"
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (prevWorld != null) {
+                    Button(
+                        onClick = {
+                            navController.navigate(Screen.LevelSelect.create(prevWorld)) {
+                                popUpTo(Screen.LevelSelect.create(worldId)) { inclusive = true }
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = theme.tileColor.copy(alpha = 0.7f),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "\u2190 ${worldNames[prevWorld] ?: "World $prevWorld"}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+                if (nextWorld != null) {
+                    val nextThreshold = worldStarsToUnlock[nextWorld] ?: Int.MAX_VALUE
+                    val starsNeeded = nextThreshold * skillMultiplier
+                    val nextUnlocked = nextWorld <= startingWorld || totalStars >= starsNeeded
+                    val nextName = worldNames[nextWorld] ?: "World $nextWorld"
+                    Button(
+                        onClick = {
+                            navController.navigate(Screen.LevelSelect.create(nextWorld)) {
+                                popUpTo(Screen.LevelSelect.create(worldId)) { inclusive = true }
+                            }
+                        },
+                        enabled = nextUnlocked,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = theme.tileColor,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = if (nextUnlocked) "$nextName \u2192"
+                                   else "\uD83D\uDD12 \u2605$starsNeeded",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
+        }
 
+        // Challenge Lab dev/test entry-point on World 10. Gated by DevFlags.CHALLENGE_LAB_ENABLED,
+        // which MUST be false on every commit. The Challenge Lab is otherwise unreachable through the UI.
+        if (worldId == 10 && DevFlags.CHALLENGE_LAB_ENABLED) {
             Button(
                 onClick = {
-                    navController.navigate(Screen.LevelSelect.create(nextWorld)) {
-                        popUpTo(Screen.LevelSelect.create(worldId)) { inclusive = true }
+                    navController.navigate(Screen.LevelSelect.create(0)) {
+                        popUpTo(Screen.LevelSelect.create(10)) { inclusive = true }
                     }
                 },
-                enabled = nextUnlocked,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = theme.tileColor,
+                    containerColor = Color(0xFFFF5722),
                     contentColor = Color.White
                 )
             ) {
                 Text(
-                    text = if (nextUnlocked) "Next World \u2192 ${nextWorldNames[nextWorld]}"
-                           else "\uD83D\uDD12 ${nextWorldNames[nextWorld]} (\u2605$starsNeeded)",
+                    text = "\uD83E\uDDEA Challenge Lab (Dev) \u2192",
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )

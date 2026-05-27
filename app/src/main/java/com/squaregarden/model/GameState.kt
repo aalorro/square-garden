@@ -111,6 +111,7 @@ enum class GameDifficulty(val label: String, val starMultiplier: Float) {
                     is Goal.Shape -> when (goal.shapeType) {
                         ShapeType.L_SHAPE, ShapeType.T_SHAPE -> 1f
                         ShapeType.CROSS, ShapeType.Z_SHAPE, ShapeType.U_SHAPE -> 1.5f
+                        ShapeType.X_SHAPE, ShapeType.Y_SHAPE -> 2f
                     }
                 }
             }
@@ -139,6 +140,13 @@ enum class GameDifficulty(val label: String, val starMultiplier: Float) {
                     points < 4f -> MEDIUM
                     points < 7f -> HARD
                     points < 10f -> VERY_HARD
+                    else -> EXTREMELY_HARD
+                }
+                Difficulty.PRO_PLUS -> when { // Pro+ — tightest (top-tier expects challenge)
+                    points < 1.5f -> EASY
+                    points < 3.5f -> MEDIUM
+                    points < 6f -> HARD
+                    points < 9f -> VERY_HARD
                     else -> EXTREMELY_HARD
                 }
             }

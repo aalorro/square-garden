@@ -1,7 +1,7 @@
 package com.squaregarden.model
 
 enum class TileColor {
-    RED, BLUE, YELLOW, GREEN, ORANGE
+    RED, BLUE, YELLOW, GREEN, ORANGE, VIOLET
 }
 
 data class Tile(

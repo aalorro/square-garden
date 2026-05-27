@@ -670,6 +670,7 @@ class GameViewModel(
                 Difficulty.EASY -> adjustedMaxMoves
                 Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
                 Difficulty.HARD -> adjustedMaxMoves
+                Difficulty.PRO_PLUS -> adjustedMaxMoves
             }
             val capturedMovesRemaining = current.movesRemaining
             val capturedRedoFullReset = redoFullReset
@@ -685,6 +686,7 @@ class GameViewModel(
                     Difficulty.EASY -> adjustedMaxMoves
                     Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
                     Difficulty.HARD -> if (capturedMovesRemaining > 0) capturedMovesRemaining else adjustedMaxMoves
+                    Difficulty.PRO_PLUS -> if (capturedMovesRemaining > 0) capturedMovesRemaining else adjustedMaxMoves
                 }
                 hasMovedSinceReset = false
                 val adjustedLevel = level.copy(maxMoves = adjustedMaxMoves)
@@ -727,6 +729,7 @@ class GameViewModel(
             Difficulty.EASY -> adjustedMaxMoves
             Difficulty.MEDIUM -> max(1, adjustedMaxMoves - 2)
             Difficulty.HARD -> if (current.movesRemaining > 0) current.movesRemaining else adjustedMaxMoves
+            Difficulty.PRO_PLUS -> if (current.movesRemaining > 0) current.movesRemaining else adjustedMaxMoves
         }
         hasMovedSinceReset = false
         val adjustedLevel = level.copy(maxMoves = adjustedMaxMoves)

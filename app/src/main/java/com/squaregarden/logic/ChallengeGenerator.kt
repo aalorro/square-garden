@@ -34,6 +34,7 @@ object ChallengeGenerator {
             Difficulty.EASY -> 2
             Difficulty.MEDIUM -> 3
             Difficulty.HARD -> 4
+            Difficulty.PRO_PLUS -> 5
         }
 
         val simpleShapes = listOf(ShapeType.L_SHAPE, ShapeType.T_SHAPE)
@@ -95,12 +96,14 @@ object ChallengeGenerator {
             Difficulty.EASY -> 5
             Difficulty.MEDIUM -> 6
             Difficulty.HARD -> 7
+            Difficulty.PRO_PLUS -> 8
         }
         val h = w
         val numColors = when (skill) {
             Difficulty.EASY -> 3
             Difficulty.MEDIUM -> 4
             Difficulty.HARD -> 5
+            Difficulty.PRO_PLUS -> 6
         }
         val colors = TileColor.entries.toList().shuffled().take(numColors)
         val tiles = generateRandomTiles(w, h, colors)
@@ -129,6 +132,7 @@ object ChallengeGenerator {
             Difficulty.EASY -> 6
             Difficulty.MEDIUM -> 8
             Difficulty.HARD -> 10
+            Difficulty.PRO_PLUS -> 12
         }
         val goals = pickMixedGoals(colors, goalCount, skill)
         val tiles = generateRandomTiles(w, h, colors)
@@ -136,6 +140,7 @@ object ChallengeGenerator {
             Difficulty.EASY -> 8
             Difficulty.MEDIUM -> 10
             Difficulty.HARD -> 12
+            Difficulty.PRO_PLUS -> 14
         }
         val frozen = pickFrozenCells(w, h, frozenCount)
         return Level(
@@ -160,12 +165,14 @@ object ChallengeGenerator {
             Difficulty.EASY -> 3
             Difficulty.MEDIUM -> 4
             Difficulty.HARD -> 5
+            Difficulty.PRO_PLUS -> 6
         }
         val colors = TileColor.entries.toList().shuffled().take(numColors)
         val goalCount = when (skill) {
             Difficulty.EASY -> 3
             Difficulty.MEDIUM -> 4
             Difficulty.HARD -> 5
+            Difficulty.PRO_PLUS -> 6
         }
         val goals = pickMixedGoals(colors, goalCount, skill)
         val tiles = generateRandomTiles(w, h, colors)
@@ -190,12 +197,14 @@ object ChallengeGenerator {
             Difficulty.EASY -> 3
             Difficulty.MEDIUM -> 3
             Difficulty.HARD -> 4
+            Difficulty.PRO_PLUS -> 5
         }
         val colors = TileColor.entries.toList().shuffled().take(numColors)
         val goalCount = when (skill) {
             Difficulty.EASY -> 2
             Difficulty.MEDIUM -> 2
             Difficulty.HARD -> 3
+            Difficulty.PRO_PLUS -> 3
         }
         val goals = pickSimpleGoals(colors, goalCount)
         val tiles = generateRandomTiles(w, h, colors)
@@ -249,6 +258,12 @@ object ChallengeGenerator {
                     roll < 0.2 -> Goal.Line(color, if (Math.random() < 0.5) 4 else 3)
                     roll < 0.4 -> Goal.Square(color)
                     roll < 0.7 -> Goal.Shape(color, simpleShapes.random())
+                    else -> Goal.Shape(color, hardShapes.random())
+                }
+                Difficulty.PRO_PLUS -> when {
+                    roll < 0.15 -> Goal.Line(color, if (Math.random() < 0.5) 4 else 3)
+                    roll < 0.3 -> Goal.Square(color)
+                    roll < 0.6 -> Goal.Shape(color, simpleShapes.random())
                     else -> Goal.Shape(color, hardShapes.random())
                 }
             }

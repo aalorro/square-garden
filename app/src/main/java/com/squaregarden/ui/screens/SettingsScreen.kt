@@ -19,6 +19,7 @@ import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.data.SettingsRepository
 import com.squaregarden.model.Difficulty
+import com.squaregarden.model.PlayerProgress
 import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.ui.theme.*
 import kotlinx.coroutines.flow.first
@@ -36,6 +37,7 @@ fun SettingsScreen(navController: NavHostController) {
     var musicEnabled by remember { mutableStateOf(true) }
     var currentThemeId by remember { mutableStateOf("light") }
     var currentProfile by remember { mutableStateOf(com.squaregarden.model.UserProfile()) }
+    var currentProgress by remember { mutableStateOf(PlayerProgress()) }
     var showResetDialog by remember { mutableStateOf(false) }
     var showUpgradeDialog by remember { mutableStateOf(false) }
     var confirmUpgradeTo by remember { mutableStateOf<Difficulty?>(null) }
@@ -45,6 +47,7 @@ fun SettingsScreen(navController: NavHostController) {
         musicEnabled = settingsRepo.musicEnabled.first()
         currentProfile = profileRepo.loadProfile()
         currentThemeId = currentProfile.themeId
+        currentProgress = progressRepo.loadProgress()
     }
 
     Column(
@@ -171,9 +174,16 @@ fun SettingsScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Upgrade Skill button (only for non-Pro players)
+        // Upgrade Skill button (hidden when already at max tier)
         val currentDifficulty = Difficulty.fromId(currentProfile.difficulty)
-        if (currentDifficulty != Difficulty.HARD) {
+        val level90Completed = currentProgress.levelStars.containsKey(90)
+        // Show upgrade if not at top tier; if at Pro, only show when level 90 is completed.
+        val canUpgrade = when (currentDifficulty) {
+            Difficulty.PRO_PLUS -> false
+            Difficulty.HARD -> level90Completed
+            else -> true
+        }
+        if (canUpgrade) {
             OutlinedButton(
                 onClick = { showUpgradeDialog = true },
                 modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -282,7 +292,11 @@ fun SettingsScreen(navController: NavHostController) {
     // Upgrade Skill selection dialog
     if (showUpgradeDialog) {
         val currentDiff = Difficulty.fromId(currentProfile.difficulty)
-        val options = Difficulty.entries.filter { it.ordinal > currentDiff.ordinal }
+        // Hide Pro+ option unless the player has completed level 90.
+        val options = Difficulty.entries.filter {
+            it.ordinal > currentDiff.ordinal &&
+                (it != Difficulty.PRO_PLUS || currentProgress.levelStars.containsKey(90))
+        }
         AlertDialog(
             onDismissRequest = { showUpgradeDialog = false },
             title = { Text("Upgrade Skill") },
@@ -340,9 +354,14 @@ fun SettingsScreen(navController: NavHostController) {
                 TextButton(
                     onClick = {
                         val currentDiff = Difficulty.fromId(currentProfile.difficulty)
-                        val effectiveStart = if (currentProfile.overrideStartingLevel > 0)
+                        val priorEffective = if (currentProfile.overrideStartingLevel > 0)
                             currentProfile.overrideStartingLevel
                         else currentDiff.startingLevel
+                        // Pro+ resets the floor to its own starting level (world 11) so
+                        // worlds 1-10 become inaccessible. Other upgrades preserve prior access.
+                        val effectiveStart = if (target == Difficulty.PRO_PLUS)
+                            Difficulty.PRO_PLUS.startingLevel
+                        else priorEffective
                         scope.launch {
                             profileRepo.upgradeSkill(target, effectiveStart)
                             currentProfile = profileRepo.loadProfile()

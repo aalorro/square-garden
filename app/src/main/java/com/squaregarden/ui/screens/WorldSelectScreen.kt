@@ -53,8 +53,13 @@ private val worlds = listOf(
     WorldInfo(8, "Starfall Summit", "Levels 64-72", 145, Color(0xFF7C4DFF)),
     WorldInfo(9, "Abyssal Depths", "Levels 73-81", 185, Color(0xFF00897B)),
     WorldInfo(10, "Prism Citadel", "Levels 82-90", 230, Color(0xFFE91E63)),
-    // TODO: Challenge Lab — uncomment to re-enable for testing
-    // WorldInfo(11, "Challenge Lab", "4 Challenge Modes", 0, Color(0xFFFF5722))
+    // Pro+ worlds (require PRO_PLUS skill) — strict consecutive numbering 11-14.
+    // The Challenge Lab lives at world 0 (dev-only, reachable via a hidden button
+    // on World 10's level select) so it doesn't consume a world number.
+    WorldInfo(11, "Nebula Verge", "Levels 91-99", 280, Color(0xFF7E57C2)),
+    WorldInfo(12, "Quantum Lattice", "Levels 100-108", 335, Color(0xFF26C6DA)),
+    WorldInfo(13, "Singularity Spire", "Levels 109-117", 395, Color(0xFFEC407A)),
+    WorldInfo(14, "Infinity Prism", "Levels 118-126", 460, Color(0xFFFFD600))
 )
 
 @Composable
@@ -123,10 +128,14 @@ fun WorldSelectScreen(navController: NavHostController) {
             val effectiveStartingLevel = if (overrideLevel > 0) overrideLevel else (difficulty?.startingLevel ?: 1)
             val startingWorld = (effectiveStartingLevel - 1) / 9 + 1
             val skillMultiplier = difficulty?.starMultiplier ?: 1
+            // Pro+ players can replay worlds 9-10 at elevated difficulty to farm
+            // stars toward unlocking Pro+ worlds (12+). Everything below that is hidden.
+            val visibilityFloor = if (difficulty == Difficulty.PRO_PLUS) 9 else startingWorld
             worlds.forEach { world ->
                 val starsToUnlock = world.baseStarsToUnlock * skillMultiplier
-                val belowSkill = world.id < startingWorld
-                val unlocked = !belowSkill && (totalStars >= starsToUnlock || world.id <= startingWorld)
+                // Skip rendering worlds the player has outgrown.
+                if (world.id < visibilityFloor) return@forEach
+                val unlocked = totalStars >= starsToUnlock || world.id <= startingWorld
                 val accessible = unlocked
 
                 Card(
@@ -161,6 +170,10 @@ fun WorldSelectScreen(navController: NavHostController) {
                                 8 -> drawStarfallSummit(size)
                                 9 -> drawAbyssalDepths(size)
                                 10 -> drawPrismCitadel(size)
+                                11 -> drawNebulaVerge(size)
+                                12 -> drawQuantumLattice(size)
+                                13 -> drawSingularitySpire(size)
+                                14 -> drawInfinityPrism(size)
                                 else -> drawRect(Brush.linearGradient(listOf(world.color, world.color.copy(alpha = 0.6f))))
                             }
                         }
@@ -213,14 +226,7 @@ fun WorldSelectScreen(navController: NavHostController) {
                                     color = Color.White.copy(alpha = 0.85f)
                                 )
                             }
-                            if (belowSkill) {
-                                Text(
-                                    text = "Below skill",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFFFCDD2)
-                                )
-                            } else if (!unlocked) {
+                            if (!unlocked) {
                                 Column(horizontalAlignment = Alignment.End) {
                                     Text("\uD83D\uDD12", fontSize = 24.sp)
                                     Spacer(modifier = Modifier.height(4.dp))
@@ -749,6 +755,165 @@ private fun DrawScope.drawPrismCitadel(sz: Size) {
         drawCircle(Color.White.copy(0.6f), radius = 2f, center = Offset(sz.width * sx, sz.height * sy))
     }
     drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.3f), Color.Transparent)), size = Size(sz.width * 0.55f, sz.height))
+}
+
+// ── World 11: Nebula Verge — swirling violet nebula with stars ──
+
+private fun DrawScope.drawNebulaVerge(sz: Size) {
+    drawRect(Brush.verticalGradient(listOf(Color(0xFF1A0B2E), Color(0xFF311B92), Color(0xFF4A148C))))
+    // Nebula swirls
+    drawCircle(Color(0xFF8E24AA).copy(0.35f), radius = sz.height * 0.45f,
+        center = Offset(sz.width * 0.7f, sz.height * 0.4f))
+    drawCircle(Color(0xFFBA68C8).copy(0.25f), radius = sz.height * 0.3f,
+        center = Offset(sz.width * 0.55f, sz.height * 0.55f))
+    drawCircle(Color(0xFF7C4DFF).copy(0.22f), radius = sz.height * 0.35f,
+        center = Offset(sz.width * 0.85f, sz.height * 0.3f))
+    // Bright violet core
+    drawCircle(Color(0xFFE1BEE7).copy(0.5f), radius = sz.height * 0.1f,
+        center = Offset(sz.width * 0.72f, sz.height * 0.42f))
+    // Distant stars
+    val starColor = Color.White
+    for ((sx, sy) in listOf(
+        0.1f to 0.12f, 0.22f to 0.28f, 0.4f to 0.1f, 0.55f to 0.22f,
+        0.65f to 0.08f, 0.78f to 0.18f, 0.9f to 0.13f, 0.92f to 0.45f,
+        0.5f to 0.8f, 0.25f to 0.7f, 0.85f to 0.7f, 0.15f to 0.55f
+    )) {
+        val r = if ((sx * 100).toInt() % 3 == 0) 2f else 1.2f
+        drawCircle(starColor.copy(0.85f), radius = r, center = Offset(sz.width * sx, sz.height * sy))
+    }
+    // Diamond sparkles
+    for ((px, py) in listOf(0.7f to 0.25f, 0.55f to 0.4f, 0.82f to 0.55f)) {
+        val cx = sz.width * px; val cy = sz.height * py; val s = sz.height * 0.02f
+        val path = Path().apply {
+            moveTo(cx, cy - s)
+            lineTo(cx + s * 0.4f, cy)
+            lineTo(cx, cy + s)
+            lineTo(cx - s * 0.4f, cy)
+            close()
+        }
+        drawPath(path, Color.White.copy(0.8f))
+    }
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.45f), Color.Transparent)),
+        size = Size(sz.width * 0.6f, sz.height))
+}
+
+// ── World 12: Quantum Lattice — geometric cyan grid ──
+
+private fun DrawScope.drawQuantumLattice(sz: Size) {
+    drawRect(Brush.verticalGradient(listOf(Color(0xFF002730), Color(0xFF004D5C), Color(0xFF006E80))))
+    // Grid lines (lattice)
+    val gridColor = Color(0xFF26C6DA).copy(0.35f)
+    val cols = 10
+    val rows = 6
+    for (i in 0..cols) {
+        val x = sz.width * (i.toFloat() / cols)
+        drawLine(gridColor, Offset(x, 0f), Offset(x, sz.height), strokeWidth = 1f)
+    }
+    for (j in 0..rows) {
+        val y = sz.height * (j.toFloat() / rows)
+        drawLine(gridColor, Offset(0f, y), Offset(sz.width, y), strokeWidth = 1f)
+    }
+    // Glowing lattice nodes
+    val nodeColor = Color(0xFF00E5FF)
+    for ((nx, ny) in listOf(
+        0.3f to 0.33f, 0.5f to 0.5f, 0.7f to 0.33f, 0.8f to 0.66f,
+        0.6f to 0.16f, 0.4f to 0.66f, 0.9f to 0.5f
+    )) {
+        drawCircle(nodeColor.copy(0.4f), radius = sz.height * 0.05f,
+            center = Offset(sz.width * nx, sz.height * ny))
+        drawCircle(nodeColor, radius = sz.height * 0.025f,
+            center = Offset(sz.width * nx, sz.height * ny))
+    }
+    // Connecting beams
+    val beamColor = Color(0xFF80DEEA).copy(0.6f)
+    drawLine(beamColor, Offset(sz.width * 0.3f, sz.height * 0.33f),
+        Offset(sz.width * 0.7f, sz.height * 0.33f), strokeWidth = 2f)
+    drawLine(beamColor, Offset(sz.width * 0.5f, sz.height * 0.5f),
+        Offset(sz.width * 0.8f, sz.height * 0.66f), strokeWidth = 2f)
+    drawLine(beamColor, Offset(sz.width * 0.6f, sz.height * 0.16f),
+        Offset(sz.width * 0.5f, sz.height * 0.5f), strokeWidth = 2f)
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.45f), Color.Transparent)),
+        size = Size(sz.width * 0.55f, sz.height))
+}
+
+// ── World 13: Singularity Spire — magenta black-hole vortex ──
+
+private fun DrawScope.drawSingularitySpire(sz: Size) {
+    drawRect(Brush.verticalGradient(listOf(Color(0xFF1A0014), Color(0xFF3D0028), Color(0xFF6A0033))))
+    // Accretion disc rings (concentric ellipses)
+    val cx = sz.width * 0.75f
+    val cy = sz.height * 0.5f
+    val ringColors = listOf(
+        Color(0xFFEC407A).copy(0.7f),
+        Color(0xFFFF80AB).copy(0.55f),
+        Color(0xFFD500F9).copy(0.4f),
+        Color(0xFF7C4DFF).copy(0.3f)
+    )
+    for (i in ringColors.indices) {
+        val rx = sz.width * (0.18f + i * 0.06f)
+        val ry = sz.height * (0.06f + i * 0.025f)
+        drawCircle(ringColors[i], radius = rx,
+            center = Offset(cx, cy),
+            style = Stroke(width = ry))
+    }
+    // Black hole center
+    drawCircle(Color.Black, radius = sz.height * 0.13f, center = Offset(cx, cy))
+    drawCircle(Color(0xFF6A0033).copy(0.8f), radius = sz.height * 0.13f,
+        center = Offset(cx, cy), style = Stroke(width = sz.height * 0.02f))
+    // Particle stream
+    val particleColor = Color(0xFFFF80AB)
+    for ((px, py) in listOf(
+        0.1f to 0.55f, 0.18f to 0.52f, 0.28f to 0.5f, 0.38f to 0.48f,
+        0.95f to 0.55f, 0.92f to 0.48f, 0.45f to 0.2f, 0.55f to 0.75f
+    )) {
+        drawCircle(particleColor.copy(0.7f), radius = 2f,
+            center = Offset(sz.width * px, sz.height * py))
+    }
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.5f), Color.Transparent)),
+        size = Size(sz.width * 0.55f, sz.height))
+}
+
+// ── World 14: Infinity Prism — golden infinity radiance ──
+
+private fun DrawScope.drawInfinityPrism(sz: Size) {
+    drawRect(Brush.verticalGradient(listOf(Color(0xFF1A1500), Color(0xFF4D3B00), Color(0xFF7A5C00))))
+    // Radiant golden glow
+    drawCircle(Color(0xFFFFD600).copy(0.35f), radius = sz.height * 0.7f,
+        center = Offset(sz.width * 0.72f, sz.height * 0.5f))
+    drawCircle(Color(0xFFFFEB3B).copy(0.45f), radius = sz.height * 0.45f,
+        center = Offset(sz.width * 0.72f, sz.height * 0.5f))
+    drawCircle(Color(0xFFFFF59D).copy(0.6f), radius = sz.height * 0.22f,
+        center = Offset(sz.width * 0.72f, sz.height * 0.5f))
+    // Infinity symbol (two overlapping loops)
+    val loopColor = Color(0xFFFFD740).copy(0.85f)
+    val cy = sz.height * 0.5f
+    val loopR = sz.height * 0.18f
+    drawCircle(loopColor, radius = loopR,
+        center = Offset(sz.width * 0.62f, cy),
+        style = Stroke(width = sz.height * 0.022f))
+    drawCircle(loopColor, radius = loopR,
+        center = Offset(sz.width * 0.82f, cy),
+        style = Stroke(width = sz.height * 0.022f))
+    // Inner shine
+    drawCircle(Color.White.copy(0.45f), radius = loopR * 0.4f,
+        center = Offset(sz.width * 0.62f, cy * 0.92f))
+    drawCircle(Color.White.copy(0.45f), radius = loopR * 0.4f,
+        center = Offset(sz.width * 0.82f, cy * 0.92f))
+    // Prismatic rays
+    val rayColor = Color(0xFFFFE082).copy(0.4f)
+    for (i in 0 until 8) {
+        val angle = Math.toRadians(i * 45.0)
+        val ex = sz.width * 0.72f + (sz.height * 0.5f * Math.cos(angle)).toFloat()
+        val ey = cy + (sz.height * 0.5f * Math.sin(angle)).toFloat()
+        drawLine(rayColor, Offset(sz.width * 0.72f, cy), Offset(ex, ey), strokeWidth = 1.5f)
+    }
+    // Sparkles
+    for ((sx, sy) in listOf(0.55f to 0.2f, 0.9f to 0.3f, 0.6f to 0.8f, 0.88f to 0.7f, 0.5f to 0.45f)) {
+        drawCircle(Color.White.copy(0.7f), radius = 2.2f,
+            center = Offset(sz.width * sx, sz.height * sy))
+    }
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(0.4f), Color.Transparent)),
+        size = Size(sz.width * 0.55f, sz.height))
 }
 
 // ── Shared: simple cloud shape ──

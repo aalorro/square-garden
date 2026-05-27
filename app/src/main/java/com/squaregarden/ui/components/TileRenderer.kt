@@ -15,6 +15,7 @@ fun TileColor.toComposeColor(): Color = when (this) {
     TileColor.YELLOW -> TileYellow
     TileColor.GREEN -> TileGreen
     TileColor.ORANGE -> TileOrange
+    TileColor.VIOLET -> TileViolet
 }
 
 fun TileColor.toLightColor(): Color = when (this) {
@@ -23,6 +24,7 @@ fun TileColor.toLightColor(): Color = when (this) {
     TileColor.YELLOW -> TileYellowLight
     TileColor.GREEN -> TileGreenLight
     TileColor.ORANGE -> TileOrangeLight
+    TileColor.VIOLET -> TileVioletLight
 }
 
 fun TileColor.toDarkColor(): Color = when (this) {
@@ -31,6 +33,7 @@ fun TileColor.toDarkColor(): Color = when (this) {
     TileColor.YELLOW -> TileYellowDark
     TileColor.GREEN -> TileGreenDark
     TileColor.ORANGE -> TileOrangeDark
+    TileColor.VIOLET -> TileVioletDark
 }
 
 fun DrawScope.drawEmbossedTile(
@@ -171,6 +174,23 @@ fun DrawScope.drawTileMotif(color: TileColor, x: Float, y: Float, cs: Float) {
                 drawLine(motifColor, Offset(cx, cy), Offset(ex, ey), strokeWidth = 1.5f)
             }
             drawCircle(color = motifColor.copy(alpha = 0.4f), radius = motifSize * 0.3f, center = Offset(cx, cy))
+        }
+        TileColor.VIOLET -> {
+            // 5-point star
+            val outerR = motifSize * 1.1f
+            val innerR = motifSize * 0.45f
+            val starPath = Path().apply {
+                for (i in 0 until 10) {
+                    val r = if (i % 2 == 0) outerR else innerR
+                    val angle = Math.toRadians(-90.0 + i * 36.0)
+                    val px = cx + (r * Math.cos(angle)).toFloat()
+                    val py = cy + (r * Math.sin(angle)).toFloat()
+                    if (i == 0) moveTo(px, py) else lineTo(px, py)
+                }
+                close()
+            }
+            drawPath(starPath, color = motifColor)
+            drawCircle(color = motifColor.copy(alpha = 0.4f), radius = motifSize * 0.25f, center = Offset(cx, cy))
         }
     }
 }
