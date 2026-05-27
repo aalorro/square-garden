@@ -39,8 +39,8 @@ object MusicManager {
     private const val WIN_PLAY_MS = 8000L
     private const val WIN_FADE_MS = 1000L
 
-    // Perfect game gets its own dedicated segment, loops until Next Level
-    private const val PERFECT_SEGMENT_START = 120_000
+    // Huge win (perfect game) randomizes between dedicated celebratory clips.
+    private val hugeWinClips = listOf(R.raw.huge_win_puzzle, R.raw.huge_win_bitcrush)
 
     /**
      * Start gapless looping intro music (HomeScreen). No-op if already playing or music disabled.
@@ -103,25 +103,28 @@ object MusicManager {
     }
 
     /**
-     * Start win celebration music from the track.
-     * @param perfectGame true for perfect-game (plays dedicated segment to end),
-     *                    false for regular win (random segment, ~8 sec with 1-sec fade-out).
+     * Start win celebration music.
+     * @param perfectGame true for huge-win/perfect-game (random celebratory clip, plays to end),
+     *                    false for regular win (random segment of perfect_game_music, ~8 sec with fade-out).
      */
     fun startWinMusic(context: Context, perfectGame: Boolean) {
         if (!musicEnabled) return
         stopWinMusic()
         try {
-            winPlayer = MediaPlayer.create(context, R.raw.perfect_game_music)?.apply {
-                setVolume(0.7f, 0.7f)
-                if (perfectGame) {
-                    // Perfect game: play from dedicated segment to end of track
-                    seekTo(PERFECT_SEGMENT_START)
+            if (perfectGame) {
+                // Huge win: random celebratory clip, plays from start to end.
+                winPlayer = MediaPlayer.create(context, hugeWinClips.random())?.apply {
+                    setVolume(0.7f, 0.7f)
                     setOnCompletionListener { stopWinMusic() }
-                } else {
-                    // Regular win: pick a random segment
-                    seekTo(winSegments.random())
+                    start()
                 }
-                start()
+            } else {
+                // Regular win: pick a random segment from the existing perfect_game_music track.
+                winPlayer = MediaPlayer.create(context, R.raw.perfect_game_music)?.apply {
+                    setVolume(0.7f, 0.7f)
+                    seekTo(winSegments.random())
+                    start()
+                }
             }
         } catch (_: Exception) {}
         if (!perfectGame) {
