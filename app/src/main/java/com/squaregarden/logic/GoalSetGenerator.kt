@@ -84,13 +84,16 @@ object GoalSetGenerator {
 
     /**
      * Generate 4 goal sets for a level: the original + 3 alternatives.
-     * Tutorial levels return only the original set.
+     * Pre-Pro+ tutorial levels (worlds 1-3) return only the original set so
+     * beginner instructions aren't undermined. Pro+ tutorial levels (worlds 11+)
+     * introduce mechanics rather than basic rules, so they still get the
+     * standard 4-set randomization on retry.
      * Casual players get a minimum of 3 goals per level after tutorials.
      * All alternate sets are validated to ensure the board has enough tiles of
      * each color to make the set solvable (sum-of-requirements per color).
      */
     fun generateGoalSets(level: Level, difficulty: Difficulty = Difficulty.MEDIUM): List<List<Goal>> {
-        if (level.tutorialSteps != null) return listOf(level.goals)
+        if (level.tutorialSteps != null && level.world < 11) return listOf(level.goals)
         val minGoals = if (difficulty == Difficulty.EASY) 3 else 0
         val padded = if (minGoals > level.goals.size) padGoals(level, minGoals) else level.goals
         val paddedLevel = if (padded !== level.goals) level.copy(goals = padded) else level

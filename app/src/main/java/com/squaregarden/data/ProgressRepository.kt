@@ -31,6 +31,7 @@ class ProgressRepository(private val context: Context) {
         private val REDO_TOKENS_KEY = intPreferencesKey("redo_tokens")
         private val PERFECT_GAMES_KEY = intPreferencesKey("perfect_games")
         private const val LEVEL_FAVORITE_PREFIX = "level_favorite_"
+        private const val TUTORIAL_SEEN_PREFIX = "tutorial_seen_"
         // Challenge tracking
         private val PROGRESSIVE_WIN_STREAK_KEY = intPreferencesKey("progressive_win_streak")
         private val LAST_PROGRESSIVE_WIN_LEVEL_KEY = intPreferencesKey("last_progressive_win_level")
@@ -80,6 +81,7 @@ class ProgressRepository(private val context: Context) {
         val prefs = context.dataStore.data.first()
         val stars = mutableMapOf<Int, Int>()
         val favorites = mutableSetOf<Int>()
+        val tutorialsSeen = mutableSetOf<Int>()
         prefs.asMap().forEach { (key, value) ->
             if (key.name.startsWith(LEVEL_STARS_PREFIX) && value is Int) {
                 val levelId = key.name.removePrefix(LEVEL_STARS_PREFIX).toIntOrNull()
@@ -89,9 +91,24 @@ class ProgressRepository(private val context: Context) {
                 val levelId = key.name.removePrefix(LEVEL_FAVORITE_PREFIX).toIntOrNull()
                 if (levelId != null) favorites.add(levelId)
             }
+            if (key.name.startsWith(TUTORIAL_SEEN_PREFIX) && value == true) {
+                val levelId = key.name.removePrefix(TUTORIAL_SEEN_PREFIX).toIntOrNull()
+                if (levelId != null) tutorialsSeen.add(levelId)
+            }
         }
         val hints = prefs[HINTS_KEY] ?: 5
-        return PlayerProgress(levelStars = stars, favoriteLevels = favorites, hintsRemaining = hints)
+        return PlayerProgress(
+            levelStars = stars,
+            favoriteLevels = favorites,
+            hintsRemaining = hints,
+            tutorialsSeen = tutorialsSeen
+        )
+    }
+
+    suspend fun markTutorialSeen(levelId: Int) {
+        context.dataStore.edit { prefs ->
+            prefs[booleanPreferencesKey("$TUTORIAL_SEEN_PREFIX$levelId")] = true
+        }
     }
 
     suspend fun toggleFavorite(levelId: Int): Boolean {

@@ -8,10 +8,16 @@ object HintSolver {
     fun findBestSwap(
         board: Board,
         goals: List<Goal>,
-        completedGoalIds: Set<String>
+        completedGoalIds: Set<String>,
+        completedGoalCells: Set<CellPos> = emptySet(),
+        difficulty: Difficulty = Difficulty.MEDIUM
     ): Pair<CellPos, CellPos>? {
         val remainingGoals = goals.filter { it.id !in completedGoalIds }
         if (remainingGoals.isEmpty()) return null
+
+        val blockSwapsThroughGoals = difficulty != Difficulty.EASY
+        val excludeCompletedFromMatch =
+            difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS
 
         var bestSwap: Pair<CellPos, CellPos>? = null
         var bestScore = Int.MIN_VALUE
@@ -23,9 +29,13 @@ object HintSolver {
                 val neighbors = listOf(CellPos(r, c + 1), CellPos(r + 1, c))
                 for (neighbor in neighbors) {
                     if (!BoardEngine.canSwap(board, from, neighbor)) continue
+                    // Honor Standard/Pro/Pro+ rule: cannot swap through completed-goal cells.
+                    if (blockSwapsThroughGoals &&
+                        (from in completedGoalCells || neighbor in completedGoalCells)) continue
 
                     val swapped = BoardEngine.executeSwap(board, from, neighbor)
-                    val newlyCompleted = BoardEngine.evaluateGoals(swapped, remainingGoals)
+                    val excluded = if (excludeCompletedFromMatch) completedGoalCells else emptySet()
+                    val newlyCompleted = BoardEngine.evaluateGoals(swapped, remainingGoals, excluded)
                     // Score: big bonus per completed goal + partial progress
                     val score = newlyCompleted.size * 1000 +
                             scorePartialProgress(swapped, remainingGoals, newlyCompleted)
@@ -43,23 +53,31 @@ object HintSolver {
 
     /**
      * Beam search solver: explores multiple paths in parallel to find a solution
-     * that completes all goals within maxMoves.
+     * that completes all goals within maxMoves. Honors difficulty-specific rules:
+     *   - Standard/Pro/Pro+: never swap through cells of an already-completed goal
+     *   - Pro/Pro+: cells of completed goals can't be reused to satisfy new goals
      */
     fun findSolution(
         board: Board,
         goals: List<Goal>,
-        maxMoves: Int
+        maxMoves: Int,
+        difficulty: Difficulty = Difficulty.MEDIUM
     ): List<Pair<CellPos, CellPos>> {
         val beamWidth = 80
+        val blockSwapsThroughGoals = difficulty != Difficulty.EASY
+        val excludeCompletedFromMatch =
+            difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS
 
-        // Each search state tracks the board, cumulatively completed goals, and the swap sequence
+        // Each search state tracks the board, cumulatively completed goals,
+        // the union of cells locked by those goals, and the swap sequence.
         data class State(
             val board: Board,
             val completedIds: Set<String>,
+            val completedCells: Set<CellPos>,
             val steps: List<Pair<CellPos, CellPos>>
         )
 
-        var beam = listOf(State(board, emptySet(), emptyList()))
+        var beam = listOf(State(board, emptySet(), emptySet(), emptyList()))
 
         for (move in 0 until maxMoves) {
             val candidates = mutableListOf<State>()
@@ -75,16 +93,40 @@ object HintSolver {
                         val from = CellPos(r, c)
                         for (neighbor in listOf(CellPos(r, c + 1), CellPos(r + 1, c))) {
                             if (!BoardEngine.canSwap(state.board, from, neighbor)) continue
+                            if (blockSwapsThroughGoals &&
+                                (from in state.completedCells || neighbor in state.completedCells)) continue
 
                             val newBoard = BoardEngine.executeSwap(state.board, from, neighbor)
-                            // Cumulative goal tracking (matches actual game behavior)
-                            val metNow = BoardEngine.evaluateGoals(newBoard, goals)
-                            val newCompleted = state.completedIds + metNow
+
+                            // Re-evaluate matching, honoring Pro/Pro+ exclusion of completed cells
+                            val newlyMet: Set<String>
+                            if (excludeCompletedFromMatch && state.completedCells.isNotEmpty()) {
+                                val uncompleted = goals.filter { it.id !in state.completedIds }
+                                newlyMet = BoardEngine.evaluateGoals(newBoard, uncompleted, state.completedCells)
+                            } else {
+                                newlyMet = BoardEngine.evaluateGoals(newBoard, goals)
+                            }
+                            val newCompleted = state.completedIds + newlyMet
+
+                            // Extend the locked-cell set with positions of any newly completed goals
+                            var newCompletedCells = state.completedCells
+                            val justCompleted = newlyMet - state.completedIds
+                            if (justCompleted.isNotEmpty()) {
+                                val cellSet = newCompletedCells.toMutableSet()
+                                for (goal in goals) {
+                                    if (goal.id !in justCompleted) continue
+                                    val findExcluded = if (excludeCompletedFromMatch) state.completedCells else emptySet()
+                                    val cells = PatternMatcher.findGoalPositions(newBoard, goal, findExcluded)
+                                    if (cells != null) cellSet.addAll(cells)
+                                }
+                                newCompletedCells = cellSet
+                            }
 
                             candidates.add(
                                 State(
                                     newBoard,
                                     newCompleted,
+                                    newCompletedCells,
                                     state.steps + Pair(from, neighbor)
                                 )
                             )

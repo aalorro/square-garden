@@ -87,8 +87,20 @@ class GameViewModel(
             } else {
                 val levels = LevelLoader.loadAllLevels(context)
                 baseLevel = levels.first { it.id == levelId }
+                // Tutorials only play on the first visit to a level. Track this
+                // separately from completion so replays / retries don't re-show
+                // the tutorial (e.g. the Pro+ welcome on level 91) even if the
+                // player hasn't finished the level yet.
+                val savedProgress = progressRepo.loadProgress()
+                val tutorialAlreadySeen = baseLevel.id in savedProgress.tutorialsSeen
+                if (tutorialAlreadySeen) {
+                    baseLevel = baseLevel.copy(tutorialSteps = null)
+                }
                 val goalSets = GoalSetGenerator.generateGoalSets(baseLevel, difficulty)
-                level = baseLevel.copy(goals = goalSets.random())
+                // When the tutorial is still active, use the original goal set so
+                // the tutorial messages line up with what's on the board.
+                val chosenGoals = if (baseLevel.tutorialSteps != null) goalSets.first() else goalSets.random()
+                level = baseLevel.copy(goals = chosenGoals)
                 adjustedMaxMoves = max(1, (level.maxMoves * difficulty.moveMultiplier).roundToInt())
                 initLevel()
             }
@@ -398,7 +410,7 @@ class GameViewModel(
         precomputedSolution = null
         viewModelScope.launch {
             val solution = withContext(Dispatchers.Default) {
-                HintSolver.findSolution(board, level.goals, level.maxMoves)
+                HintSolver.findSolution(board, level.goals, level.maxMoves, difficulty)
             }
             if (solution.isNotEmpty()) {
                 precomputedSolution = solution
@@ -912,7 +924,7 @@ class GameViewModel(
             // Pro: previously completed goal cells can't count toward new goals (one-move sharing only)
             val metGoalIds: Set<String>
             val excludedCells: Set<CellPos>
-            if (difficulty == Difficulty.HARD && baseGoalCells.isNotEmpty()) {
+            if ((difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS) && baseGoalCells.isNotEmpty()) {
                 excludedCells = baseGoalCells.values.flatten().toSet()
                 val alreadyCompleted = goalsToCheck.filter { it.id in baseGoalIds }
                 val uncompleted = goalsToCheck.filter { it.id !in baseGoalIds }
@@ -1149,7 +1161,7 @@ class GameViewModel(
             // Pro: previously completed goal cells can't count toward new goals
             val metGoalIds: Set<String>
             val ptExcludedCells: Set<CellPos>
-            if (difficulty == Difficulty.HARD && current.completedGoalCells.isNotEmpty()) {
+            if ((difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS) && current.completedGoalCells.isNotEmpty()) {
                 ptExcludedCells = current.completedGoalCells.values.flatten().toSet()
                 val alreadyCompleted = current.level.goals.filter { it.id in current.completedGoalIds }
                 val uncompleted = current.level.goals.filter { it.id !in current.completedGoalIds }
@@ -1352,7 +1364,8 @@ class GameViewModel(
         if (current.phase != GamePhase.PLAYING) return
         viewModelScope.launch {
             val hint = HintSolver.findBestSwap(
-                current.board, current.level.goals, current.completedGoalIds
+                current.board, current.level.goals, current.completedGoalIds,
+                current.completedGoalCells.values.flatten().toSet(), difficulty
             ) ?: return@launch
 
             val midRow = current.board.height / 2
@@ -1456,10 +1469,21 @@ class GameViewModel(
         val current = _state.value
         val nextIndex = current.tutorialStepIndex + 1
         val steps = current.level.tutorialSteps ?: return
-        if (nextIndex >= steps.size)
-            _state.value = current.copy(phase = GamePhase.PLAYING, tutorialStepIndex = nextIndex)
-        else
+        if (nextIndex >= steps.size) {
+            // Tutorial finished — persist so it never replays, and strip
+            // tutorialSteps from both baseLevel and state.level so a retry
+            // (resetLevel) regenerates a fresh randomized goal set.
+            val levelId = current.level.id
+            viewModelScope.launch { progressRepo.markTutorialSeen(levelId) }
+            baseLevel = baseLevel.copy(tutorialSteps = null)
+            _state.value = current.copy(
+                level = current.level.copy(tutorialSteps = null),
+                phase = GamePhase.PLAYING,
+                tutorialStepIndex = nextIndex
+            )
+        } else {
             _state.value = current.copy(tutorialStepIndex = nextIndex)
+        }
     }
 
     fun showSolution() {
