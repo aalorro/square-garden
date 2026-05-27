@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -11,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -325,53 +327,78 @@ fun GameScreen(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 )
+                // Diagonal swap power-up: Pro+ only (World 11+)
+                if (state.level.world >= 11) {
+                    ActionCircle(
+                        icon = "\u2922",
+                        label = if (state.diagonalMode) "On" else "\u00D7${state.diagonalTokens}",
+                        onClick = { viewModel.toggleDiagonal() },
+                        enabled = state.diagonalMode || (state.diagonalTokens > 0 && state.phase == GamePhase.PLAYING),
+                        containerColor = if (state.diagonalMode) TileViolet else null,
+                        contentColor = if (state.diagonalMode) SoftWhite else null
+                    )
+                }
             }
         }
 
         // (challenge banner moved above game board)
     }
 
-    // Token captured celebrations (mid-game) — staggered if multiple captured at once
+    // Token captured celebrations (mid-game) — compact icon chip + tap-for-label
     if (state.phase == GamePhase.PLAYING) {
         val captured = listOfNotNull(
-            if (state.shuffleTokenAwarded) Pair("Shuffle Token Earned!", "+1 \uD83D\uDD00") else null,
-            if (state.passthroughTokenAwarded) Pair("Passthrough Token Earned!", "+1 \uD83D\uDEE1\uFE0F") else null,
-            if (state.unfreezeTokenAwarded) Pair("Unfreeze Token Earned!", "+1 \u2744\uFE0F") else null,
-            if (state.redoTokenAwarded) Pair("Redo Token Earned!", "+1 \u21BB") else null
+            if (state.shuffleTokenAwarded) AwardedToken("\uD83D\uDD00", "Shuffle Token Earned!", TileYellow) else null,
+            if (state.passthroughTokenAwarded) AwardedToken("\uD83D\uDEE1\uFE0F", "Passthrough Token Earned!", Sage) else null,
+            if (state.unfreezeTokenAwarded) AwardedToken("\u2744\uFE0F", "Unfreeze Token Earned!", TileBlue) else null,
+            if (state.redoTokenAwarded) AwardedToken("\u21BB", "Redo Token Earned!", TileGreen) else null,
+            if (state.diagonalTokenAwarded) AwardedToken("\u2922", "Diagonal Token Earned!", TileViolet) else null
         )
-        captured.forEachIndexed { index, (title, icon) ->
-            val tokenScale = remember(title) { Animatable(0f) }
-            LaunchedEffect(title) {
+        captured.forEachIndexed { index, tok ->
+            val tokenScale = remember(tok.icon) { Animatable(0f) }
+            var revealed by remember(tok.icon) { mutableStateOf(false) }
+            var dismissed by remember(tok.icon) { mutableStateOf(false) }
+            LaunchedEffect(tok.icon) {
                 delay(index * 600L) // stagger multiple celebrations
                 tokenScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f))
                 delay(2000)
-                tokenScale.animateTo(0f, animationSpec = tween(300))
+                if (!revealed) {
+                    tokenScale.animateTo(0f, animationSpec = tween(300))
+                    dismissed = true
+                }
             }
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)),
-                    modifier = Modifier.scale(tokenScale.value)
+            if (!dismissed) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = title,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = icon,
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = DarkSage
-                        )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Surface(
+                            shape = CircleShape,
+                            color = tok.accent.copy(alpha = 0.25f),
+                            modifier = Modifier
+                                .size(64.dp)
+                                .scale(tokenScale.value)
+                                .clickable { revealed = !revealed }
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(text = tok.icon, fontSize = 30.sp)
+                            }
+                        }
+                        if (revealed) {
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
+                            ) {
+                                Text(
+                                    text = tok.label,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = tok.accent,
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -392,6 +419,7 @@ fun GameScreen(
             passthroughTokenAwarded = state.passthroughTokenAwarded,
             unfreezeTokenAwarded = state.unfreezeTokenAwarded,
             redoTokenAwarded = state.redoTokenAwarded,
+            diagonalTokenAwarded = state.diagonalTokenAwarded,
             perfectGame = state.perfectGame,
             onStarLanded = { viewModel.playStarCollect() },
             onAllStarsLanded = { viewModel.commitWinResult() },
@@ -659,8 +687,10 @@ fun GameScreen(
 
 }
 
+private data class AwardedToken(val icon: String, val label: String, val accent: Color)
+
 @Composable
-private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onChallengeCountUp: () -> Unit = {}, onChallengeMusic: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
+private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, diagonalTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onChallengeCountUp: () -> Unit = {}, onChallengeMusic: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
     // Pulsing scale animation for the star display
     val infiniteTransition = rememberInfiniteTransition(label = "starPulse")
     val starScale by infiniteTransition.animateFloat(
@@ -940,144 +970,74 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                     }
                 }
 
-                // Shuffle token reward
-                if (shuffleTokenAwarded) {
-                    val tokenScale = remember { Animatable(0f) }
-                    LaunchedEffect(Unit) {
-                        delay(800) // wait for world unlock card to appear
-                        tokenScale.animateTo(
-                            1f,
-                            animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = TileYellow.copy(alpha = 0.15f)
-                        ),
-                        modifier = Modifier.scale(tokenScale.value)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Shuffle Token Earned!",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = WarmBrown
-                            )
-                            Text(
-                                text = "+1 \uD83D\uDD00",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = DarkSage
-                            )
-                        }
-                    }
+                // Power-up tokens awarded — compact icon chips with tap-for-label
+                val awardedTokens = remember(
+                    shuffleTokenAwarded, passthroughTokenAwarded, unfreezeTokenAwarded,
+                    redoTokenAwarded, diagonalTokenAwarded
+                ) {
+                    listOfNotNull(
+                        if (shuffleTokenAwarded) AwardedToken("\uD83D\uDD00", "Shuffle Token Earned!", TileYellow) else null,
+                        if (passthroughTokenAwarded) AwardedToken("\uD83D\uDEE1\uFE0F", "Passthrough Token Earned!", Sage) else null,
+                        if (unfreezeTokenAwarded) AwardedToken("\u2744\uFE0F", "Unfreeze Token Earned!", TileBlue) else null,
+                        if (redoTokenAwarded) AwardedToken("\u21BB", "Redo Token Earned!", TileGreen) else null,
+                        if (diagonalTokenAwarded) AwardedToken("\u2922", "Diagonal Token Earned!", TileViolet) else null
+                    )
                 }
-
-                // Passthrough token reward
-                if (passthroughTokenAwarded) {
-                    val ptScale = remember { Animatable(0f) }
-                    LaunchedEffect(Unit) {
-                        delay(if (shuffleTokenAwarded) 1600L else 800L)
-                        ptScale.animateTo(
-                            1f,
-                            animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f)
-                        )
-                    }
+                if (awardedTokens.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(4.dp))
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Sage.copy(alpha = 0.15f)
-                        ),
-                        modifier = Modifier.scale(ptScale.value)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                    var revealedIndex by rememberSaveable { mutableStateOf(-1) }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "Passthrough Token Earned!",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Sage
-                            )
-                            Text(
-                                text = "+1 \uD83D\uDEE1\uFE0F",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = DarkSage
-                            )
+                            awardedTokens.forEachIndexed { idx, tok ->
+                                val chipScale = remember(tok.icon) { Animatable(0f) }
+                                LaunchedEffect(tok.icon) {
+                                    delay(800L + idx * 250L)
+                                    chipScale.animateTo(
+                                        1f,
+                                        animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f)
+                                    )
+                                }
+                                Surface(
+                                    shape = CircleShape,
+                                    color = tok.accent.copy(alpha = 0.18f),
+                                    modifier = Modifier
+                                        .size(52.dp)
+                                        .scale(chipScale.value)
+                                        .clickable {
+                                            revealedIndex = if (revealedIndex == idx) -1 else idx
+                                        }
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Text(text = tok.icon, fontSize = 24.sp)
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-
-                // Unfreeze token reward
-                if (unfreezeTokenAwarded) {
-                    val ufScale = remember { Animatable(0f) }
-                    LaunchedEffect(Unit) {
-                        delay(when {
-                            shuffleTokenAwarded && passthroughTokenAwarded -> 2400L
-                            shuffleTokenAwarded || passthroughTokenAwarded -> 1600L
-                            else -> 800L
-                        })
-                        ufScale.animateTo(
-                            1f,
-                            animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = TileBlue.copy(alpha = 0.15f)
-                        ),
-                        modifier = Modifier.scale(ufScale.value)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        // Label area for tapped chip (reserves a stable height)
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .heightIn(min = 22.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "Unfreeze Token Earned!",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TileBlue
-                            )
-                            Text(
-                                text = "+1 \u2744\uFE0F",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = DarkSage
-                            )
-                        }
-                    }
-                }
-
-                // Redo token reward (from mid-game capture or perfect game)
-                if (redoTokenAwarded) {
-                    val rdScale = remember { Animatable(0f) }
-                    LaunchedEffect(Unit) {
-                        val prior = listOf(shuffleTokenAwarded, passthroughTokenAwarded, unfreezeTokenAwarded).count { it }
-                        delay(800L + prior * 800L)
-                        rdScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f))
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = TileGreen.copy(alpha = 0.15f)),
-                        modifier = Modifier.scale(rdScale.value)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text("Redo Token Earned!", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TileGreen)
-                            Text("+1 \u21BB", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = DarkSage)
+                            if (revealedIndex in awardedTokens.indices) {
+                                val tok = awardedTokens[revealedIndex]
+                                Text(
+                                    text = tok.label,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = tok.accent
+                                )
+                            } else {
+                                Text(
+                                    text = "Tap an icon to see what you earned",
+                                    fontSize = 12.sp,
+                                    color = DarkSage.copy(alpha = 0.6f)
+                                )
+                            }
                         }
                     }
                 }

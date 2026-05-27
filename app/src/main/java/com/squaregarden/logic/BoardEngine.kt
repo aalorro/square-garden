@@ -9,8 +9,16 @@ object BoardEngine {
         return (abs(a.row - b.row) + abs(a.col - b.col)) == 1
     }
 
-    fun canSwap(board: Board, a: CellPos, b: CellPos): Boolean {
-        if (!isAdjacentSwap(a, b)) return false
+    /** Diagonal-or-orthogonal adjacency: Chebyshev distance == 1 (8 neighbors). */
+    fun isDiagonalAdjacent(a: CellPos, b: CellPos): Boolean {
+        val dr = abs(a.row - b.row)
+        val dc = abs(a.col - b.col)
+        return (dr <= 1 && dc <= 1) && (dr != 0 || dc != 0)
+    }
+
+    fun canSwap(board: Board, a: CellPos, b: CellPos, allowDiagonal: Boolean = false): Boolean {
+        val adjacent = if (allowDiagonal) isDiagonalAdjacent(a, b) else isAdjacentSwap(a, b)
+        if (!adjacent) return false
         if (!board.isValidCell(a.row, a.col) || !board.isValidCell(b.row, b.col)) return false
         if (board.tileAt(a.row, a.col).frozen || board.tileAt(b.row, b.col).frozen) return false
         return true

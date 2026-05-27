@@ -161,7 +161,8 @@ fun GameBoardCanvas(
                     if (tile.redo) "redo" else null,
                     if (tile.shuffleToken) "shuffle" else null,
                     if (tile.passthroughToken) "passthrough" else null,
-                    if (tile.unfreezeToken) "unfreeze" else null
+                    if (tile.unfreezeToken) "unfreeze" else null,
+                    if (tile.diagonalToken) "diagonal" else null
                 )
                 if (tokenFlags.isNotEmpty()) {
                     val tileCx = x + cs / 2f
@@ -218,6 +219,18 @@ fun GameBoardCanvas(
                                 drawLine(Color.White, Offset(cx, cy - s), Offset(cx, cy + s), strokeWidth = sw)
                                 drawLine(Color.White, Offset(cx - s * 0.87f, cy - s * 0.5f), Offset(cx + s * 0.87f, cy + s * 0.5f), strokeWidth = sw)
                                 drawLine(Color.White, Offset(cx - s * 0.87f, cy + s * 0.5f), Offset(cx + s * 0.87f, cy - s * 0.5f), strokeWidth = sw)
+                            }
+                            "diagonal" -> {
+                                // Diagonal double-headed arrow (top-right ↔ bottom-left)
+                                val s = radius * 0.75f
+                                drawLine(Color.White, Offset(cx - s, cy + s), Offset(cx + s, cy - s), strokeWidth = sw)
+                                val a = cs * 0.06f * scale
+                                // Arrowhead at top-right
+                                drawLine(Color.White, Offset(cx + s, cy - s), Offset(cx + s - a, cy - s), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx + s, cy - s), Offset(cx + s, cy - s + a), strokeWidth = sw)
+                                // Arrowhead at bottom-left
+                                drawLine(Color.White, Offset(cx - s, cy + s), Offset(cx - s + a, cy + s), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx - s, cy + s), Offset(cx - s, cy + s - a), strokeWidth = sw)
                             }
                         }
                     }
