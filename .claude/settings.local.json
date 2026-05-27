@@ -25,7 +25,9 @@
       "Bash(ls:*)",
       "Bash(mv web:*)",
       "Bash(mv:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(rm:*)",
+      "Bash(awk:*)"
     ]
   }
 }
