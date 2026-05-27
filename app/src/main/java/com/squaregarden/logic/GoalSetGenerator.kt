@@ -27,39 +27,42 @@ object GoalSetGenerator {
         ShapeType.L_SHAPE, ShapeType.T_SHAPE, ShapeType.CROSS, ShapeType.Z_SHAPE, ShapeType.U_SHAPE
     )
 
+    // Line lengths progress with world number — short lines (length 3) are
+    // intro-only and should never appear past world 2; world 6+ floors at 5;
+    // late worlds push lines toward the board edge (7-8).
     private val worldConstraints = mapOf(
-        1 to WorldConstraints(FOUR_COLORS, setOf(GoalType.LINE), 3..5, emptyList()),
+        1 to WorldConstraints(FOUR_COLORS, setOf(GoalType.LINE), 3..4, emptyList()),
         2 to WorldConstraints(FOUR_COLORS, setOf(GoalType.LINE, GoalType.SQUARE), 4..5, emptyList()),
         3 to WorldConstraints(
-            FOUR_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 3..5,
+            FOUR_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 4..5,
             listOf(ShapeType.L_SHAPE, ShapeType.T_SHAPE)
         ),
         4 to WorldConstraints(
-            FOUR_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 3..5,
+            FOUR_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 4..5,
             listOf(ShapeType.L_SHAPE, ShapeType.T_SHAPE, ShapeType.CROSS, ShapeType.Z_SHAPE)
         ),
         5 to WorldConstraints(
-            FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 3..5,
+            FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 4..6,
             PRE_PRO_PLUS_SHAPES
         ),
         6 to WorldConstraints(
-            FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 3..5,
+            FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 5..6,
             PRE_PRO_PLUS_SHAPES
         ),
         7 to WorldConstraints(
-            FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 5..6,
-            PRE_PRO_PLUS_SHAPES
-        ),
-        8 to WorldConstraints(
-            FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 5..6,
-            PRE_PRO_PLUS_SHAPES
-        ),
-        9 to WorldConstraints(
             FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 5..7,
             PRE_PRO_PLUS_SHAPES
         ),
-        10 to WorldConstraints(
+        8 to WorldConstraints(
             FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 6..7,
+            PRE_PRO_PLUS_SHAPES
+        ),
+        9 to WorldConstraints(
+            FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 6..7,
+            PRE_PRO_PLUS_SHAPES
+        ),
+        10 to WorldConstraints(
+            FIVE_COLORS, setOf(GoalType.LINE, GoalType.SQUARE, GoalType.SHAPE), 6..8,
             PRE_PRO_PLUS_SHAPES
         ),
         // Pro+ worlds (11-14): 6-color palette + X/Y shapes available.
@@ -246,7 +249,7 @@ object GoalSetGenerator {
                 val length = rng.nextInt(constraints.lineLengths.first, constraints.lineLengths.last + 1)
                 Goal.Line(color, length)
             }
-            else -> Goal.Line(color, 3)
+            else -> Goal.Line(color, constraints.lineLengths.first)
         }
     }
 
