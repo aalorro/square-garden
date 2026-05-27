@@ -211,20 +211,31 @@ fun GameScreen(
             } else emptySet()
         }
 
-        GameBoardCanvas(
-            board = state.board,
-            selectedCell = state.selectedCell,
-            hintCells = state.hintCells,
-            swapAnim = state.swapAnim,
-            completedGoalCells = state.completedGoalCells.values.flatten().toSet(),
-            passthroughActive = state.passthroughActive,
-            foggedCells = foggedCells,
-            onDragSwap = { from, to -> viewModel.onDragSwap(from, to) },
-            onCellTapped = { row, col -> viewModel.onCellTapped(row, col) },
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = boardHPad, vertical = 4.dp)
-        )
+        // While the level is still loading the ViewModel holds a sentinel
+        // placeholder board (level.id == 0, a 5x5 red grid). Don't render it —
+        // hold the layout slot with a Spacer until the real level arrives.
+        if (state.level.id != 0) {
+            GameBoardCanvas(
+                board = state.board,
+                selectedCell = state.selectedCell,
+                hintCells = state.hintCells,
+                swapAnim = state.swapAnim,
+                completedGoalCells = state.completedGoalCells.values.flatten().toSet(),
+                passthroughActive = state.passthroughActive,
+                foggedCells = foggedCells,
+                onDragSwap = { from, to -> viewModel.onDragSwap(from, to) },
+                onCellTapped = { row, col -> viewModel.onCellTapped(row, col) },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = boardHPad, vertical = 4.dp)
+            )
+        } else {
+            Spacer(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = boardHPad, vertical = 4.dp)
+            )
+        }
 
         // Blitz timer + stats bar
         val blitzState = state.challengeState?.takeIf { it.type == ChallengeType.BLITZ }
