@@ -25,6 +25,7 @@ class ProfileRepository(private val context: Context) {
         private val LEADERBOARD_OPT_IN = booleanPreferencesKey("leaderboard_opt_in")
         private val CUSTOM_AVATAR_PATH = stringPreferencesKey("custom_avatar_path")
         private val OVERRIDE_STARTING_LEVEL = intPreferencesKey("override_starting_level")
+        private val PERFECT_GAME_SPLASH_SHOWN = booleanPreferencesKey("perfect_game_splash_shown")
     }
 
     val profileFlow: Flow<UserProfile> = context.profileDataStore.data.map { prefs ->
@@ -38,7 +39,8 @@ class ProfileRepository(private val context: Context) {
             difficulty = prefs[DIFFICULTY] ?: "medium",
             playerLevel = prefs[PLAYER_LEVEL] ?: 0,
             leaderboardOptIn = prefs[LEADERBOARD_OPT_IN] ?: false,
-            overrideStartingLevel = prefs[OVERRIDE_STARTING_LEVEL] ?: 0
+            overrideStartingLevel = prefs[OVERRIDE_STARTING_LEVEL] ?: 0,
+            perfectGameSplashShown = prefs[PERFECT_GAME_SPLASH_SHOWN] ?: false
         )
     }
 
@@ -70,6 +72,12 @@ class ProfileRepository(private val context: Context) {
     suspend fun resetPlayerLevel() {
         context.profileDataStore.edit { prefs ->
             prefs[PLAYER_LEVEL] = 0
+        }
+    }
+
+    suspend fun markPerfectGameSplashShown() {
+        context.profileDataStore.edit { prefs ->
+            prefs[PERFECT_GAME_SPLASH_SHOWN] = true
         }
     }
 

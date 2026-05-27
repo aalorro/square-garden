@@ -3,6 +3,8 @@ package com.squaregarden.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -17,9 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
+import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.logic.LevelLoader
@@ -29,6 +35,7 @@ import com.squaregarden.model.Level
 import com.squaregarden.model.PlayerProgress
 import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.ui.theme.*
+import kotlinx.coroutines.launch
 
 private val worldStarsToUnlock = mapOf(
     1 to 0, 2 to 8, 3 to 20, 4 to 35, 5 to 55,
@@ -106,6 +113,23 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
 
     val theme = worldThemes[worldId] ?: worldThemes[1]!!
 
+    // Perfect Game splash — shows once when player first enters World 5
+    var splashDismissed by remember { mutableStateOf(false) }
+    val currentProfile = profile
+    val showPerfectGameSplash =
+        worldId == 5 && currentProfile != null && !currentProfile.perfectGameSplashShown && !splashDismissed
+    val splashScope = rememberCoroutineScope()
+    if (showPerfectGameSplash) {
+        LaunchedEffect(Unit) {
+            MusicManager.startWinMusic(context, perfectGame = true)
+        }
+        PerfectGameSplashDialog(onDismiss = {
+            splashDismissed = true
+            MusicManager.stopWinMusic()
+            splashScope.launch { profileRepo.markPerfectGameSplashShown() }
+        })
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -145,10 +169,12 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                     )
                     Text(
                         text = worldNames[worldId] ?: "World $worldId",
-                        fontSize = 24.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White,
-                        maxLines = 1
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -338,6 +364,103 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PerfectGameSplashDialog(onDismiss: () -> Unit) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
+        Card(
+            shape = RoundedCornerShape(28.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFFFFD740),
+                                Color(0xFFFF8F00),
+                                Color(0xFFE65100)
+                            )
+                        )
+                    )
+                    .padding(vertical = 24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "\uD83C\uDFC6",
+                    fontSize = 64.sp
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "PERFECT GAME!",
+                    fontFamily = DisplayFontFamily,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Welcome to World 5",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "From here on, aim for a PERFECT GAME — complete every level in the minimum number of moves (one move per goal).",
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 22.sp
+                )
+                Spacer(modifier = Modifier.height(14.dp))
+                Text(
+                    text = "Rewards: \u2B50 2x stars  \u2022  \uD83C\uDFAB Bonus power-ups  \uD83C\uDF89",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFFF8F00),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(26.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFF8F00),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "GOT IT",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 2.sp
+                    )
+                }
             }
         }
     }

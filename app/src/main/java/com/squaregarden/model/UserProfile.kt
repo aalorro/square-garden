@@ -10,7 +10,8 @@ data class UserProfile(
     val difficulty: String = "medium",
     val playerLevel: Int = 0,
     val leaderboardOptIn: Boolean = false,
-    val overrideStartingLevel: Int = 0
+    val overrideStartingLevel: Int = 0,
+    val perfectGameSplashShown: Boolean = false
 ) {
     val isSetUp: Boolean get() = username.isNotBlank()
     val hasCustomAvatar: Boolean get() = avatarId == -1 && customAvatarPath.isNotBlank()
