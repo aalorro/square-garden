@@ -106,7 +106,7 @@ fun InstructionsScreen(navController: NavHostController) {
                 "\u2022 Casual — 1.25\u00D7 moves, 1\u00D7 stars, start at World 1\n" +
                 "\u2022 Standard — 1\u00D7 moves, 2\u00D7 stars, start at World 2\n" +
                 "\u2022 Pro — 0.7\u00D7 moves, 3\u00D7 stars, start at World 3\n" +
-                "\u2022 Pro+ — 0.55\u00D7 moves, 4\u00D7 stars, start at World 11 (level 91)\n\n" +
+                "\u2022 Pro+ — 0.65\u00D7 moves, 4\u00D7 stars, start at World 11 (level 91)\n\n" +
                 "Pro+ unlocks four exclusive worlds (11\u201314: Nebula Verge, Quantum Lattice, " +
                 "Singularity Spire, and Infinity Prism \u2014 levels 91\u2013126) and the Diagonal Movement " +
                 "power-up. Worlds 11\u201314 are not available on Casual, Standard, or Pro.\n\n" +

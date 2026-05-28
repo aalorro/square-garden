@@ -41,7 +41,7 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 | **Casual** | 1.25x | 1x | World 1 | Yes (breaks goal) | Multi-move |
 | **Standard** | 1.0x | 2x | World 2 | No (blocked) | Multi-move |
 | **Pro** | 0.7x | 3x | World 3 | No (locked) | One-move only |
-| **Pro+** | 0.55x | 4x | World 11 | No (locked) | One-move only |
+| **Pro+** | 0.65x | 4x | World 11 | No (locked) | One-move only |
 
 - **Pass Through Goals**: Casual can swap through completed goal cells (but the goal breaks). Standard, Pro, and Pro+ block swaps touching completed goals.
 - **Tile Sharing**: Casual and Standard allow completed goal tiles to count toward new goals over multiple moves. Pro and Pro+ only allow tile sharing when two goals complete simultaneously from one swap.

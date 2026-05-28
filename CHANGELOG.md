@@ -5,7 +5,7 @@ All notable changes to Square Garden are documented in this file.
 ## [1.5.4] - 2026-05-28 (Build 12)
 
 ### New Features
-- **Pro+ skill tier** — A fourth skill level above Pro: 0.55× moves, 4× stars, starts at World 11 (level 91). Upgrade from Settings as with Pro.
+- **Pro+ skill tier** — A fourth skill level above Pro: 0.65× moves, 4× stars, starts at World 11 (level 91). Upgrade from Settings as with Pro.
 - **4 new Pro+-exclusive worlds (Worlds 11–14, levels 91–126)** — Nebula Verge, Quantum Lattice, Singularity Spire, and Infinity Prism. Locked to Pro+ skill.
 - **5th power-up: Diagonal Movement** (Pro+ / World 11+) — One-shot swap with any of the 8 neighbours (orthogonal or diagonal), skipping frozen tiles. Spawns on World 11+ boards (~25%) and is awarded with the other tokens on a Perfect Game on World 11+.
 - **Two new shape goals** — X-shape and Y-shape, plus a new Violet tile colour for Pro+ play.

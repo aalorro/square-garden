@@ -513,7 +513,19 @@ class GameViewModel(
             } else {
                 _state.value = _state.value.copy(boardGenerating = true)
                 val result = withContext(Dispatchers.Default) {
-                    generateBoardWithSolution(adjustedMaxMoves)
+                    var lastBoard: Board? = null
+                    var found: List<Pair<CellPos, CellPos>>? = null
+                    var i = 0
+                    while (i < 8 && found == null) {
+                        val attempt = generateBoardWithSolution(adjustedMaxMoves)
+                        lastBoard = attempt.first
+                        found = attempt.second
+                            ?: HintSolver.findSolution(
+                                attempt.first, level.goals, adjustedMaxMoves, difficulty
+                            )
+                        i++
+                    }
+                    Pair(lastBoard!!, found)
                 }
                 board = result.first
                 solution = result.second
