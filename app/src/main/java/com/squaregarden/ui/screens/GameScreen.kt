@@ -31,6 +31,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.ProgressRepository
+import com.squaregarden.data.ProfileRepository
+import kotlinx.coroutines.flow.first
 import com.squaregarden.logic.BoardEngine
 import com.squaregarden.logic.PatternMatcher
 import com.squaregarden.model.*
@@ -57,6 +59,31 @@ fun GameScreen(
     var isFavorite by remember { mutableStateOf(false) }
     val lives by progressRepo.livesFlow.collectAsState(initial = 3)
     val cooldownUntil by progressRepo.cooldownUntilFlow.collectAsState(initial = 0L)
+
+    // Default action for every "Back to Game" button: jump to the player's
+    // current progression point — one level higher than their highest completed
+    // level (floored at their skill's starting level, capped at the final level).
+    // This way players resume their progress regardless of which level triggered
+    // the challenge.
+    val profileRepo = remember { ProfileRepository(context) }
+    val backToGame: () -> Unit = {
+        scope.launch {
+            val progress = progressRepo.loadProgress()
+            val profile = profileRepo.profileFlow.first()
+            val difficulty = profile?.let { Difficulty.fromId(it.difficulty) } ?: Difficulty.MEDIUM
+            val startingLevel = maxOf(
+                difficulty.startingLevel,
+                profile?.overrideStartingLevel ?: 0
+            )
+            val nextLevel = progress.highestUnlockedLevel(startingLevel).coerceIn(1, 126)
+            // Pop current Game entry, then pop the underlying source Game WON entry if present.
+            navController.popBackStack()
+            if (navController.currentBackStackEntry?.destination?.route == Screen.Game.route) {
+                navController.popBackStack()
+            }
+            navController.navigate(Screen.Game.create(nextLevel))
+        }
+    }
 
     // Block back button during challenge rounds (prevent restart exploit)
     BackHandler(enabled = state.isChallenge && state.phase != GamePhase.LOST && state.phase != GamePhase.WON) { }
@@ -224,6 +251,7 @@ fun GameScreen(
                 swapAnim = state.swapAnim,
                 completedGoalCells = state.completedGoalCells.values.flatten().toSet(),
                 passthroughActive = state.passthroughActive,
+                diagonalMode = state.diagonalMode,
                 foggedCells = foggedCells,
                 onDragSwap = { from, to -> viewModel.onDragSwap(from, to) },
                 onCellTapped = { row, col -> viewModel.onCellTapped(row, col) },
@@ -330,7 +358,7 @@ fun GameScreen(
                 // Diagonal swap power-up: Pro+ only (World 11+)
                 if (state.level.world >= 11) {
                     ActionCircle(
-                        icon = "\u2922",
+                        icon = "\u2197\uFE0F",
                         label = if (state.diagonalMode) "On" else "\u00D7${state.diagonalTokens}",
                         onClick = { viewModel.toggleDiagonal() },
                         enabled = state.diagonalMode || (state.diagonalTokens > 0 && state.phase == GamePhase.PLAYING),
@@ -351,7 +379,7 @@ fun GameScreen(
             if (state.passthroughTokenAwarded) AwardedToken("\uD83D\uDEE1\uFE0F", "Passthrough Token Earned!", Sage) else null,
             if (state.unfreezeTokenAwarded) AwardedToken("\u2744\uFE0F", "Unfreeze Token Earned!", TileBlue) else null,
             if (state.redoTokenAwarded) AwardedToken("\u21BB", "Redo Token Earned!", TileGreen) else null,
-            if (state.diagonalTokenAwarded) AwardedToken("\u2922", "Diagonal Token Earned!", TileViolet) else null
+            if (state.diagonalTokenAwarded) AwardedToken("\u2197\uFE0F", "Diagonal Token Earned!", TileViolet) else null
         )
         captured.forEachIndexed { index, tok ->
             val tokenScale = remember(tok.icon) { Animatable(0f) }
@@ -445,11 +473,7 @@ fun GameScreen(
             onMenu = {
                 MusicManager.stopWinMusic()
                 viewModel.commitWinResult()
-                // Pop challenge, then skip underlying game WON screen if present
-                navController.popBackStack()
-                if (state.isChallenge && navController.currentBackStackEntry?.destination?.route == Screen.Game.route) {
-                    navController.popBackStack()
-                }
+                backToGame()
             }
         )
 
@@ -569,23 +593,12 @@ fun GameScreen(
                 nextMultiplier = cs.overgrownTryMultiplier + 1,
                 onRetry = { viewModel.overgrownAcceptRetry() },
                 onTakeScore = { viewModel.overgrownDeclineRetry() },
-                onBackToGame = {
-                    navController.popBackStack()
-                    if (navController.currentBackStackEntry?.destination?.route == Screen.Game.route) {
-                        navController.popBackStack()
-                    }
-                }
+                onBackToGame = backToGame
             )
         } else if (state.isChallenge) {
             LoseDialog(
                 onRetry = null,
-                onMenu = {
-                    // Pop challenge, then skip underlying game WON screen if present
-                    navController.popBackStack()
-                    if (navController.currentBackStackEntry?.destination?.route == Screen.Game.route) {
-                        navController.popBackStack()
-                    }
-                },
+                onMenu = backToGame,
                 onShowSolution = null
             )
         } else {
@@ -980,7 +993,7 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                         if (passthroughTokenAwarded) AwardedToken("\uD83D\uDEE1\uFE0F", "Passthrough Token Earned!", Sage) else null,
                         if (unfreezeTokenAwarded) AwardedToken("\u2744\uFE0F", "Unfreeze Token Earned!", TileBlue) else null,
                         if (redoTokenAwarded) AwardedToken("\u21BB", "Redo Token Earned!", TileGreen) else null,
-                        if (diagonalTokenAwarded) AwardedToken("\u2922", "Diagonal Token Earned!", TileViolet) else null
+                        if (diagonalTokenAwarded) AwardedToken("\u2197\uFE0F", "Diagonal Token Earned!", TileViolet) else null
                     )
                 }
                 if (awardedTokens.isNotEmpty()) {

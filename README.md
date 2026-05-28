@@ -25,6 +25,10 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 | 8 | Starfall Summit | 64-72 | — | — |
 | 9 | Abyssal Depths | 73-81 | — | — |
 | 10 | Prism Citadel | 82-90 | — | — |
+| 11 | Nebula Verge | 91-99 | — | **Pro+ only**, Diagonal Movement token debuts |
+| 12 | Quantum Lattice | 100-108 | — | Pro+ only |
+| 13 | Singularity Spire | 109-117 | — | Pro+ only |
+| 14 | Infinity Prism | 118-126 | — | Pro+ only |
 
 ### Obstacles
 - **Frozen Tiles** - Cannot be swapped but their color counts toward patterns. Shown with an ice overlay.
@@ -37,34 +41,42 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 | **Casual** | 1.25x | 1x | World 1 | Yes (breaks goal) | Multi-move |
 | **Standard** | 1.0x | 2x | World 2 | No (blocked) | Multi-move |
 | **Pro** | 0.7x | 3x | World 3 | No (locked) | One-move only |
+| **Pro+** | 0.55x | 4x | World 11 | No (locked) | One-move only |
 
-- **Pass Through Goals**: Casual can swap through completed goal cells (but the goal breaks). Standard and Pro block swaps touching completed goals.
-- **Tile Sharing**: Casual and Standard allow completed goal tiles to count toward new goals over multiple moves. Pro only allows tile sharing when two goals complete simultaneously from one swap.
+- **Pass Through Goals**: Casual can swap through completed goal cells (but the goal breaks). Standard, Pro, and Pro+ block swaps touching completed goals.
+- **Tile Sharing**: Casual and Standard allow completed goal tiles to count toward new goals over multiple moves. Pro and Pro+ only allow tile sharing when two goals complete simultaneously from one swap.
 - **Passthrough Power-Up**: Overrides blocking on all difficulties — jumps over completed goal cells and frozen tiles.
+- **Pro+ exclusive worlds**: Worlds 11–14 (Nebula Verge → Infinity Prism, levels 91–126) are reserved for Pro+ players. The Diagonal Movement power-up is gated to these worlds.
+- **Pro+ exclusive power-up**: Diagonal Movement tokens spawn only on World 11+ boards and are awarded as part of the Perfect Game bonus only on World 11+.
 
-Players start at a world matching their skill level — no grinding through easy content. Players can upgrade their skill anytime in Settings (but not downgrade) — progress and unlocked worlds are preserved. Reset progress in Settings to change to a lower skill.
+Players start at a world matching their skill level — no grinding through easy content. Players can upgrade their skill anytime in Settings (but not downgrade) — progress and unlocked worlds are preserved. Reset progress in Settings to change to a lower skill. Upgrading to Pro+ unlocks Worlds 11–14 once enough stars have been earned.
 
 ### World Unlock Stars
 
-| World | Name | Casual (×1) | Standard (×2) | Pro (×3) |
-|-------|------|-------------|---------------|----------|
-| 1 | Seedling Garden | 0 | 0 | 0 |
-| 2 | Blooming Meadow | 8 | 16 | 24 |
-| 3 | Ancient Grove | 20 | 40 | 60 |
-| 4 | Crystal Cavern | 35 | 70 | 105 |
-| 5 | Shattered Isles | 55 | 110 | 165 |
-| 6 | Void Fortress | 80 | 160 | 240 |
-| 7 | Molten Core | 110 | 220 | 330 |
-| 8 | Starfall Summit | 145 | 290 | 435 |
-| 9 | Abyssal Depths | 185 | 370 | 555 |
-| 10 | Prism Citadel | 230 | 460 | 690 |
+| World | Name | Casual (×1) | Standard (×2) | Pro (×3) | Pro+ (×4) |
+|-------|------|-------------|---------------|----------|-----------|
+| 1 | Seedling Garden | 0 | 0 | 0 | 0 |
+| 2 | Blooming Meadow | 8 | 16 | 24 | 32 |
+| 3 | Ancient Grove | 20 | 40 | 60 | 80 |
+| 4 | Crystal Cavern | 35 | 70 | 105 | 140 |
+| 5 | Shattered Isles | 55 | 110 | 165 | 220 |
+| 6 | Void Fortress | 80 | 160 | 240 | 320 |
+| 7 | Molten Core | 110 | 220 | 330 | 440 |
+| 8 | Starfall Summit | 145 | 290 | 435 | 580 |
+| 9 | Abyssal Depths | 185 | 370 | 555 | 740 |
+| 10 | Prism Citadel | 230 | 460 | 690 | 920 |
+| 11 | Nebula Verge | — | — | — | 1120 |
+| 12 | Quantum Lattice | — | — | — | 1340 |
+| 13 | Singularity Spire | — | — | — | 1580 |
+| 14 | Infinity Prism | — | — | — | 1840 |
 
 ### Power-Ups
 - **Shuffle** — Randomize the board when stuck (completed goals stay put)
 - **Passthrough** — Next swap jumps over completed goal cells and frozen tiles
 - **Unfreeze** — Tap a frozen tile to thaw it
 - **Redo** — Special tiles appear on World 4+ boards (~25% chance). Capture one in a goal to earn a redo token for a free level restart
-- **Perfect Game** — Complete all goals in minimal moves (World 5+) for 2x stars and +1 of every token
+- **Diagonal Movement** (Pro+ / World 11+) — One-shot swap with any of the 8 neighbors (orthogonal or diagonal), skipping frozen tiles. Tokens spawn on World 11+ boards (~25% chance) and can be captured the same way as other tokens
+- **Perfect Game** — Complete all goals in minimal moves (World 5+) for 2x stars and +1 of every token (Diagonal token also awarded on World 11+)
 
 ### Challenge Modes (World 5+)
 

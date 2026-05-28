@@ -955,9 +955,12 @@ class GameViewModel(
             val newGoalCells = baseGoalCells.toMutableMap()
             for (goal in current.level.goals) {
                 if (goal.id in newCompleted) {
-                    // For Pro, find positions excluding previously completed goal cells
-                    val findExcluded = if (goal.id !in baseGoalIds) excludedCells else emptySet()
-                    val cells = PatternMatcher.findGoalPositions(newBoard, goal, findExcluded)
+                    // Keep already-completed goals locked in their original cells —
+                    // re-finding them can shift the highlight away from where the
+                    // player set it, which is jarring. Only locate cells for newly
+                    // completed goals.
+                    if (goal.id in baseGoalIds) continue
+                    val cells = PatternMatcher.findGoalPositions(newBoard, goal, excludedCells)
                     if (cells != null) newGoalCells[goal.id] = cells
                 } else {
                     newGoalCells.remove(goal.id)
@@ -1196,8 +1199,10 @@ class GameViewModel(
             val newGoalCells = current.completedGoalCells.toMutableMap()
             for (goal in current.level.goals) {
                 if (goal.id in newCompleted) {
-                    val findExcluded = if (goal.id !in current.completedGoalIds) ptExcludedCells else emptySet()
-                    val cells = PatternMatcher.findGoalPositions(newBoard, goal, findExcluded)
+                    // Already-completed goals stay locked to their original cells so
+                    // a same-color match elsewhere doesn't visually shift the highlight.
+                    if (goal.id in current.completedGoalIds) continue
+                    val cells = PatternMatcher.findGoalPositions(newBoard, goal, ptExcludedCells)
                     if (cells != null) newGoalCells[goal.id] = cells
                 } else {
                     newGoalCells.remove(goal.id)

@@ -30,6 +30,7 @@ fun GameBoardCanvas(
     swapAnim: SwapAnimation?,
     completedGoalCells: Set<CellPos>,
     passthroughActive: Boolean = false,
+    diagonalMode: Boolean = false,
     foggedCells: Set<CellPos> = emptySet(),
     handCell: CellPos? = null,
     onDragSwap: (from: CellPos, to: CellPos) -> Unit,
@@ -43,6 +44,7 @@ fun GameBoardCanvas(
     val currentBoard by rememberUpdatedState(board)
     val currentOnDragSwap by rememberUpdatedState(onDragSwap)
     val currentOnCellTapped by rememberUpdatedState(onCellTapped)
+    val currentDiagonalMode by rememberUpdatedState(diagonalMode)
 
     // Track drag state: which cell the drag started in, cumulative drag offset
     var dragStartCell by remember { mutableStateOf<CellPos?>(null) }
@@ -79,7 +81,17 @@ fun GameBoardCanvas(
                         totalDrag += delta
                         change.consume()
                         val threshold = cellSizePx * 0.35f
-                        val target = when {
+                        val ax = kotlin.math.abs(totalDrag.x)
+                        val ay = kotlin.math.abs(totalDrag.y)
+                        val target = if (currentDiagonalMode && ax > threshold && ay > threshold) {
+                            // Diagonal drag — pick the 8-neighbour target based on signs
+                            val dCol = if (totalDrag.x > 0) 1 else -1
+                            val dRow = if (totalDrag.y > 0) 1 else -1
+                            val tCol = startCol + dCol
+                            val tRow = startRow + dRow
+                            if (tCol in 0 until b.width && tRow in 0 until b.height)
+                                CellPos(tRow, tCol) else null
+                        } else when {
                             totalDrag.x > threshold && startCol < b.width - 1 ->
                                 CellPos(startRow, startCol + 1)
                             totalDrag.x < -threshold && startCol > 0 ->
@@ -347,6 +359,14 @@ fun GameBoardCanvas(
                         cornerRadius = bcr,
                         style = Stroke(width = 2.dp.toPx())
                     )
+                    // Black corner-to-corner X-mark for extra visibility on large boards
+                    val xStroke = 2.5f.dp.toPx()
+                    val x1 = c * cs
+                    val y1 = r * cs
+                    val x2 = (c + 1) * cs
+                    val y2 = (r + 1) * cs
+                    drawLine(Color.Black, Offset(x1, y1), Offset(x2, y2), strokeWidth = xStroke)
+                    drawLine(Color.Black, Offset(x2, y1), Offset(x1, y2), strokeWidth = xStroke)
                 }
             }
         }

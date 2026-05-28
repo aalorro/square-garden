@@ -105,9 +105,14 @@ fun InstructionsScreen(navController: NavHostController) {
             body = "Choose your skill level when creating your profile:\n" +
                 "\u2022 Casual — 1.25\u00D7 moves, 1\u00D7 stars, start at World 1\n" +
                 "\u2022 Standard — 1\u00D7 moves, 2\u00D7 stars, start at World 2\n" +
-                "\u2022 Pro — 0.7\u00D7 moves, 3\u00D7 stars, start at World 3\n\n" +
+                "\u2022 Pro — 0.7\u00D7 moves, 3\u00D7 stars, start at World 3\n" +
+                "\u2022 Pro+ — 0.55\u00D7 moves, 4\u00D7 stars, start at World 11 (level 91)\n\n" +
+                "Pro+ unlocks four exclusive worlds (11\u201314: Nebula Verge, Quantum Lattice, " +
+                "Singularity Spire, and Infinity Prism \u2014 levels 91\u2013126) and the Diagonal Movement " +
+                "power-up. Worlds 11\u201314 are not available on Casual, Standard, or Pro.\n\n" +
                 "You can upgrade your skill anytime in Settings (but not downgrade). " +
                 "Your progress and unlocked worlds are preserved. " +
+                "Upgrading to Pro+ unlocks Worlds 11\u201314 once enough stars have been earned. " +
                 "To change to a lower skill, reset progress in Settings."
         )
 
@@ -123,7 +128,11 @@ fun InstructionsScreen(navController: NavHostController) {
                 "Earn 1 token for every 5 consecutive wins on World 3+.\n\n" +
                 "\u21BB Redo — restart the level with a fresh board and full moves, no life lost. " +
                 "Earn tokens by capturing redo tiles (marked with a \u21BB symbol) that appear on World 4+ boards. " +
-                "Complete a goal that includes a redo tile to collect the token."
+                "Complete a goal that includes a redo tile to collect the token.\n\n" +
+                "\u2197\uFE0F Diagonal Movement (Pro+ / World 11+) — your next swap can be with any of the 8 neighbors " +
+                "(up, down, left, right, or any diagonal), skipping over frozen tiles. " +
+                "One-shot — consumed on the first diagonal swap. " +
+                "Earn tokens by capturing diagonal tiles that appear on World 11+ boards, or as a Perfect Game bonus on World 11+."
         )
 
         InstructionSection(
@@ -138,7 +147,7 @@ fun InstructionsScreen(navController: NavHostController) {
             body = "On World 5+, complete all goals in a number of moves equal to or fewer than the number of goals " +
                 "(e.g. 5 goals in 5 moves) to earn a Perfect Game. " +
                 "Reward: 2\u00D7 stars on top of all other multipliers, plus +1 of every power-up token " +
-                "(Shuffle, Passthrough, Unfreeze, and Redo)."
+                "(Shuffle, Passthrough, Unfreeze, and Redo \u2014 plus Diagonal Movement on World 11+)."
         )
 
         InstructionSection(
