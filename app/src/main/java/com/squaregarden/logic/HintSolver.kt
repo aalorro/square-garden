@@ -62,7 +62,7 @@ object HintSolver {
         goals: List<Goal>,
         maxMoves: Int,
         difficulty: Difficulty = Difficulty.MEDIUM
-    ): List<Pair<CellPos, CellPos>> {
+    ): List<Pair<CellPos, CellPos>>? {
         val beamWidth = 80
         val blockSwapsThroughGoals = difficulty != Difficulty.EASY
         val excludeCompletedFromMatch =
@@ -150,31 +150,56 @@ object HintSolver {
                 .take(beamWidth)
         }
 
-        // Return the best partial solution found
-        return beam
-            .maxByOrNull { state ->
-                state.completedIds.size * 1000 +
-                        scorePartialProgress(state.board, goals, state.completedIds)
-            }
-            ?.steps ?: emptyList()
+        // No fully-solving sequence found within maxMoves
+        return null
     }
 
     /**
      * Verifies that replaying the given steps from the initial board
      * completes ALL goals (cumulative tracking, matching game behavior).
+     * Honors difficulty rules:
+     *   - Standard/Pro/Pro+: a swap touching an already-completed-goal cell is invalid.
+     *   - Pro/Pro+: completed-goal cells are excluded from new goal matching.
      */
     fun verifySolution(
         board: Board,
         goals: List<Goal>,
-        steps: List<Pair<CellPos, CellPos>>
+        steps: List<Pair<CellPos, CellPos>>,
+        difficulty: Difficulty = Difficulty.MEDIUM
     ): Boolean {
+        val blockSwapsThroughGoals = difficulty != Difficulty.EASY
+        val excludeCompletedFromMatch =
+            difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS
+
         var current = board
-        var completed = emptySet<String>()
+        var completedIds = emptySet<String>()
+        var completedCells = emptySet<CellPos>()
+
         for ((from, to) in steps) {
+            if (blockSwapsThroughGoals &&
+                (from in completedCells || to in completedCells)) {
+                return false
+            }
             current = BoardEngine.executeSwap(current, from, to)
-            completed = completed + BoardEngine.evaluateGoals(current, goals)
+
+            val excluded = if (excludeCompletedFromMatch) completedCells else emptySet()
+            val uncompleted = goals.filter { it.id !in completedIds }
+            val newlyMet = BoardEngine.evaluateGoals(current, uncompleted, excluded)
+            val justCompleted = newlyMet - completedIds
+            completedIds = completedIds + newlyMet
+
+            if (justCompleted.isNotEmpty()) {
+                val cellSet = completedCells.toMutableSet()
+                for (goal in goals) {
+                    if (goal.id !in justCompleted) continue
+                    val findExcluded = if (excludeCompletedFromMatch) completedCells else emptySet()
+                    val cells = PatternMatcher.findGoalPositions(current, goal, findExcluded)
+                    if (cells != null) cellSet.addAll(cells)
+                }
+                completedCells = cellSet
+            }
         }
-        return goals.all { it.id in completed }
+        return goals.all { it.id in completedIds }
     }
 
     /**

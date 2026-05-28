@@ -1351,14 +1351,20 @@ private fun SolutionReplayOverlay(
             if ((completedGoalIds - prevCompleted).isNotEmpty()) {
                 onBeepSound()
             }
-            val updatedGoalCells = completedGoalCells.toMutableMap()
-            for (goal in goals) {
-                if (goal.id in completedGoalIds) {
-                    val cells = PatternMatcher.findGoalPositions(replayBoard, goal)
-                    if (cells != null) updatedGoalCells[goal.id] = cells
+            // Lock completed-goal positions in place: only find positions for
+            // newly-completed goals, leave earlier ones untouched even if the
+            // same pattern re-forms elsewhere on the board.
+            val newlyCompleted = completedGoalIds - prevCompleted
+            if (newlyCompleted.isNotEmpty()) {
+                val updatedGoalCells = completedGoalCells.toMutableMap()
+                for (goal in goals) {
+                    if (goal.id in newlyCompleted && goal.id !in updatedGoalCells) {
+                        val cells = PatternMatcher.findGoalPositions(replayBoard, goal)
+                        if (cells != null) updatedGoalCells[goal.id] = cells
+                    }
                 }
+                completedGoalCells = updatedGoalCells
             }
-            completedGoalCells = updatedGoalCells
 
             // Check if all goals met
             if (BoardEngine.checkWin(completedGoalIds, goals)) {

@@ -284,6 +284,12 @@ class GameViewModel(
             if (BoardEngine.evaluateGoals(scrambled, level.goals).isNotEmpty()) return@repeat
 
             val solution = swaps.reversed()
+            // Verify the reversed swap path actually solves the board under the
+            // current difficulty's rules (blocked swaps through completed goals,
+            // Pro/Pro+ exclusion of completed cells from new goal matching).
+            if (!HintSolver.verifySolution(scrambled, level.goals, solution, difficulty)) {
+                return@repeat
+            }
             return Pair(placeTokenTiles(scrambled), solution)
         }
         // Fallback: random board, solver will try in background
@@ -415,9 +421,9 @@ class GameViewModel(
         precomputedSolution = null
         viewModelScope.launch {
             val solution = withContext(Dispatchers.Default) {
-                HintSolver.findSolution(board, level.goals, level.maxMoves, difficulty)
+                HintSolver.findSolution(board, level.goals, adjustedMaxMoves, difficulty)
             }
-            if (solution.isNotEmpty()) {
+            if (solution != null) {
                 precomputedSolution = solution
                 val current = _state.value
                 if (current.initialBoard == board) {
