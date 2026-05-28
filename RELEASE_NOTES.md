@@ -1,16 +1,16 @@
 # Google Play Store Release Notes
 
 ## Short Description (80 chars max)
-A calm tile-swap puzzle. Slide, match, and garden your way through 90 levels.
+A calm tile-swap puzzle. Slide, match, and garden your way through 126 levels.
 
 ## Full Description (4000 chars max)
 
-Square Garden is a relaxing tile-swap puzzle game where you slide colorful tiles to form lines, squares, and shapes. With 90 handcrafted levels across 10 beautifully themed worlds, there's always a new challenge waiting.
+Square Garden is a relaxing tile-swap puzzle game where you slide colorful tiles to form lines, squares, and shapes. With 126 handcrafted levels across 14 beautifully themed worlds, there's always a new challenge waiting.
 
 GAMEPLAY
-Swipe to swap tiles with their neighbors. Arrange same-colored tiles into patterns — lines, squares, L-shapes, T-shapes, and crosses — to complete each level's goals. Use fewer moves to earn up to 3 stars per level.
+Swipe to swap tiles with their neighbors. Arrange same-colored tiles into patterns — lines, squares, L-shapes, T-shapes, X, Y, and crosses — to complete each level's goals. Use fewer moves to earn up to 3 stars per level.
 
-10 WORLDS TO EXPLORE
+14 WORLDS TO EXPLORE
 - Seedling Garden — Learn the basics on a cozy 5x5 board
 - Blooming Meadow — Bigger 6x6 boards with multi-goal challenges
 - Ancient Grove — Complex shapes on 7x7 boards
@@ -18,6 +18,7 @@ Swipe to swap tiles with their neighbors. Arrange same-colored tiles into patter
 - Shattered Isles — Void cells create irregular board shapes
 - Void Fortress — Both frozen tiles and void cells on 8x8 boards
 - Molten Core, Starfall Summit, Abyssal Depths, Prism Citadel — Even tougher puzzles await
+- Nebula Verge, Quantum Lattice, Singularity Spire, Infinity Prism — Pro+-exclusive endgame worlds (levels 91–126) with the new Diagonal Movement power-up
 
 5 TILE COLORS
 Red, Blue, Yellow, Green — and Orange debuts in World 5 to keep things fresh.
@@ -27,14 +28,15 @@ Choose your skill level:
 - Casual — More moves, start at World 1, great for relaxed play
 - Standard — Balanced challenge, start at World 2
 - Pro — Fewer moves, start at World 3, for puzzle veterans
+- Pro+ — Tightest move budget, starts at World 11 (level 91); unlocks four exclusive endgame worlds and Diagonal Movement
 
 No grinding through easy content if you're experienced — jump right in at your level.
 
 FEATURES
-- 90 handcrafted levels with progressive difficulty
+- 126 handcrafted levels with progressive difficulty
 - Drag-to-swap with smooth animations
-- 3 goal types: Lines, Squares, and Shapes (L, T, Cross)
-- 3 power-ups: Shuffle, Passthrough, and Unfreeze — earned through gameplay
+- 3 goal types: Lines, Squares, and Shapes (L, T, Cross, X, Y)
+- 5 power-ups: Shuffle, Passthrough, Unfreeze, Redo, and Diagonal Movement — earned through gameplay
 - Hint system to nudge you in the right direction
 - Star trail animations and confetti celebrations on wins
 - 6 beautiful color themes: Light, Dark, Summer, Winter, Fall, Spring
@@ -42,6 +44,24 @@ FEATURES
 - No ads. No in-app purchases. Just puzzles.
 
 ---
+
+## Release Notes — Version 1.5.4 (What's New)
+
+What's new in 1.5.4:
+
+- New Pro+ skill tier! Tightest moves, 4× stars, and starts at level 91.
+- 4 new endgame worlds (levels 91–126): Nebula Verge, Quantum Lattice, Singularity Spire, and Infinity Prism. Pro+ only.
+- New 5th power-up: Diagonal Movement — one swap with any of the 8 neighbours (including diagonal), skipping frozen tiles. Pro+ / World 11+.
+- Compact icon-only win celebration — power-up rewards appear as a row of tappable icon chips; tap for the label.
+- Mid-game power-up capture popups use the same compact icon-chip style.
+- Black corner-to-corner X overlay on completed-goal tiles — much easier to read on 8×8 and 9×9 boards.
+- Completed goals stay put — accidentally re-forming the same pattern elsewhere no longer shifts the highlighted cells.
+- "Back to Game" after a challenge round now lands you on the next level past your highest completed level, so you keep progressing instead of dropping back to the menu.
+- Fix: Play button respects Pro+ worlds 11–14 instead of capping at World 10.
+- Fix: Diagonal drag swaps now reach the engine when Diagonal Movement is armed.
+- Fix: Pro+ tutorial, hint legality, and previous-world navigation.
+
+Happy gardening!
 
 ## Release Notes — Version 1.5.3 (What's New)
 

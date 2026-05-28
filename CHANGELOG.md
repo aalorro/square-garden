@@ -2,6 +2,31 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.5.4] - 2026-05-28 (Build 12)
+
+### New Features
+- **Pro+ skill tier** — A fourth skill level above Pro: 0.55× moves, 4× stars, starts at World 11 (level 91). Upgrade from Settings as with Pro.
+- **4 new Pro+-exclusive worlds (Worlds 11–14, levels 91–126)** — Nebula Verge, Quantum Lattice, Singularity Spire, and Infinity Prism. Locked to Pro+ skill.
+- **5th power-up: Diagonal Movement** (Pro+ / World 11+) — One-shot swap with any of the 8 neighbours (orthogonal or diagonal), skipping frozen tiles. Spawns on World 11+ boards (~25%) and is awarded with the other tokens on a Perfect Game on World 11+.
+- **Two new shape goals** — X-shape and Y-shape, plus a new Violet tile colour for Pro+ play.
+
+### Gameplay
+- **Completed goals stay put** — A swap that accidentally re-forms the same goal pattern elsewhere no longer shifts the highlighted cells. Already-completed goals are locked in place.
+- **Better "Back to Game" navigation** — After a challenge round (Blitz, Overgrown, Shifting, Memory) the "Back to Game" button now lands you on the next level past your highest completed level — your actual progression frontier — instead of dropping you at the menu.
+
+### UI
+- **Compact icon-only win celebration** — Awarded power-up tokens on the win splash are now shown as a single row of icon chips. Tap a chip to reveal its label; tap again or elsewhere to dismiss.
+- **Compact mid-game capture popups** — Same icon-chip treatment when you capture a power-up tile during play.
+- **Corner-to-corner X overlay on completed-goal tiles** — A black X across each completed tile (in addition to the border) makes completed goals much easier to read on 8×8 and 9×9 boards.
+
+### Fixes
+- **Play button** now respects Pro+ worlds 11–14 instead of capping at World 10.
+- **Diagonal swap drag** — The board's drag handler now emits diagonal targets when Diagonal Movement is armed (previously only orthogonal drags reached the engine).
+- **Pro+ level difficulty tuning** — Per-world line-length floors and tougher Pro+ goal randomization so Pro+ levels actually exceed World 10 in difficulty.
+- **Tutorial replay** — Pro+ hint legality and one-shot tutorials repaired.
+- **Previous-world navigation** clamped to the player's visibility floor.
+- **Hidden placeholder board** during level load; deepened red tile colour for better contrast.
+
 ## [1.5.3] - 2026-05-26 (Build 11)
 
 ### Audio
