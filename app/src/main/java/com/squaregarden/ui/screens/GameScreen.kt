@@ -1083,14 +1083,8 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    if (isChallenge) {
-                        Button(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {
-                            Text("Back to Game")
-                        }
-                    } else {
                     OutlinedButton(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {
-                        Text("Menu")
-                    }
+                        Text("Back to Game")
                     }
                     if (onNext != null) {
                         Button(onClick = onNext, shape = RoundedCornerShape(20.dp)) {

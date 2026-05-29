@@ -115,7 +115,7 @@ class GameViewModel(
      * Build a board where all goals are simultaneously met by placing goal
      * patterns explicitly, then filling the rest with safe random colors.
      */
-    private fun buildSolvedBoard(): Board? {
+    private fun buildSolvedBoard(deadline: Long = Long.MAX_VALUE): Board? {
         val w = level.boardWidth
         val h = level.boardHeight
         val voids = level.voidCells
@@ -132,9 +132,7 @@ class GameViewModel(
                 is Goal.Square -> 4
             }
         }
-        for (goal in sortedGoals) {
-            if (!placeGoalOnGrid(grid, w, h, goal, voids)) return null
-        }
+        if (!placeGoalsBacktracking(grid, w, h, sortedGoals, 0, voids, deadline)) return null
 
         // Fill remaining cells, avoiding accidental runs of 3+
         val allColors = levelColors()
@@ -166,28 +164,37 @@ class GameViewModel(
         return Board(w, h, tiles, voids)
     }
 
-    private fun placeGoalOnGrid(
+    /**
+     * Find all valid placement candidates for a goal on the current grid.
+     * For Pro/Pro+ difficulty, only empty (null) cells are eligible so that
+     * each goal gets distinct tile positions — completed-goal cells are excluded
+     * from new goal matching in those modes.
+     */
+    private fun findGoalCandidates(
         grid: Array<Array<TileColor?>>, w: Int, h: Int,
         goal: Goal, voids: Set<CellPos>
-    ): Boolean {
+    ): List<List<CellPos>> {
         val candidates = mutableListOf<List<CellPos>>()
+        // Pro/Pro+ exclude completed-goal cells from new goal matching,
+        // so each goal must occupy distinct cells on the solved board.
+        val exclusiveMode = difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS
+
+        fun cellOk(pos: CellPos): Boolean =
+            pos !in voids && if (exclusiveMode) grid[pos.row][pos.col] == null
+            else (grid[pos.row][pos.col] == null || grid[pos.row][pos.col] == goal.color)
 
         when (goal) {
             is Goal.Line -> {
-                // Horizontal
                 for (r in 0 until h) {
                     for (c in 0..w - goal.length) {
                         val cells = (c until c + goal.length).map { CellPos(r, it) }
-                        if (cells.all { it !in voids && (grid[it.row][it.col] == null || grid[it.row][it.col] == goal.color) })
-                            candidates.add(cells)
+                        if (cells.all { cellOk(it) }) candidates.add(cells)
                     }
                 }
-                // Vertical
                 for (c in 0 until w) {
                     for (r in 0..h - goal.length) {
                         val cells = (r until r + goal.length).map { CellPos(it, c) }
-                        if (cells.all { it !in voids && (grid[it.row][it.col] == null || grid[it.row][it.col] == goal.color) })
-                            candidates.add(cells)
+                        if (cells.all { cellOk(it) }) candidates.add(cells)
                     }
                 }
             }
@@ -195,8 +202,7 @@ class GameViewModel(
                 for (r in 0 until h - 1) {
                     for (c in 0 until w - 1) {
                         val cells = listOf(CellPos(r, c), CellPos(r, c + 1), CellPos(r + 1, c), CellPos(r + 1, c + 1))
-                        if (cells.all { it !in voids && (grid[it.row][it.col] == null || grid[it.row][it.col] == goal.color) })
-                            candidates.add(cells)
+                        if (cells.all { cellOk(it) }) candidates.add(cells)
                     }
                 }
             }
@@ -206,20 +212,40 @@ class GameViewModel(
                         for (c in 0 until w) {
                             val cells = rotation.map { CellPos(r + it.row, c + it.col) }
                             if (cells.all {
-                                    it.row in 0 until h && it.col in 0 until w &&
-                                            it !in voids &&
-                                            (grid[it.row][it.col] == null || grid[it.row][it.col] == goal.color)
+                                    it.row in 0 until h && it.col in 0 until w && cellOk(it)
                                 }) candidates.add(cells)
                         }
                     }
                 }
             }
         }
+        return candidates
+    }
 
-        if (candidates.isEmpty()) return false
-        val chosen = candidates.random()
-        for (cell in chosen) grid[cell.row][cell.col] = goal.color
-        return true
+    /**
+     * Recursively place goals with backtracking. When a goal can't be placed,
+     * backtracks to try alternative placements for previous goals instead of
+     * failing the entire attempt.
+     */
+    private fun placeGoalsBacktracking(
+        grid: Array<Array<TileColor?>>, w: Int, h: Int,
+        goals: List<Goal>, index: Int, voids: Set<CellPos>,
+        deadline: Long = Long.MAX_VALUE
+    ): Boolean {
+        if (index == goals.size) return true
+        if (System.currentTimeMillis() >= deadline) return false
+        val goal = goals[index]
+        // Shuffle for variety but cap attempts to avoid exponential blowup
+        val candidates = findGoalCandidates(grid, w, h, goal, voids).shuffled().take(20)
+        for (placement in candidates) {
+            // Save cells that will be overwritten
+            val saved = placement.map { it to grid[it.row][it.col] }
+            for (cell in placement) grid[cell.row][cell.col] = goal.color
+            if (placeGoalsBacktracking(grid, w, h, goals, index + 1, voids, deadline)) return true
+            // Undo placement
+            for ((cell, prev) in saved) grid[cell.row][cell.col] = prev
+        }
+        return false
     }
 
     /**
@@ -269,11 +295,14 @@ class GameViewModel(
      *
      * Falls back to random board + async solver if construction fails.
      */
-    private fun generateBoardWithSolution(moves: Int): Pair<Board, List<Pair<CellPos, CellPos>>?> {
+    private fun generateBoardWithSolution(
+        moves: Int, deadline: Long = Long.MAX_VALUE
+    ): Pair<Board, List<Pair<CellPos, CellPos>>?> {
         // More attempts for complex levels (many goals or large boards)
         val maxAttempts = if (level.goals.size >= 5 || level.boardWidth >= 8) 300 else 100
         repeat(maxAttempts) {
-            val solved = buildSolvedBoard() ?: return@repeat
+            if (System.currentTimeMillis() >= deadline) return Pair(placeTokenTiles(generateValidBoard()), null)
+            val solved = buildSolvedBoard(deadline) ?: return@repeat
             // Verify all goals actually met
             if (BoardEngine.evaluateGoals(solved, level.goals).size != level.goals.size) return@repeat
 
@@ -328,6 +357,7 @@ class GameViewModel(
 
     private fun generateValidBoard(): Board {
         val colors = levelColors()
+        val exclusiveMode = difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS
         val minRequired = mutableMapOf<TileColor, Int>()
         for (goal in level.goals) {
             val needed = when (goal) {
@@ -335,7 +365,13 @@ class GameViewModel(
                 is Goal.Square -> 4
                 is Goal.Shape -> goal.shapeType.offsets.size
             }
-            minRequired[goal.color] = max(minRequired[goal.color] ?: 0, needed)
+            // Pro/Pro+ exclude completed-goal cells from new goal matching,
+            // so each goal needs its own distinct tiles (sum, not max).
+            if (exclusiveMode) {
+                minRequired[goal.color] = (minRequired[goal.color] ?: 0) + needed
+            } else {
+                minRequired[goal.color] = max(minRequired[goal.color] ?: 0, needed)
+            }
         }
         val voids = level.voidCells
         val frozenPositions = level.frozenCells
@@ -494,6 +530,7 @@ class GameViewModel(
                 // Show loading indicator while generating solvable board
                 _state.value = _state.value.copy(boardGenerating = true)
                 val genResult = withContext(Dispatchers.Default) {
+                    val deadline = System.currentTimeMillis() + 3000L
                     var curLevel = level
                     var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
                     var attempts = 0
@@ -501,9 +538,9 @@ class GameViewModel(
                         if (attempts > 0) {
                             curLevel = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
                         }
-                        result = generateBoardWithSolution(curLevel.maxMoves)
+                        result = generateBoardWithSolution(curLevel.maxMoves, deadline)
                         attempts++
-                    } while (result.second == null && attempts < 20)
+                    } while (result.second == null && attempts < 20 && System.currentTimeMillis() < deadline)
                     Triple(curLevel, result.first, result.second)
                 }
                 level = genResult.first
@@ -513,19 +550,19 @@ class GameViewModel(
             } else {
                 _state.value = _state.value.copy(boardGenerating = true)
                 val result = withContext(Dispatchers.Default) {
-                    var lastBoard: Board? = null
-                    var found: List<Pair<CellPos, CellPos>>? = null
-                    var i = 0
-                    while (i < 8 && found == null) {
-                        val attempt = generateBoardWithSolution(adjustedMaxMoves)
-                        lastBoard = attempt.first
-                        found = attempt.second
-                            ?: HintSolver.findSolution(
-                                attempt.first, level.goals, adjustedMaxMoves, difficulty
-                            )
+                    val deadline = System.currentTimeMillis() + 3000L
+                    var best: Pair<Board, List<Pair<CellPos, CellPos>>?> =
+                        generateBoardWithSolution(adjustedMaxMoves, deadline)
+                    // Retry reverse-construction a few times if first attempt
+                    // didn't find a guaranteed solution. Don't call the expensive
+                    // beam-search solver here — it runs async after board is shown.
+                    var i = 1
+                    while (i < 8 && best.second == null && System.currentTimeMillis() < deadline) {
+                        val attempt = generateBoardWithSolution(adjustedMaxMoves, deadline)
+                        best = attempt
                         i++
                     }
-                    Pair(lastBoard!!, found)
+                    best
                 }
                 board = result.first
                 solution = result.second
@@ -712,7 +749,7 @@ class GameViewModel(
             _state.value = current.copy(boardGenerating = true)
             viewModelScope.launch {
                 val result = withContext(Dispatchers.Default) {
-                    generateBoardWithSolution(genMoves)
+                    generateBoardWithSolution(genMoves, System.currentTimeMillis() + 3000L)
                 }
                 val board = result.first
                 val solution = result.second
@@ -1452,9 +1489,8 @@ class GameViewModel(
             if (!success) return@launch
             shuffleTokens--
             usedPowerUpThisGame = true
-            val numSwaps = current.board.width * current.board.height
             val goalCells = current.completedGoalCells.values.flatten().toSet()
-            val (shuffled, _) = scrambleBoard(current.board, numSwaps, protectedCells = goalCells)
+            val shuffled = smartShuffle(current.board, goalCells, current.completedGoalIds, current.movesRemaining)
             audioManager.playShuffle()
             _state.value = current.copy(
                 board = shuffled, shuffleReady = false,
@@ -1465,6 +1501,114 @@ class GameViewModel(
             )
             computeSolutionAsync(shuffled)
         }
+    }
+
+    /**
+     * Smart shuffle: rearranges movable tiles to give the player a fighting
+     * chance at the remaining goals, without making it a guaranteed win.
+     *
+     * Strategy: build a solved arrangement for the remaining goals using only
+     * movable cells, then scramble with a moderate number of swaps so the
+     * player still has to think. Falls back to pure random if construction fails.
+     */
+    private fun smartShuffle(
+        board: Board,
+        lockedCells: Set<CellPos>,
+        completedGoalIds: Set<String>,
+        movesRemaining: Int
+    ): Board {
+        val w = board.width
+        val h = board.height
+
+        // Identify movable cells (not frozen, not void, not locked by completed goals)
+        val movable = mutableListOf<CellPos>()
+        for (r in 0 until h) {
+            for (c in 0 until w) {
+                if (board.isVoid(r, c)) continue
+                if (board.tileAt(r, c).frozen) continue
+                val pos = CellPos(r, c)
+                if (pos in lockedCells) continue
+                movable.add(pos)
+            }
+        }
+        val movableSet = movable.toSet()
+
+        val remainingGoals = level.goals
+            .filter { it.id !in completedGoalIds }
+            .sortedByDescending { goal ->
+                when (goal) {
+                    is Goal.Line -> goal.length
+                    is Goal.Shape -> goal.shapeType.offsets.size + 1
+                    is Goal.Square -> 4
+                }
+            }
+
+        // Collect tiles currently at movable positions (preserving token flags)
+        val movableTiles = movable.map { board.tileAt(it.row, it.col) }
+
+        // Try to place remaining goals on movable cells only.
+        // Treat frozen cells, locked cells, and voids as off-limits for placement.
+        val placementGrid = Array(h) { arrayOfNulls<TileColor>(w) }
+        val placementVoids = board.voids + (0 until h).flatMap { r ->
+            (0 until w).mapNotNull { c ->
+                val pos = CellPos(r, c)
+                if (pos !in movableSet && !board.isVoid(r, c)) pos else null
+            }
+        }.toSet()
+
+        val placed = placeGoalsBacktracking(placementGrid, w, h, remainingGoals, 0, placementVoids)
+
+        if (!placed) {
+            // Fallback: pure random shuffle
+            val numSwaps = w * h
+            val (shuffled, _) = scrambleBoard(board, numSwaps, protectedCells = lockedCells)
+            return shuffled
+        }
+
+        // Fill unassigned movable cells with random colors from the tile pool
+        val allColors = levelColors()
+        for (pos in movable) {
+            if (placementGrid[pos.row][pos.col] == null) {
+                placementGrid[pos.row][pos.col] = allColors.random()
+            }
+        }
+
+        // Match existing tiles to the solved color layout, preserving tile flags (tokens, etc.)
+        val tilePool = movableTiles.toMutableList()
+        val assigned = mutableListOf<Pair<CellPos, Tile>>()
+
+        for (pos in movable) {
+            val targetColor = placementGrid[pos.row][pos.col]!!
+            val idx = tilePool.indexOfFirst { it.color == targetColor }
+            if (idx >= 0) {
+                assigned.add(pos to tilePool.removeAt(idx))
+            } else {
+                // Not enough tiles of this color — use any remaining tile
+                assigned.add(pos to tilePool.removeAt(0))
+            }
+        }
+
+        // Build the solved board
+        val mutableTiles = board.tiles.map { it.toMutableList() }
+        for ((pos, tile) in assigned) {
+            mutableTiles[pos.row][pos.col] = tile
+        }
+        val solvedBoard = board.copy(tiles = mutableTiles.map { it.toList() })
+
+        // Scramble with enough swaps to require thought, but few enough that
+        // goals are reachable. Retry if any remaining goal is already met
+        // (no gimmes). Use 60-80% of remaining moves as scramble depth.
+        val remainingGoalList = level.goals.filter { it.id !in completedGoalIds }
+        val scrambleBase = max(4, (movesRemaining * 0.7).toInt())
+        for (attempt in 0 until 5) {
+            val depth = scrambleBase + attempt  // slightly more each retry
+            val (shuffled, _) = scrambleBoard(solvedBoard, depth, protectedCells = lockedCells)
+            val preMet = BoardEngine.evaluateGoals(shuffled, remainingGoalList)
+            if (preMet.isEmpty()) return shuffled
+        }
+        // Last resort: heavy scramble to break any pre-formed patterns
+        val (shuffled, _) = scrambleBoard(solvedBoard, movesRemaining, protectedCells = lockedCells)
+        return shuffled
     }
 
     fun executeRedo() {
@@ -1731,6 +1875,7 @@ class GameViewModel(
 
         // Generate solvable board off main thread
         val genResult = withContext(Dispatchers.Default) {
+            val deadline = System.currentTimeMillis() + 3000L
             var curLevel = level
             var curMoves = adjustedMaxMoves
             var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
@@ -1740,9 +1885,9 @@ class GameViewModel(
                     curLevel = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
                     curMoves = curLevel.maxMoves
                 }
-                result = generateBoardWithSolution(curMoves)
+                result = generateBoardWithSolution(curMoves, deadline)
                 attempts++
-            } while (result.second == null && attempts < 20)
+            } while (result.second == null && attempts < 20 && System.currentTimeMillis() < deadline)
             Triple(curLevel, curMoves, result)
         }
         level = genResult.first
