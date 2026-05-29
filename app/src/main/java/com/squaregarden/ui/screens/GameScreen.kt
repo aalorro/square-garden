@@ -86,8 +86,8 @@ fun GameScreen(
         }
     }
 
-    // Block back button during challenge rounds (prevent restart exploit)
-    BackHandler(enabled = state.isChallenge && state.phase != GamePhase.LOST && state.phase != GamePhase.WON) { }
+    // Block back button mid-game (prevent accidental exit during play)
+    BackHandler(enabled = state.phase == GamePhase.PLAYING || state.phase == GamePhase.ANIMATING || state.phase == GamePhase.SCRAMBLING || state.phase == GamePhase.TUTORIAL_PAUSE) { }
 
     // Stop any music when GameScreen exits
     DisposableEffect(Unit) { onDispose { MusicManager.stopAll() } }

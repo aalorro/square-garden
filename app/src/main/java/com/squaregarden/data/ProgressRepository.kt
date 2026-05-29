@@ -169,7 +169,7 @@ class ProgressRepository(private val context: Context) {
             // Increment games played
             prefs[GAMES_PLAYED_KEY] = (prefs[GAMES_PLAYED_KEY] ?: 0) + 1
             if (newLives <= 0) {
-                prefs[COOLDOWN_UNTIL_KEY] = System.currentTimeMillis() + 300_000L // 5 minutes
+                prefs[COOLDOWN_UNTIL_KEY] = System.currentTimeMillis() + 1_200_000L // 20 minutes
             }
         }
     }
@@ -361,7 +361,7 @@ class ProgressRepository(private val context: Context) {
             val cooldownUntil = prefs[COOLDOWN_UNTIL_KEY] ?: 0L
             if (cooldownUntil > 0L) {
                 // Cap any existing cooldown to 5 minutes from now
-                val maxCooldown = now + 300_000L
+                val maxCooldown = now + 1_200_000L
                 if (cooldownUntil > maxCooldown) {
                     prefs[COOLDOWN_UNTIL_KEY] = maxCooldown
                 }
