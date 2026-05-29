@@ -28,7 +28,9 @@ import com.squaregarden.model.Difficulty
 import com.squaregarden.model.PlayerProgress
 import com.squaregarden.model.UserProfile
 import kotlinx.coroutines.launch
+import com.squaregarden.logic.LevelLoader
 import com.squaregarden.ui.components.BasReliefAvatar
+import com.squaregarden.ui.components.FavoritesDialog
 import com.squaregarden.ui.components.getAvatar
 import com.squaregarden.ui.components.LogoMark
 import com.squaregarden.ui.navigation.Screen
@@ -47,6 +49,9 @@ fun HomeScreen(navController: NavHostController) {
     val cooldownActive = lives <= 0 && cooldownUntil > System.currentTimeMillis()
     var profile by remember { mutableStateOf(UserProfile()) }
     var currentWorld by remember { mutableIntStateOf(1) }
+    var showFavorites by remember { mutableStateOf(false) }
+    val allLevels = remember { LevelLoader.loadAllLevels(context) }
+    var progress by remember { mutableStateOf(PlayerProgress()) }
 
     val settingsRepo = remember { SettingsRepository(context) }
     val musicEnabled by settingsRepo.musicEnabled.collectAsState(initial = true)
@@ -54,7 +59,7 @@ fun HomeScreen(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         profile = profileRepo.loadProfile()
-        val progress = progressRepo.loadProgress()
+        progress = progressRepo.loadProgress()
         val difficulty = Difficulty.fromId(profile.difficulty)
         val effectiveStart = if (profile.overrideStartingLevel > 0)
             profile.overrideStartingLevel else difficulty.startingLevel
@@ -212,6 +217,19 @@ fun HomeScreen(navController: NavHostController) {
                 Text("Worlds", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
+            if (progress.favoriteLevels.isNotEmpty()) {
+                OutlinedButton(
+                    onClick = { showFavorites = true },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(50),
+                    enabled = !cooldownActive
+                ) {
+                    Text("\u2605  Favorites", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+
             OutlinedButton(
                 onClick = { navController.navigate(Screen.Settings.route) },
                 modifier = Modifier
@@ -283,5 +301,22 @@ fun HomeScreen(navController: NavHostController) {
         }
 
         Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    if (showFavorites) {
+        FavoritesDialog(
+            allLevels = allLevels,
+            progress = progress,
+            progressRepo = progressRepo,
+            onLevelClick = { levelId ->
+                showFavorites = false
+                navController.navigate(Screen.Game.create(levelId))
+            },
+            onDismiss = {
+                showFavorites = false
+                // Reload progress so favorites button visibility updates
+                scope.launch { progress = progressRepo.loadProgress() }
+            }
+        )
     }
 }
