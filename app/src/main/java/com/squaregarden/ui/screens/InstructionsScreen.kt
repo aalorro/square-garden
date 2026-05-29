@@ -96,7 +96,7 @@ fun InstructionsScreen(navController: NavHostController) {
 
         InstructionSection(
             title = "Worlds",
-            body = "Progress through 10 worlds, each with unique themes and increasing difficulty. " +
+            body = "Progress through 14 worlds, each with unique themes and increasing difficulty. " +
                 "Earn stars to unlock new worlds. Unlock thresholds scale by skill level."
         )
 
@@ -120,7 +120,8 @@ fun InstructionsScreen(navController: NavHostController) {
             title = "Power-Ups",
             body = "Earn tokens by playing well:\n\n" +
                 "\uD83D\uDCA1 Hint — highlights a good move area\n\n" +
-                "\uD83D\uDD00 Shuffle — randomizes the board tiles. " +
+                "\uD83D\uDD00 Shuffle — rearranges remaining tiles to give you a second chance. " +
+                "Won\u2019t hand you the answer, but might nudge tiles in a better direction. " +
                 "Earn 1 token each time you unlock a new world or every 7 wins.\n\n" +
                 "\uD83D\uDEE1\uFE0F Passthrough — your tile jumps over completed goal tiles and lands on the other side, keeping the goal intact. " +
                 "Earn 1 token every 7 levels completed.\n\n" +

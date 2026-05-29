@@ -45,6 +45,20 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.6.0 (What's New)
+
+What's new in 1.6.0:
+
+- Smart Shuffle! The Shuffle power-up now rearranges tiles with a mild bias toward progress — a real second chance when you're stuck, without giving away the answer.
+- Power-up token capture now plays a satisfying chime sound.
+- Show Solution works reliably after shuffles and on complex boards.
+- Fixed board generation hangs on large/complex levels — boards now generate in under 3 seconds.
+- Fixed Pro+ levels sometimes requiring more tiles of a color than existed on the board.
+- Fixed Overgrown challenge retry losing diagonal tokens and using wrong goals.
+- Win button correctly says "Back to Game" instead of "Menu".
+
+Happy gardening!
+
 ## Release Notes — Version 1.5.4 (What's New)
 
 What's new in 1.5.4:

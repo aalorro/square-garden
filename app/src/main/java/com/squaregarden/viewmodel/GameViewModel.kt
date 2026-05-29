@@ -537,6 +537,7 @@ class GameViewModel(
                     do {
                         if (attempts > 0) {
                             curLevel = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
+                            level = curLevel // generateBoardWithSolution reads level.goals
                         }
                         result = generateBoardWithSolution(curLevel.maxMoves, deadline)
                         attempts++
@@ -1492,7 +1493,7 @@ class GameViewModel(
             shuffleTokens--
             usedPowerUpThisGame = true
             val goalCells = current.completedGoalCells.values.flatten().toSet()
-            val shuffled = smartShuffle(current.board, goalCells, current.completedGoalIds, current.movesRemaining)
+            val shuffled = smartShuffle(current.board, goalCells, current.completedGoalIds)
             audioManager.playShuffle()
             _state.value = current.copy(
                 board = shuffled, shuffleReady = false,
@@ -1518,8 +1519,7 @@ class GameViewModel(
     private fun smartShuffle(
         board: Board,
         lockedCells: Set<CellPos>,
-        completedGoalIds: Set<String>,
-        movesRemaining: Int
+        completedGoalIds: Set<String>
     ): Board {
         val w = board.width
         val h = board.height
@@ -1691,10 +1691,13 @@ class GameViewModel(
         }
         // Solution was lost (e.g. cleared by async recompute) — try to find it now
         val initialBoard = _state.value.initialBoard ?: return
+        val goals = level.goals
+        val moves = adjustedMaxMoves
+        val diff = difficulty
         _state.value = _state.value.copy(boardGenerating = true)
         viewModelScope.launch {
             val solution = withContext(Dispatchers.Default) {
-                HintSolver.findSolution(initialBoard, level.goals, adjustedMaxMoves, difficulty, beamWidth = 200)
+                HintSolver.findSolution(initialBoard, goals, moves, diff, beamWidth = 200)
             }
             if (solution != null) {
                 precomputedSolution = solution
@@ -1893,6 +1896,7 @@ class GameViewModel(
                 if (attempts > 0) {
                     curLevel = ChallengeGenerator.generateLevel(ChallengeType.OVERGROWN, difficulty)
                     curMoves = curLevel.maxMoves
+                    level = curLevel // generateBoardWithSolution reads level.goals
                 }
                 result = generateBoardWithSolution(curMoves, deadline)
                 attempts++
@@ -1915,6 +1919,7 @@ class GameViewModel(
             passthroughTokens = passthroughTokens,
             unfreezeTokens = unfreezeTokens,
             redoTokens = redoTokens,
+            diagonalTokens = diagonalTokens,
             phase = GamePhase.SCRAMBLING,
             challengeState = ChallengeState(
                 type = ChallengeType.OVERGROWN,

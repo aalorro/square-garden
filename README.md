@@ -71,7 +71,7 @@ Players start at a world matching their skill level — no grinding through easy
 | 14 | Infinity Prism | — | — | — | 1840 |
 
 ### Power-Ups
-- **Shuffle** — Randomize the board when stuck (completed goals stay put)
+- **Shuffle** — Rearranges remaining tiles with a mild bias toward progress when stuck (completed goals stay put)
 - **Passthrough** — Next swap jumps over completed goal cells and frozen tiles
 - **Unfreeze** — Tap a frozen tile to thaw it
 - **Redo** — Special tiles appear on World 4+ boards (~25% chance). Capture one in a goal to earn a redo token for a free level restart

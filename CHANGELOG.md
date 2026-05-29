@@ -2,6 +2,20 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.6.0] - 2026-05-28 (Build 13)
+
+### Gameplay
+- **Smart Shuffle** — The Shuffle power-up now rearranges remaining tiles with a mild bias toward progress, giving stuck players a second chance without handing them a gimme (~20% win rate after shuffle).
+- **Token capture sound** — Capturing a power-up token (Shuffle, Passthrough, Unfreeze, Redo, Diagonal) now plays a chime sound effect.
+- **Show Solution reliability** — The "Show Solution" button now works consistently, including after using the Shuffle power-up. Wider beam search (200) for better solution coverage.
+
+### Fixes
+- **Board generation hangs** — Added 3-second deadline to all board generation paths. Replaced linear goal placement with recursive backtracking. Boards that can't be generated in time gracefully fall back to random placement with async solving.
+- **Pro+ unsolvable boards** — Fixed a bug where multiple same-color goals could overlap cells, requiring more tiles than existed on the board (e.g. 3 purple goals needing 15 tiles with only 12 on board).
+- **Overgrown retry** — Fixed diagonal tokens vanishing after retrying an Overgrown challenge. Fixed retry using stale goals from the previous board instead of the newly generated level.
+- **Show Solution after shuffle** — Fixed the button appearing clickable but doing nothing after a shuffle, caused by the precomputed solution being cleared.
+- **Win button label** — The congratulatory splash button now correctly says "Back to Game" since it navigates to the next level.
+
 ## [1.5.4] - 2026-05-28 (Build 12)
 
 ### New Features
