@@ -372,63 +372,36 @@ fun GameScreen(
         // (challenge banner moved above game board)
     }
 
-    // Token captured celebrations (mid-game) — compact icon chip + tap-for-label
+    // Token captured celebrations (mid-game) — dramatic cascading trail to bottom bar
     if (state.phase == GamePhase.PLAYING) {
+        // Compute target X fractions based on button count (SpaceEvenly positions)
+        val hasDiagonal = state.level.world >= 11
+        val buttonCount = if (hasDiagonal) 6 else 5
+        fun buttonX(index: Int) = (2f * index + 1f) / (2f * buttonCount)
+        // Button order: Hint(0), Shuffle(1), Passthrough(2), Unfreeze(3), Redo(4), Diagonal(5)
         val captured = listOfNotNull(
-            if (state.shuffleTokenAwarded) AwardedToken("\uD83D\uDD00", "Shuffle Token Earned!", TileYellow) else null,
-            if (state.passthroughTokenAwarded) AwardedToken("\uD83D\uDEE1\uFE0F", "Passthrough Token Earned!", Sage) else null,
-            if (state.unfreezeTokenAwarded) AwardedToken("\u2744\uFE0F", "Unfreeze Token Earned!", TileBlue) else null,
-            if (state.redoTokenAwarded) AwardedToken("\u21BB", "Redo Token Earned!", TileGreen) else null,
-            if (state.diagonalTokenAwarded) AwardedToken("\u2197\uFE0F", "Diagonal Token Earned!", TileViolet) else null
+            if (state.shuffleTokenAwarded) AwardedToken("\uD83D\uDD00", "Shuffle Token Earned!", TileYellow, buttonX(1)) else null,
+            if (state.passthroughTokenAwarded) AwardedToken("\uD83D\uDEE1\uFE0F", "Passthrough Token Earned!", Sage, buttonX(2)) else null,
+            if (state.unfreezeTokenAwarded) AwardedToken("\u2744\uFE0F", "Unfreeze Token Earned!", TileBlue, buttonX(3)) else null,
+            if (state.redoTokenAwarded) AwardedToken("\u21BB", "Redo Token Earned!", TileGreen, buttonX(4)) else null,
+            if (state.diagonalTokenAwarded) AwardedToken("\u2197\uFE0F", "Diagonal Token Earned!", TileViolet, buttonX(5)) else null
         )
         captured.forEachIndexed { index, tok ->
-            val tokenScale = remember(tok.icon) { Animatable(0f) }
-            var revealed by remember(tok.icon) { mutableStateOf(false) }
+            var active by remember(tok.icon) { mutableStateOf(false) }
             var dismissed by remember(tok.icon) { mutableStateOf(false) }
             LaunchedEffect(tok.icon) {
-                delay(index * 600L) // stagger multiple celebrations
-                tokenScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f))
-                delay(2000)
-                if (!revealed) {
-                    tokenScale.animateTo(0f, animationSpec = tween(300))
-                    dismissed = true
-                }
+                delay(index * 1200L) // stagger multiple trails
+                active = true
             }
-            if (!dismissed) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Surface(
-                            shape = CircleShape,
-                            color = tok.accent.copy(alpha = 0.25f),
-                            modifier = Modifier
-                                .size(64.dp)
-                                .scale(tokenScale.value)
-                                .clickable { revealed = !revealed }
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Text(text = tok.icon, fontSize = 30.sp)
-                            }
-                        }
-                        if (revealed) {
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
-                            ) {
-                                Text(
-                                    text = tok.label,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = tok.accent,
-                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
-                                )
-                            }
-                        }
-                    }
-                }
+            if (active && !dismissed) {
+                TokenTrailOverlay(
+                    icon = tok.icon,
+                    accentColor = tok.accent,
+                    label = tok.label,
+                    targetXFraction = tok.targetX,
+                    onComplete = { dismissed = true },
+                    onLanded = { viewModel.playTokenCapture() }
+                )
             }
         }
     }
@@ -460,7 +433,7 @@ fun GameScreen(
             },
             isChallenge = state.isChallenge,
             challengeGoalsCleared = state.challengeState?.goalsCleared ?: 0,
-            onNext = if (!state.isChallenge && state.level.id < 90) {
+            onNext = if (!state.isChallenge && state.level.id < 126) {
                 {
                     MusicManager.stopWinMusic()
                     viewModel.commitWinResult()
@@ -700,7 +673,7 @@ fun GameScreen(
 
 }
 
-private data class AwardedToken(val icon: String, val label: String, val accent: Color)
+private data class AwardedToken(val icon: String, val label: String, val accent: Color, val targetX: Float = 0.5f)
 
 @Composable
 private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, diagonalTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onChallengeCountUp: () -> Unit = {}, onChallengeMusic: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
@@ -1082,14 +1055,13 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (onNext != null) {
+                    Button(onClick = onNext, shape = RoundedCornerShape(20.dp)) {
+                        Text("Next Level")
+                    }
+                } else {
                     OutlinedButton(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {
                         Text("Back to Game")
-                    }
-                    if (onNext != null) {
-                        Button(onClick = onNext, shape = RoundedCornerShape(20.dp)) {
-                            Text("Next Level")
-                        }
                     }
                 }
             }

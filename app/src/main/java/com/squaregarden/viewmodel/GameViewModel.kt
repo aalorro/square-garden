@@ -1648,6 +1648,7 @@ class GameViewModel(
     }
 
     fun playStarCollect() { audioManager.playStarCollect() }
+    fun playTokenCapture() { audioManager.playTokenCapture() }
     fun playSwapSound() { audioManager.playSwap() }
     fun playMatchSound() { audioManager.playMatch() }
     fun playBeepSound() { audioManager.playBeep() }
