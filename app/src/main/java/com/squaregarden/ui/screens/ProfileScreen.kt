@@ -504,8 +504,8 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
             }
         }
 
-        // ── Leaderboard Opt-In ──
-        Row(
+        // ── Leaderboard Opt-In (disabled — revisiting provider) ──
+        if (false) Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween

@@ -1840,9 +1840,9 @@ class GameViewModel(
                 _state.value = _state.value.copy(lifeRestored = true)
             }
 
-            // Submit scores to Google Play Games leaderboards (only if opted in)
+            // Submit scores to Google Play Games leaderboards (disabled — revisiting provider)
             val profile = profileRepo.loadProfile()
-            if (profile.leaderboardOptIn) {
+            if (false && profile.leaderboardOptIn) {
                 activity?.let { act ->
                     val totalStars = progressRepo.totalStarsFlow.first()
                     val progress = progressRepo.loadProgress()

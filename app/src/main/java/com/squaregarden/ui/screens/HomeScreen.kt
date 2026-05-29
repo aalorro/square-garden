@@ -244,7 +244,8 @@ fun HomeScreen(navController: NavHostController) {
                 }
             }
 
-            if (profile.leaderboardOptIn) {
+            // Leaderboards disabled — revisiting provider
+            if (false && profile.leaderboardOptIn) {
                 OutlinedButton(
                     onClick = {
                         val activity = context as? android.app.Activity ?: return@OutlinedButton
