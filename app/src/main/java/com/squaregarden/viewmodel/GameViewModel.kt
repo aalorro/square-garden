@@ -454,10 +454,10 @@ class GameViewModel(
     // ── Async fallback solver (for boards not built via reverse-construction) ──
 
     private fun computeSolutionAsync(board: Board) {
-        precomputedSolution = null
         viewModelScope.launch {
             val solution = withContext(Dispatchers.Default) {
-                HintSolver.findSolution(board, level.goals, adjustedMaxMoves, difficulty)
+                // Use wider beam for async solving (runs on background thread)
+                HintSolver.findSolution(board, level.goals, adjustedMaxMoves, difficulty, beamWidth = 200)
             }
             if (solution != null) {
                 precomputedSolution = solution
@@ -1499,7 +1499,6 @@ class GameViewModel(
                 hintCells = emptySet(),
                 selectedCell = null
             )
-            computeSolutionAsync(shuffled)
         }
     }
 
@@ -1693,10 +1692,30 @@ class GameViewModel(
     }
 
     fun showSolution() {
-        val steps = precomputedSolution ?: return
-        _state.value = _state.value.copy(
-            solutionSteps = steps, phase = GamePhase.SHOWING_SOLUTION
-        )
+        val steps = precomputedSolution
+        if (steps != null) {
+            _state.value = _state.value.copy(
+                solutionSteps = steps, phase = GamePhase.SHOWING_SOLUTION
+            )
+            return
+        }
+        // Solution was lost (e.g. cleared by async recompute) — try to find it now
+        val initialBoard = _state.value.initialBoard ?: return
+        _state.value = _state.value.copy(boardGenerating = true)
+        viewModelScope.launch {
+            val solution = withContext(Dispatchers.Default) {
+                HintSolver.findSolution(initialBoard, level.goals, adjustedMaxMoves, difficulty, beamWidth = 200)
+            }
+            if (solution != null) {
+                precomputedSolution = solution
+                _state.value = _state.value.copy(
+                    solutionSteps = solution, phase = GamePhase.SHOWING_SOLUTION,
+                    boardGenerating = false, hasSolution = true
+                )
+            } else {
+                _state.value = _state.value.copy(boardGenerating = false, hasSolution = false)
+            }
+        }
     }
 
     fun dismissSolution() {

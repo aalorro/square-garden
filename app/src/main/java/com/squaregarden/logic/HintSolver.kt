@@ -61,9 +61,9 @@ object HintSolver {
         board: Board,
         goals: List<Goal>,
         maxMoves: Int,
-        difficulty: Difficulty = Difficulty.MEDIUM
+        difficulty: Difficulty = Difficulty.MEDIUM,
+        beamWidth: Int = 80
     ): List<Pair<CellPos, CellPos>>? {
-        val beamWidth = 80
         val blockSwapsThroughGoals = difficulty != Difficulty.EASY
         val excludeCompletedFromMatch =
             difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS
