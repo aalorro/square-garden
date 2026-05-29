@@ -1059,7 +1059,7 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                 if (perfectGame) {
                     val pgScale = remember { Animatable(0f) }
                     LaunchedEffect(Unit) {
-                        val prior = listOf(shuffleTokenAwarded, passthroughTokenAwarded, unfreezeTokenAwarded, redoTokenAwarded).count { it }
+                        val prior = listOf(shuffleTokenAwarded, passthroughTokenAwarded, unfreezeTokenAwarded, redoTokenAwarded, diagonalTokenAwarded).count { it }
                         delay(800L + prior * 800L)
                         pgScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.4f, stiffness = 250f))
                     }

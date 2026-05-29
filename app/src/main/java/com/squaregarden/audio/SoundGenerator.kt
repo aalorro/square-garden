@@ -448,6 +448,21 @@ object SoundGenerator {
         env * 0.6f * (crack + chime + sparkle)
     }
 
+    /** Token capture: bright ascending sparkle chime */
+    fun generateTokenCapture(): ShortArray = generatePcm(500) { i, total ->
+        val env = envelope(i, total, 5, 200)
+        val progress = i.toFloat() / total
+        // Quick ascending arpeggio: C6 → E6 → G6
+        val freq = when {
+            progress < 0.33f -> 1047f  // C6
+            progress < 0.66f -> 1319f  // E6
+            else -> 1568f              // G6
+        }
+        val main = sine(freq, i) * 0.35f + sine(freq * 2f, i) * 0.15f
+        val shimmer = sine(freq * 3f, i) * 0.08f * sin(progress * 25.0).toFloat().coerceIn(0f, 1f)
+        env * 0.7f * (main + shimmer)
+    }
+
     /** Common scramble envelope: 10ms attack, fade out last 500ms of 4s */
     private fun scrambleEnv(i: Int, total: Int): Float {
         val progress = i.toFloat() / total

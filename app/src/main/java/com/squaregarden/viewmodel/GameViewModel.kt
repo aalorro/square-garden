@@ -1051,6 +1051,7 @@ class GameViewModel(
                         }
                     }
                     boardAfterCapture = boardAfterCapture.copy(tiles = updatedTiles)
+                    audioManager.playTokenCapture()
                 }
             }
 
@@ -1293,6 +1294,7 @@ class GameViewModel(
                         }
                     }
                     boardAfterCapture = boardAfterCapture.copy(tiles = updatedTiles)
+                    audioManager.playTokenCapture()
                 }
             }
 
@@ -1503,12 +1505,15 @@ class GameViewModel(
     }
 
     /**
-     * Smart shuffle: rearranges movable tiles to give the player a fighting
-     * chance at the remaining goals, without making it a guaranteed win.
+     * Biased shuffle: randomly rearranges movable tiles with a mild clustering
+     * bias for a subset of remaining goals. NOT a guaranteed win — gives the
+     * player a slight edge (~20% win rate) rather than a solved board.
      *
-     * Strategy: build a solved arrangement for the remaining goals using only
-     * movable cells, then scramble with a moderate number of swaps so the
-     * player still has to think. Falls back to pure random if construction fails.
+     * Rules:
+     * - No gimmes: no remaining goal may be already formed after shuffle
+     * - Only ~1/3 of remaining goals get a mild clustering boost
+     * - Clustering moves just 1-2 same-colored tiles closer, not all of them
+     * - Early-game shuffle (many goals left) is barely better than random
      */
     private fun smartShuffle(
         board: Board,
@@ -1530,84 +1535,69 @@ class GameViewModel(
                 movable.add(pos)
             }
         }
-        val movableSet = movable.toSet()
 
-        val remainingGoals = level.goals
-            .filter { it.id !in completedGoalIds }
-            .sortedByDescending { goal ->
-                when (goal) {
-                    is Goal.Line -> goal.length
-                    is Goal.Shape -> goal.shapeType.offsets.size + 1
-                    is Goal.Square -> 4
+        val remainingGoals = level.goals.filter { it.id !in completedGoalIds }
+
+        // Collect tiles at movable positions (preserving token flags)
+        val movableTiles = movable.map { board.tileAt(it.row, it.col) }
+
+        // Try up to 10 times to get a no-gimme result
+        for (attempt in 0 until 10) {
+            val shuffled = movableTiles.toMutableList().apply { shuffle() }
+
+            // Mild clustering bias: for ~1/3 of remaining goals, nudge 1-2
+            // same-colored tiles toward a random anchor of that color.
+            val goalsToHelp = remainingGoals.shuffled()
+                .take(max(1, remainingGoals.size / 3))
+            for (goal in goalsToHelp) {
+                val colorIndices = shuffled.indices.filter { shuffled[it].color == goal.color }
+                if (colorIndices.size < 2) continue
+
+                // Pick a random anchor tile of this color
+                val anchor = colorIndices.random()
+                val anchorPos = movable[anchor]
+
+                // Find nearby movable slots with a DIFFERENT color
+                val nearby = movable.indices.filter { idx ->
+                    idx != anchor && shuffled[idx].color != goal.color &&
+                        Math.abs(movable[idx].row - anchorPos.row) +
+                        Math.abs(movable[idx].col - anchorPos.col) <= 2
+                }
+                // Find distant same-colored tiles (Manhattan > 3 from anchor)
+                val distant = colorIndices.filter { idx ->
+                    idx != anchor &&
+                        Math.abs(movable[idx].row - anchorPos.row) +
+                        Math.abs(movable[idx].col - anchorPos.col) > 3
+                }
+
+                // Swap at most 1-2 distant same-colored tiles with nearby slots
+                val swapCount = minOf(nearby.size, distant.size, 2)
+                for (s in 0 until swapCount) {
+                    val temp = shuffled[nearby[s]]
+                    shuffled[nearby[s]] = shuffled[distant[s]]
+                    shuffled[distant[s]] = temp
                 }
             }
 
-        // Collect tiles currently at movable positions (preserving token flags)
-        val movableTiles = movable.map { board.tileAt(it.row, it.col) }
-
-        // Try to place remaining goals on movable cells only.
-        // Treat frozen cells, locked cells, and voids as off-limits for placement.
-        val placementGrid = Array(h) { arrayOfNulls<TileColor>(w) }
-        val placementVoids = board.voids + (0 until h).flatMap { r ->
-            (0 until w).mapNotNull { c ->
-                val pos = CellPos(r, c)
-                if (pos !in movableSet && !board.isVoid(r, c)) pos else null
+            // Build candidate board
+            val mutableTiles = board.tiles.map { it.toMutableList() }
+            for (i in movable.indices) {
+                mutableTiles[movable[i].row][movable[i].col] = shuffled[i]
             }
-        }.toSet()
+            val candidate = board.copy(tiles = mutableTiles.map { it.toList() })
 
-        val placed = placeGoalsBacktracking(placementGrid, w, h, remainingGoals, 0, placementVoids)
-
-        if (!placed) {
-            // Fallback: pure random shuffle
-            val numSwaps = w * h
-            val (shuffled, _) = scrambleBoard(board, numSwaps, protectedCells = lockedCells)
-            return shuffled
+            // No gimmes: reject if any remaining goal is already met
+            val preMet = BoardEngine.evaluateGoals(candidate, remainingGoals)
+            if (preMet.isEmpty()) return candidate
         }
 
-        // Fill unassigned movable cells with random colors from the tile pool
-        val allColors = levelColors()
-        for (pos in movable) {
-            if (placementGrid[pos.row][pos.col] == null) {
-                placementGrid[pos.row][pos.col] = allColors.random()
-            }
-        }
-
-        // Match existing tiles to the solved color layout, preserving tile flags (tokens, etc.)
-        val tilePool = movableTiles.toMutableList()
-        val assigned = mutableListOf<Pair<CellPos, Tile>>()
-
-        for (pos in movable) {
-            val targetColor = placementGrid[pos.row][pos.col]!!
-            val idx = tilePool.indexOfFirst { it.color == targetColor }
-            if (idx >= 0) {
-                assigned.add(pos to tilePool.removeAt(idx))
-            } else {
-                // Not enough tiles of this color — use any remaining tile
-                assigned.add(pos to tilePool.removeAt(0))
-            }
-        }
-
-        // Build the solved board
+        // Fallback: pure random (still check no gimmes but accept after 10 tries)
+        val fallbackTiles = movableTiles.shuffled()
         val mutableTiles = board.tiles.map { it.toMutableList() }
-        for ((pos, tile) in assigned) {
-            mutableTiles[pos.row][pos.col] = tile
+        for (i in movable.indices) {
+            mutableTiles[movable[i].row][movable[i].col] = fallbackTiles[i]
         }
-        val solvedBoard = board.copy(tiles = mutableTiles.map { it.toList() })
-
-        // Scramble with enough swaps to require thought, but few enough that
-        // goals are reachable. Retry if any remaining goal is already met
-        // (no gimmes). Use 60-80% of remaining moves as scramble depth.
-        val remainingGoalList = level.goals.filter { it.id !in completedGoalIds }
-        val scrambleBase = max(4, (movesRemaining * 0.7).toInt())
-        for (attempt in 0 until 5) {
-            val depth = scrambleBase + attempt  // slightly more each retry
-            val (shuffled, _) = scrambleBoard(solvedBoard, depth, protectedCells = lockedCells)
-            val preMet = BoardEngine.evaluateGoals(shuffled, remainingGoalList)
-            if (preMet.isEmpty()) return shuffled
-        }
-        // Last resort: heavy scramble to break any pre-formed patterns
-        val (shuffled, _) = scrambleBoard(solvedBoard, movesRemaining, protectedCells = lockedCells)
-        return shuffled
+        return board.copy(tiles = mutableTiles.map { it.toList() })
     }
 
     fun executeRedo() {
