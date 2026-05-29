@@ -45,6 +45,22 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.7.0 (What's New)
+
+What's new in 1.7.0:
+
+- Game Complete celebration! Beat all 126 levels for a dramatic full-screen celebration with looping music, continuous confetti, and a stats summary.
+- Mastery badge — your avatar earns a golden ring with crown motif after completing the game. Show it off everywhere!
+- Save & share a beautiful mastery certificate PNG with your name, stars, and completion date.
+- Lifetime Stats screen — view your total stars, games played, perfect games, swaps, tokens used, and more from the Home screen.
+- Favorites modal — quickly browse and play your favorited levels from the Home screen.
+- Cascading token trail effect on the win screen.
+- Back button blocked during gameplay to prevent accidental exits.
+- Rest period extended to 20 minutes.
+- Leaderboards temporarily disabled while we find a better provider.
+
+Happy gardening!
+
 ## Release Notes — Version 1.6.0 (What's New)
 
 What's new in 1.6.0:

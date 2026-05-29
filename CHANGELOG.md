@@ -2,6 +2,23 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.7.0] - 2026-05-29 (Build 14)
+
+### New Features
+- **Game Complete celebration** — Beating level 126 triggers a dramatic full-screen overlay with looping music, continuous confetti/balloons/stars, stats summary, and a "Save Mastery Badge" option. Music loops until the player presses a button.
+- **Mastery badge** — Completing the game earns a golden ring with crown motif on the player's avatar, visible everywhere (Home, Profile, PlayerBadge).
+- **Exportable mastery badge** — A print-quality 2048x2048 PNG certificate with the player's name, difficulty, stars, and completion date. Saveable to gallery and shareable.
+- **Lifetime Stats screen** — Accessible from Home (after first game played). Shows total stars, games played, perfect games, total swaps, tokens used, challenges completed, and difficulty completions.
+- **Favorites modal** — A dialog on the Home screen listing all favorited levels with level number, name, world, and star rating. Tap to play, unfavorite inline.
+- **Cascading token trail effect** — Won tokens animate in a staggered cascade on the win screen.
+
+### Gameplay
+- **Back button blocked mid-game** — Android back button is disabled during active gameplay to prevent accidental exits.
+- **Extended cooldown** — Rest period extended from 5 minutes to 20 minutes.
+
+### Changes
+- **Leaderboards disabled** — Google Play Games leaderboards temporarily hidden pending a better provider.
+
 ## [1.6.0] - 2026-05-28 (Build 13)
 
 ### Gameplay
