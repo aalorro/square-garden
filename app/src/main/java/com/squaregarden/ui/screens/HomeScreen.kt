@@ -43,6 +43,7 @@ fun HomeScreen(navController: NavHostController) {
     val perfectGames by progressRepo.perfectGamesFlow.collectAsState(initial = 0)
     val lives by progressRepo.livesFlow.collectAsState(initial = 3)
     val cooldownUntil by progressRepo.cooldownUntilFlow.collectAsState(initial = 0L)
+    val gamesPlayed by progressRepo.gamesPlayedFlow.collectAsState(initial = 0)
     val cooldownActive = lives <= 0 && cooldownUntil > System.currentTimeMillis()
     var profile by remember { mutableStateOf(UserProfile()) }
     var currentWorld by remember { mutableIntStateOf(1) }
@@ -229,6 +230,18 @@ fun HomeScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(50)
             ) {
                 Text("How to Play", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            }
+
+            if (gamesPlayed > 0) {
+                OutlinedButton(
+                    onClick = { navController.navigate(Screen.Stats.route) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(50)
+                ) {
+                    Text("\uD83D\uDCCA  Stats", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
             }
 
             if (profile.leaderboardOptIn) {

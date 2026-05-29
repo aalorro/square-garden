@@ -106,8 +106,9 @@ object MusicManager {
      * Start win celebration music.
      * @param perfectGame true for huge-win/perfect-game (random celebratory clip, plays to end),
      *                    false for regular win (random segment of perfect_game_music, ~8 sec with fade-out).
+     * @param loop true to loop the music indefinitely until [stopWinMusic] is called (game complete).
      */
-    fun startWinMusic(context: Context, perfectGame: Boolean) {
+    fun startWinMusic(context: Context, perfectGame: Boolean, loop: Boolean = false) {
         if (!musicEnabled) return
         stopWinMusic()
         try {
@@ -115,19 +116,21 @@ object MusicManager {
                 // Huge win: random celebratory clip, plays from start to end.
                 winPlayer = MediaPlayer.create(context, hugeWinClips.random())?.apply {
                     setVolume(0.7f, 0.7f)
-                    setOnCompletionListener { stopWinMusic() }
+                    isLooping = loop
+                    if (!loop) setOnCompletionListener { stopWinMusic() }
                     start()
                 }
             } else {
                 // Regular win: pick a random segment from the existing perfect_game_music track.
                 winPlayer = MediaPlayer.create(context, R.raw.perfect_game_music)?.apply {
                     setVolume(0.7f, 0.7f)
+                    isLooping = loop
                     seekTo(winSegments.random())
                     start()
                 }
             }
         } catch (_: Exception) {}
-        if (!perfectGame) {
+        if (!perfectGame && !loop) {
             handler.postDelayed({ fadeOutWinMusic() }, WIN_PLAY_MS - WIN_FADE_MS)
         }
     }

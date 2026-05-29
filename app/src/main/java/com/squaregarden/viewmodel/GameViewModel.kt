@@ -864,6 +864,7 @@ class GameViewModel(
         viewModelScope.launch {
             val success = progressRepo.useUnfreezeToken()
             if (!success) return@launch
+            progressRepo.recordTokenUsed()
             unfreezeTokens--
             usedPowerUpThisGame = true
             val newTiles = current.board.tiles.mapIndexed { r, rowTiles ->
@@ -963,8 +964,10 @@ class GameViewModel(
         )
 
         viewModelScope.launch {
+            progressRepo.recordSwap()
             if (isDiagonalSwap) {
                 progressRepo.useDiagonalToken()
+                progressRepo.recordTokenUsed()
                 diagonalTokens--
                 usedPowerUpThisGame = true
             }
@@ -1030,6 +1033,12 @@ class GameViewModel(
             var ptCaptured = false
             var ufCaptured = false
             var diagCaptured = false
+            // Snapshot counts before incrementing — UI shows old count until trail lands
+            val preShuffleTokens = shuffleTokens
+            val prePassthroughTokens = passthroughTokens
+            val preUnfreezeTokens = unfreezeTokens
+            val preRedoTokens = redoTokens
+            val preDiagonalTokens = diagonalTokens
             val newlyCompleted = newCompleted - current.completedGoalIds
             if (newlyCompleted.isNotEmpty()) {
                 val newCells = newlyCompleted.flatMap { id -> newGoalCells[id] ?: emptySet() }
@@ -1103,8 +1112,9 @@ class GameViewModel(
                         isPerfect = movesUsed <= current.level.goals.size && level.world >= 5
                         val perfectMultiplier = if (isPerfect) 2f else 1f
                         starsAwarded = (baseStars * difficulty.starMultiplier * gameDiff.starMultiplier * perfectMultiplier).roundToInt()
-                        MusicManager.startWinMusic(context, perfectGame = isPerfect)
-                        audioManager.playWinClap(perfectGame = isPerfect)
+                        val isGameComplete = current.level.id == 126
+                        MusicManager.startWinMusic(context, perfectGame = isPerfect || isGameComplete, loop = isGameComplete)
+                        audioManager.playWinClap(perfectGame = isPerfect || isGameComplete)
                         val oldTotal = progressRepo.totalStarsFlow.first()
                         unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
                         winResultCommitted = false
@@ -1160,11 +1170,16 @@ class GameViewModel(
                 selectedCell = null, hintCells = emptySet(), swapAnim = null,
                 phase = phase, starsAwarded = starsAwarded, winsToRestoreLife = winsNeeded,
                 unlockedWorldName = unlockedWorld,
-                shuffleTokens = shuffleTokens, shuffleTokenAwarded = shuffleCaptured,
-                passthroughTokens = passthroughTokens, passthroughTokenAwarded = ptCaptured,
-                unfreezeTokens = unfreezeTokens, unfreezeTokenAwarded = ufCaptured,
-                redoTokens = redoTokens, redoTokenAwarded = redoCaptured,
-                diagonalTokens = diagonalTokens, diagonalTokenAwarded = diagCaptured,
+                shuffleTokens = if (shuffleCaptured) preShuffleTokens else shuffleTokens,
+                shuffleTokenAwarded = shuffleCaptured,
+                passthroughTokens = if (ptCaptured) prePassthroughTokens else passthroughTokens,
+                passthroughTokenAwarded = ptCaptured,
+                unfreezeTokens = if (ufCaptured) preUnfreezeTokens else unfreezeTokens,
+                unfreezeTokenAwarded = ufCaptured,
+                redoTokens = if (redoCaptured) preRedoTokens else redoTokens,
+                redoTokenAwarded = redoCaptured,
+                diagonalTokens = if (diagCaptured) preDiagonalTokens else diagonalTokens,
+                diagonalTokenAwarded = diagCaptured,
                 perfectGame = isPerfect,
                 challengeState = updatedChalState
             )
@@ -1217,6 +1232,7 @@ class GameViewModel(
         )
 
         viewModelScope.launch {
+            progressRepo.recordSwap()
             audioManager.playPassthrough()
             val steps = 15; val stepDelay = 17L
             for (i in 1..steps) {
@@ -1228,6 +1244,7 @@ class GameViewModel(
 
             // Consume passthrough token
             progressRepo.usePassthroughToken()
+            progressRepo.recordTokenUsed()
             passthroughTokens--
             usedPowerUpThisGame = true
             audioManager.playMatch()
@@ -1273,6 +1290,11 @@ class GameViewModel(
             var ptCaptured = false
             var ufCaptured = false
             var diagCaptured = false
+            val preShuffleTokensPt = shuffleTokens
+            val prePassthroughTokensPt = passthroughTokens
+            val preUnfreezeTokensPt = unfreezeTokens
+            val preRedoTokensPt = redoTokens
+            val preDiagonalTokensPt = diagonalTokens
             val newlyCompletedPt = newCompleted - current.completedGoalIds
             if (newlyCompletedPt.isNotEmpty()) {
                 val newCells = newlyCompletedPt.flatMap { id -> newGoalCells[id] ?: emptySet() }
@@ -1345,8 +1367,9 @@ class GameViewModel(
                         isPerfect = movesUsed <= current.level.goals.size && level.world >= 5
                         val perfectMultiplier = if (isPerfect) 2f else 1f
                         starsAwarded = (baseStars * difficulty.starMultiplier * gameDiff.starMultiplier * perfectMultiplier).roundToInt()
-                        MusicManager.startWinMusic(context, perfectGame = isPerfect)
-                        audioManager.playWinClap(perfectGame = isPerfect)
+                        val isGameComplete = current.level.id == 126
+                        MusicManager.startWinMusic(context, perfectGame = isPerfect || isGameComplete, loop = isGameComplete)
+                        audioManager.playWinClap(perfectGame = isPerfect || isGameComplete)
                         val oldTotal = progressRepo.totalStarsFlow.first()
                         unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
                         winResultCommitted = false
@@ -1399,14 +1422,19 @@ class GameViewModel(
                 board = boardAfterCapture, movesRemaining = newMoves,
                 completedGoalIds = newCompleted, completedGoalCells = newGoalCells,
                 selectedCell = null, hintCells = emptySet(), swapAnim = null,
-                passthroughActive = false, passthroughTokens = passthroughTokens,
-                shuffleTokens = shuffleTokens, shuffleTokenAwarded = shuffleCaptured,
+                passthroughActive = false,
+                passthroughTokens = if (ptCaptured) prePassthroughTokensPt else passthroughTokens,
+                shuffleTokens = if (shuffleCaptured) preShuffleTokensPt else shuffleTokens,
+                shuffleTokenAwarded = shuffleCaptured,
                 passthroughTokenAwarded = ptCaptured,
-                unfreezeTokens = unfreezeTokens, unfreezeTokenAwarded = ufCaptured,
+                unfreezeTokens = if (ufCaptured) preUnfreezeTokensPt else unfreezeTokens,
+                unfreezeTokenAwarded = ufCaptured,
                 phase = phase, starsAwarded = starsAwarded, winsToRestoreLife = winsNeeded,
                 unlockedWorldName = unlockedWorld,
-                redoTokens = redoTokens, redoTokenAwarded = redoCaptured,
-                diagonalTokens = diagonalTokens, diagonalTokenAwarded = diagCaptured,
+                redoTokens = if (redoCaptured) preRedoTokensPt else redoTokens,
+                redoTokenAwarded = redoCaptured,
+                diagonalTokens = if (diagCaptured) preDiagonalTokensPt else diagonalTokens,
+                diagonalTokenAwarded = diagCaptured,
                 perfectGame = isPerfect,
                 challengeState = updatedChalStatePt
             )
@@ -1490,6 +1518,7 @@ class GameViewModel(
         viewModelScope.launch {
             val success = progressRepo.useShuffleToken()
             if (!success) return@launch
+            progressRepo.recordTokenUsed()
             shuffleTokens--
             usedPowerUpThisGame = true
             val goalCells = current.completedGoalCells.values.flatten().toSet()
@@ -1608,6 +1637,7 @@ class GameViewModel(
         viewModelScope.launch {
             val success = progressRepo.useRedoToken()
             if (!success) return@launch
+            progressRepo.recordTokenUsed()
             redoTokens--
             usedPowerUpThisGame = true
             redoFullReset = true
@@ -1644,6 +1674,19 @@ class GameViewModel(
                 passthroughActive = false,
                 selectedCell = null, hintCells = emptySet()
             )
+        }
+    }
+
+    /** Called by UI after the token trail animation lands — bumps the displayed count. */
+    fun commitTokenCapture(icon: String) {
+        val current = _state.value
+        _state.value = when (icon) {
+            "\uD83D\uDD00" -> current.copy(shuffleTokens = shuffleTokens, shuffleTokenAwarded = false)
+            "\uD83D\uDEE1\uFE0F" -> current.copy(passthroughTokens = passthroughTokens, passthroughTokenAwarded = false)
+            "\u2744\uFE0F" -> current.copy(unfreezeTokens = unfreezeTokens, unfreezeTokenAwarded = false)
+            "\u21BB" -> current.copy(redoTokens = redoTokens, redoTokenAwarded = false)
+            "\u2197\uFE0F" -> current.copy(diagonalTokens = diagonalTokens, diagonalTokenAwarded = false)
+            else -> current
         }
     }
 
@@ -1743,6 +1786,15 @@ class GameViewModel(
             val worldWasAlreadyComplete = progressRepo.checkWorldComplete(worldForTrigger)
 
             progressRepo.saveLevelResult(pendingWinLevelId, pendingWinStars)
+
+            // ── Game Complete detection (level 126 is the final level) ──
+            if (pendingWinLevelId == 126 && !progressRepo.gameCompletedFlow.first()) {
+                progressRepo.markGameCompleted()
+                progressRepo.markCompletionOnDifficulty(difficulty.id)
+                profileRepo.markMasteryBadgeEarned()
+                _state.value = _state.value.copy(gameCompleted = true)
+            }
+
             val result = progressRepo.recordWin(difficulty.ordinal, pendingWinLevelId)
             profileRepo.incrementPlayerLevel()
             val playerLevel = profileRepo.loadProfile().playerLevel

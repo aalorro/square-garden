@@ -37,7 +37,8 @@ fun BasReliefAvatar(
     size: Dp,
     modifier: Modifier = Modifier,
     animate: Boolean = true,
-    imageBitmap: ImageBitmap? = null
+    imageBitmap: ImageBitmap? = null,
+    masteryBadge: Boolean = false
 ) {
     // Gentle breathing animation
     val infiniteTransition = rememberInfiniteTransition(label = "avatar_breathe")
@@ -137,6 +138,56 @@ fun BasReliefAvatar(
                 center = center,
                 style = Stroke(width = outerR * 0.04f)
             )
+
+            // 10. Mastery golden ring + crown + colored dots
+            if (masteryBadge) {
+                val gold = Color(0xFFD4A017)
+                val goldLight = Color(0xFFFFD700)
+                // Golden ring
+                drawCircle(
+                    color = gold,
+                    radius = outerR * 0.99f,
+                    center = center,
+                    style = Stroke(width = outerR * 0.06f)
+                )
+                // Inner gold shimmer
+                drawCircle(
+                    color = goldLight.copy(alpha = 0.5f),
+                    radius = outerR * 0.97f,
+                    center = center,
+                    style = Stroke(width = outerR * 0.02f)
+                )
+                // 6 colored dots around the ring (one per TileColor)
+                val dotColors = listOf(
+                    Color(0xFFE74C3C), // red
+                    Color(0xFF3498DB), // blue
+                    Color(0xFFF1C40F), // yellow
+                    Color(0xFF27AE60), // green
+                    Color(0xFFE67E22), // orange
+                    Color(0xFF8E44AD)  // violet
+                )
+                val dotR = outerR * 0.055f
+                val ringR = outerR * 0.99f
+                dotColors.forEachIndexed { i, dotColor ->
+                    val angle = Math.toRadians((i * 60.0 + 30.0))
+                    val dx = (kotlin.math.cos(angle) * ringR).toFloat()
+                    val dy = (kotlin.math.sin(angle) * ringR).toFloat()
+                    drawCircle(color = dotColor, radius = dotR, center = center + Offset(dx, dy))
+                }
+                // Crown motif: 3 small gold triangles at top
+                val crownY = center.y - outerR * 1.02f
+                for (tri in -1..1) {
+                    val cx = center.x + tri * outerR * 0.16f
+                    val triSize = outerR * 0.1f
+                    val path = androidx.compose.ui.graphics.Path().apply {
+                        moveTo(cx, crownY - triSize)
+                        lineTo(cx - triSize * 0.6f, crownY + triSize * 0.3f)
+                        lineTo(cx + triSize * 0.6f, crownY + triSize * 0.3f)
+                        close()
+                    }
+                    drawPath(path, gold)
+                }
+            }
         }
 
         if (imageBitmap != null) {

@@ -26,6 +26,7 @@ class ProfileRepository(private val context: Context) {
         private val CUSTOM_AVATAR_PATH = stringPreferencesKey("custom_avatar_path")
         private val OVERRIDE_STARTING_LEVEL = intPreferencesKey("override_starting_level")
         private val PERFECT_GAME_SPLASH_SHOWN = booleanPreferencesKey("perfect_game_splash_shown")
+        private val MASTERY_BADGE_EARNED = booleanPreferencesKey("mastery_badge_earned")
     }
 
     val profileFlow: Flow<UserProfile> = context.profileDataStore.data.map { prefs ->
@@ -40,7 +41,8 @@ class ProfileRepository(private val context: Context) {
             playerLevel = prefs[PLAYER_LEVEL] ?: 0,
             leaderboardOptIn = prefs[LEADERBOARD_OPT_IN] ?: false,
             overrideStartingLevel = prefs[OVERRIDE_STARTING_LEVEL] ?: 0,
-            perfectGameSplashShown = prefs[PERFECT_GAME_SPLASH_SHOWN] ?: false
+            perfectGameSplashShown = prefs[PERFECT_GAME_SPLASH_SHOWN] ?: false,
+            masteryBadgeEarned = prefs[MASTERY_BADGE_EARNED] ?: false
         )
     }
 
@@ -85,6 +87,12 @@ class ProfileRepository(private val context: Context) {
         context.profileDataStore.edit { prefs ->
             prefs[DIFFICULTY] = newDifficulty.id
             prefs[OVERRIDE_STARTING_LEVEL] = overrideStartingLevel
+        }
+    }
+
+    suspend fun markMasteryBadgeEarned() {
+        context.profileDataStore.edit { prefs ->
+            prefs[MASTERY_BADGE_EARNED] = true
         }
     }
 

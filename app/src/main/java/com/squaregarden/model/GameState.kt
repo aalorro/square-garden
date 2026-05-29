@@ -37,7 +37,8 @@ data class GameState(
     val perfectGame: Boolean = false,
     val challengeState: ChallengeState? = null,
     val pendingChallenge: ChallengeType? = null,
-    val boardGenerating: Boolean = false
+    val boardGenerating: Boolean = false,
+    val gameCompleted: Boolean = false
 ) {
     val isChallenge: Boolean get() = challengeState != null
 }

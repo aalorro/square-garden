@@ -34,6 +34,7 @@ fun PlayerBadge(
     gamesPlayed: Int,
     lives: Int,
     perfectGames: Int = 0,
+    masteryBadge: Boolean = false,
     onSettingsClick: () -> Unit,
     onExitClick: () -> Unit,
     onStarPositioned: ((Offset) -> Unit)? = null,
@@ -99,7 +100,8 @@ fun PlayerBadge(
                     emoji = avatarEmoji,
                     size = avatarSize,
                     animate = false,
-                    imageBitmap = avatarImageBitmap
+                    imageBitmap = avatarImageBitmap,
+                    masteryBadge = masteryBadge
                 )
             }
 

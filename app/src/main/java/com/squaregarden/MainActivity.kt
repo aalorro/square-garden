@@ -101,6 +101,7 @@ class MainActivity : ComponentActivity() {
                             gamesPlayed = gamesPlayed,
                             lives = lives,
                             perfectGames = perfectGames,
+                            masteryBadge = profile.masteryBadgeEarned,
                             onSettingsClick = {
                                 navController.navigate(Screen.Settings.route)
                             },

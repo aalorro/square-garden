@@ -1,5 +1,6 @@
 package com.squaregarden.ui.screens
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
@@ -372,7 +373,7 @@ fun GameScreen(
         // (challenge banner moved above game board)
     }
 
-    // Token captured celebrations (mid-game) — dramatic cascading trail to bottom bar
+    // Token captured celebrations (mid-game) — splash icon then cascading trail
     if (state.phase == GamePhase.PLAYING) {
         // Compute target X fractions based on button count (SpaceEvenly positions)
         val hasDiagonal = state.level.world >= 11
@@ -387,19 +388,63 @@ fun GameScreen(
             if (state.diagonalTokenAwarded) AwardedToken("\u2197\uFE0F", "Diagonal Token Earned!", TileViolet, buttonX(5)) else null
         )
         captured.forEachIndexed { index, tok ->
-            var active by remember(tok.icon) { mutableStateOf(false) }
+            val splashScale = remember(tok.icon) { Animatable(0f) }
+            var showTrail by remember(tok.icon) { mutableStateOf(false) }
             var dismissed by remember(tok.icon) { mutableStateOf(false) }
             LaunchedEffect(tok.icon) {
-                delay(index * 1200L) // stagger multiple trails
-                active = true
+                delay(index * 1400L) // stagger multiple celebrations
+                // Phase 1: splash in
+                splashScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f))
+                delay(1500) // hold splash
+                // Phase 2: shrink splash, launch trail
+                splashScale.animateTo(0f, animationSpec = tween(300))
+                showTrail = true
             }
-            if (active && !dismissed) {
+            // Splash icon popup
+            if (!dismissed && splashScale.value > 0f) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Surface(
+                            shape = CircleShape,
+                            color = tok.accent.copy(alpha = 0.55f),
+                            modifier = Modifier
+                                .size(120.dp)
+                                .scale(splashScale.value)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(text = tok.icon, fontSize = 56.sp)
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Surface(
+                            shape = RoundedCornerShape(14.dp),
+                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                            modifier = Modifier.scale(splashScale.value)
+                        ) {
+                            Text(
+                                text = tok.label,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = tok.accent,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            // Cascading trail to bottom bar icon
+            if (showTrail && !dismissed) {
                 TokenTrailOverlay(
                     icon = tok.icon,
                     accentColor = tok.accent,
-                    label = tok.label,
                     targetXFraction = tok.targetX,
-                    onComplete = { dismissed = true },
+                    onComplete = {
+                        viewModel.commitTokenCapture(tok.icon)
+                        dismissed = true
+                    },
                     onLanded = { viewModel.playTokenCapture() }
                 )
             }
@@ -452,9 +497,60 @@ fun GameScreen(
 
         // Celebration layers in the foreground, raining down over the card
         if (challengeCelebrationReady) {
-            ConfettiOverlay(stars = stars, perfectGame = state.perfectGame)
-            BalloonOverlay(stars = stars, perfectGame = state.perfectGame)
-            StarBurstOverlay(stars = stars, perfectGame = state.perfectGame)
+            val maxCelebration = state.perfectGame || state.gameCompleted
+            ConfettiOverlay(stars = stars, perfectGame = maxCelebration)
+            BalloonOverlay(stars = stars, perfectGame = maxCelebration)
+            StarBurstOverlay(stars = stars, perfectGame = maxCelebration)
+        }
+    }
+
+    // Game Complete overlay (after beating level 126)
+    if (state.phase == GamePhase.WON && state.gameCompleted) {
+        var showGameComplete by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) {
+            delay(3000) // Let normal win celebration play first
+            showGameComplete = true
+        }
+        if (showGameComplete) {
+            val profileRepo = remember { ProfileRepository(context) }
+            val gcTotalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
+            val gcPerfectGames by progressRepo.perfectGamesFlow.collectAsState(initial = 0)
+            val gcGamesPlayed by progressRepo.gamesPlayedFlow.collectAsState(initial = 0)
+            var challengesCompleted by remember { mutableIntStateOf(0) }
+            var playerName by remember { mutableStateOf("") }
+            var diffLabel by remember { mutableStateOf("") }
+            LaunchedEffect(Unit) {
+                val completions = progressRepo.getChallengeCompletions()
+                challengesCompleted = completions.values.sum()
+                val profile = profileRepo.loadProfile()
+                playerName = profile.username
+                diffLabel = Difficulty.fromId(profile.difficulty).label
+            }
+            GameCompleteOverlay(
+                totalStars = gcTotalStars,
+                perfectGames = gcPerfectGames,
+                gamesPlayed = gcGamesPlayed,
+                challengesCompleted = challengesCompleted,
+                onSaveBadge = {
+                    scope.launch {
+                        val dateStr = java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault())
+                            .format(java.util.Date())
+                        val uri = com.squaregarden.data.BadgeExporter.exportBadge(
+                            context, playerName, diffLabel, gcTotalStars, gcPerfectGames, dateStr
+                        )
+                        if (uri != null) {
+                            val shareIntent = com.squaregarden.data.BadgeExporter.shareIntent(uri)
+                            context.startActivity(Intent.createChooser(shareIntent, "Share Mastery Badge"))
+                        }
+                    }
+                },
+                onReturnHome = {
+                    MusicManager.stopWinMusic()
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 

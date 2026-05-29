@@ -36,7 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.squaregarden.data.AvatarStorage
+import com.squaregarden.data.BadgeExporter
 import com.squaregarden.data.ProfileRepository
+import com.squaregarden.data.ProgressRepository
 import com.squaregarden.model.Difficulty
 import com.squaregarden.model.Gender
 import com.squaregarden.model.UserProfile
@@ -47,6 +49,7 @@ import com.squaregarden.ui.components.avatarList
 import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.ui.theme.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -66,6 +69,7 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
     var difficulty by remember { mutableStateOf("medium") }
     var leaderboardOptIn by remember { mutableStateOf(false) }
     var loaded by remember { mutableStateOf(false) }
+    var masteryBadgeEarned by remember { mutableStateOf(false) }
 
     // Custom avatar state
     var customAvatarPath by remember { mutableStateOf("") }
@@ -105,6 +109,7 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
         themeId = profile.themeId
         difficulty = profile.difficulty
         leaderboardOptIn = profile.leaderboardOptIn
+        masteryBadgeEarned = profile.masteryBadgeEarned
         if (profile.hasCustomAvatar) {
             withContext(Dispatchers.IO) {
                 customAvatarBitmap = AvatarStorage.loadAvatar(profile.customAvatarPath)
@@ -158,7 +163,8 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
             BasReliefAvatar(
                 emoji = if (avatarId == CUSTOM_AVATAR_ID) "" else avatarList.getOrElse(avatarId) { avatarList[0] }.emoji,
                 size = 80.dp,
-                imageBitmap = if (avatarId == CUSTOM_AVATAR_ID) customAvatarBitmap else null
+                imageBitmap = if (avatarId == CUSTOM_AVATAR_ID) customAvatarBitmap else null,
+                masteryBadge = masteryBadgeEarned
             )
         }
 
@@ -516,6 +522,42 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
                 checked = leaderboardOptIn,
                 onCheckedChange = { leaderboardOptIn = it }
             )
+        }
+
+        // ── Mastery Badge ──
+        if (masteryBadgeEarned) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "Mastery Badge",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            OutlinedButton(
+                onClick = {
+                    scope.launch {
+                        val progressRepo = ProgressRepository(context)
+                        val stars = progressRepo.totalStarsFlow.first()
+                        val perfGames = progressRepo.perfectGamesFlow.first()
+                        val diffLabel = Difficulty.fromId(difficulty).label
+                        val dateStr = java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault())
+                            .format(java.util.Date(progressRepo.getGameCompletedTimestamp()))
+                        val uri = BadgeExporter.exportBadge(
+                            context, username.ifBlank { "Player" }, diffLabel, stars, perfGames, dateStr
+                        )
+                        if (uri != null) {
+                            val shareIntent = BadgeExporter.shareIntent(uri)
+                            context.startActivity(
+                                android.content.Intent.createChooser(shareIntent, "Share Mastery Badge")
+                            )
+                        }
+                    }
+                },
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Save & Share Mastery Badge")
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))

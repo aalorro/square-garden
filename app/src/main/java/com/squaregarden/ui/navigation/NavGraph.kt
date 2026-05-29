@@ -59,5 +59,8 @@ fun SquareGardenNavGraph(navController: NavHostController) {
         composable(Screen.ShapesExplainer.route) {
             ShapesExplainerScreen(navController = navController)
         }
+        composable(Screen.Stats.route) {
+            StatsScreen(navController = navController)
+        }
     }
 }

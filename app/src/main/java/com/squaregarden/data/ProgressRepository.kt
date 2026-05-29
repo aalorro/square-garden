@@ -42,6 +42,12 @@ class ProgressRepository(private val context: Context) {
         private val OVERGROWN_COMPLETIONS_KEY = intPreferencesKey("overgrown_completions")
         private val SHIFTING_COMPLETIONS_KEY = intPreferencesKey("shifting_completions")
         private val MEMORY_COMPLETIONS_KEY = intPreferencesKey("memory_completions")
+        // Endgame tracking
+        private val GAME_COMPLETED_KEY = booleanPreferencesKey("game_completed")
+        private val GAME_COMPLETED_TIMESTAMP_KEY = longPreferencesKey("game_completed_timestamp")
+        private val TOTAL_SWAPS_KEY = intPreferencesKey("total_swaps")
+        private val TOKENS_USED_KEY = intPreferencesKey("tokens_used")
+        private const val COMPLETED_ON_PREFIX = "completed_on_"
     }
 
     /** One-time migration: seed TOTAL_STARS_KEY from sum of per-level bests. */
@@ -461,6 +467,76 @@ class ProgressRepository(private val context: Context) {
         context.dataStore.edit { prefs ->
             prefs[TOTAL_STARS_KEY] = (prefs[TOTAL_STARS_KEY] ?: 0) + stars
         }
+    }
+
+    // ── Endgame tracking ──
+
+    val gameCompletedFlow: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[GAME_COMPLETED_KEY] ?: false
+    }
+
+    val totalSwapsFlow: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[TOTAL_SWAPS_KEY] ?: 0
+    }
+
+    val tokensUsedFlow: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[TOKENS_USED_KEY] ?: 0
+    }
+
+    suspend fun markGameCompleted() {
+        context.dataStore.edit { prefs ->
+            if (prefs[GAME_COMPLETED_KEY] != true) {
+                prefs[GAME_COMPLETED_KEY] = true
+                prefs[GAME_COMPLETED_TIMESTAMP_KEY] = System.currentTimeMillis()
+            }
+        }
+    }
+
+    suspend fun getGameCompletedTimestamp(): Long {
+        return context.dataStore.data.first()[GAME_COMPLETED_TIMESTAMP_KEY] ?: 0L
+    }
+
+    suspend fun markCompletionOnDifficulty(difficultyId: String) {
+        context.dataStore.edit { prefs ->
+            prefs[booleanPreferencesKey("$COMPLETED_ON_PREFIX$difficultyId")] = true
+        }
+    }
+
+    suspend fun getCompletedDifficulties(): Set<String> {
+        val prefs = context.dataStore.data.first()
+        return prefs.asMap().entries
+            .filter { it.key.name.startsWith(COMPLETED_ON_PREFIX) && it.value == true }
+            .map { it.key.name.removePrefix(COMPLETED_ON_PREFIX) }
+            .toSet()
+    }
+
+    suspend fun recordSwap() {
+        context.dataStore.edit { prefs ->
+            prefs[TOTAL_SWAPS_KEY] = (prefs[TOTAL_SWAPS_KEY] ?: 0) + 1
+        }
+    }
+
+    suspend fun recordTokenUsed() {
+        context.dataStore.edit { prefs ->
+            prefs[TOKENS_USED_KEY] = (prefs[TOKENS_USED_KEY] ?: 0) + 1
+        }
+    }
+
+    suspend fun getLevelsThreeStarred(): Int {
+        val prefs = context.dataStore.data.first()
+        return prefs.asMap().entries.count { entry ->
+            entry.key.name.startsWith(LEVEL_STARS_PREFIX) && entry.value is Int && (entry.value as Int) >= 3
+        }
+    }
+
+    suspend fun getChallengeCompletions(): Map<String, Int> {
+        val prefs = context.dataStore.data.first()
+        return mapOf(
+            "blitz" to (prefs[BLITZ_COMPLETIONS_KEY] ?: 0),
+            "overgrown" to (prefs[OVERGROWN_COMPLETIONS_KEY] ?: 0),
+            "shifting" to (prefs[SHIFTING_COMPLETIONS_KEY] ?: 0),
+            "memory" to (prefs[MEMORY_COMPLETIONS_KEY] ?: 0)
+        )
     }
 
     suspend fun clearAll() {

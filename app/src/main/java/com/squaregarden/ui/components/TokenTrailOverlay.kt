@@ -7,7 +7,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
@@ -34,7 +33,6 @@ private data class TokenParticle(
 fun TokenTrailOverlay(
     icon: String,
     accentColor: Color,
-    label: String,
     targetXFraction: Float = 0.5f,
     onComplete: () -> Unit,
     onLanded: () -> Unit = {}
@@ -50,7 +48,7 @@ fun TokenTrailOverlay(
                 controlOffsetX = -0.30f + Random.nextFloat() * 0.60f,
                 controlOffsetY = -0.15f + Random.nextFloat() * 0.20f,
                 delay = i.toFloat() / totalParticles * 0.45f,
-                size = 18f + Random.nextFloat() * 14f,
+                size = 9f + Random.nextFloat() * 7f,
                 rotSpeed = 200f + Random.nextFloat() * 300f,
                 trailLength = 5 + Random.nextInt(4)
             )
@@ -58,29 +56,15 @@ fun TokenTrailOverlay(
     }
 
     val progress = remember { Animatable(0f) }
-    val labelAlpha = remember { Animatable(0f) }
     val landed = remember { mutableIntStateOf(0) }
 
     // Main flight animation
     LaunchedEffect(icon) {
         landed.intValue = 0
         progress.snapTo(0f)
-        labelAlpha.snapTo(0f)
-        // Flash the label in at the start
-        labelAlpha.animateTo(1f, animationSpec = tween(300))
-        // Hold label briefly while particles start flying
-        delay(600)
-        // Start flying
         progress.animateTo(1f, animationSpec = tween(durationMs, easing = LinearEasing))
-        // Brief hold at end
         delay(200)
         onComplete()
-    }
-
-    // Fade label out as particles fly
-    LaunchedEffect(icon) {
-        delay(1600)
-        labelAlpha.animateTo(0f, animationSpec = tween(400))
     }
 
     // Track landings for sound callback
@@ -103,7 +87,6 @@ fun TokenTrailOverlay(
     }
 
     val t = progress.value
-    val lAlpha = labelAlpha.value
     val textMeasurer = rememberTextMeasurer()
 
     Canvas(modifier = Modifier.fillMaxSize()) {
@@ -113,30 +96,6 @@ fun TokenTrailOverlay(
         // Target: the power-up icon at the bottom bar
         val tx = w * targetXFraction
         val ty = h * 0.92f
-
-        // Draw label text at center when visible
-        if (lAlpha > 0.01f) {
-            val labelResult = textMeasurer.measure(
-                text = AnnotatedString(label),
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
-                    color = accentColor.copy(alpha = lAlpha),
-                    shadow = Shadow(
-                        color = Color.Black.copy(alpha = 0.5f * lAlpha),
-                        offset = Offset(2f, 2f),
-                        blurRadius = 6f
-                    )
-                )
-            )
-            drawText(
-                labelResult,
-                topLeft = Offset(
-                    (w - labelResult.size.width) / 2f,
-                    h * 0.18f
-                )
-            )
-        }
 
         // Draw particles
         particles.forEach { p ->
@@ -229,7 +188,7 @@ fun TokenTrailOverlay(
                 val iconResult = textMeasurer.measure(
                     text = AnnotatedString(icon),
                     style = TextStyle(
-                        fontSize = (44 * iconScale).sp,
+                        fontSize = (22 * iconScale).sp,
                         color = Color.White.copy(alpha = iconAlpha)
                     )
                 )
