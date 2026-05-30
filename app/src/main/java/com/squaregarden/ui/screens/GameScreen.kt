@@ -133,14 +133,30 @@ fun GameScreen(
                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                 )
             }
-            Text(
-                text = state.level.name,
-                fontFamily = com.squaregarden.ui.theme.DisplayFontFamily,
-                fontSize = if (isCompact) 13.sp else 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-                maxLines = 1
-            )
+            if (isCompact) {
+                var showNumber by remember(state.level.id) { mutableStateOf(true) }
+                Text(
+                    text = if (showNumber) "${state.level.name} (${state.level.id})"
+                           else state.level.name,
+                    fontFamily = com.squaregarden.ui.theme.DisplayFontFamily,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1,
+                    onTextLayout = { result ->
+                        if (showNumber && result.hasVisualOverflow) showNumber = false
+                    }
+                )
+            } else {
+                Text(
+                    text = "${state.level.name} (${state.level.id})",
+                    fontFamily = com.squaregarden.ui.theme.DisplayFontFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1
+                )
+            }
             if (levelId > 0) {
                 TextButton(
                     onClick = {
@@ -459,7 +475,7 @@ fun GameScreen(
         // Fullscreen overlay card (renders first = behind celebration particles)
         WinOverlay(
             stars = stars,
-            levelName = state.level.name,
+            levelName = "${state.level.name} (${state.level.id})",
             unlockedWorldName = state.unlockedWorldName,
             shuffleTokenAwarded = state.shuffleTokenAwarded,
             passthroughTokenAwarded = state.passthroughTokenAwarded,

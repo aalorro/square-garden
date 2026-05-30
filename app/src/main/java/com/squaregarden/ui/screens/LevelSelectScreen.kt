@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -94,6 +96,7 @@ private val worldThemes = mapOf(
 @Composable
 fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
     val context = LocalContext.current
+    val isCompact = LocalConfiguration.current.screenWidthDp < 600
     val progressRepo = remember { ProgressRepository(context) }
     val profileRepo = remember { ProfileRepository(context) }
     var progress by remember { mutableStateOf(PlayerProgress()) }
@@ -252,7 +255,9 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                     val stars = progress.levelStars[level.id] ?: 0
                     val overrideLevel = profile?.overrideStartingLevel ?: 0
                     val effectiveStart = if (overrideLevel > 0) overrideLevel else (difficulty?.startingLevel ?: 1)
-                    val unlocked = level.id <= progress.highestUnlockedLevel(effectiveStart)
+                    val highestUnlocked = progress.highestUnlockedLevel(effectiveStart)
+                    val unlocked = level.id <= highestUnlocked
+                    val isUpNext = level.id == highestUnlocked && progress.levelStars[level.id] == null
                     val isLastWon = level.id == lastWonLevel
                     val isFavorite = level.id in progress.favoriteLevels
 
@@ -287,10 +292,10 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 if (!unlocked) {
-                                    Text("\uD83D\uDD12", fontSize = 22.sp, color = theme.textColor.copy(alpha = 0.6f))
+                                    Text("\uD83D\uDD12", fontSize = if (isCompact) 22.sp else 48.sp, color = theme.textColor.copy(alpha = 0.6f))
                                     Text(
                                         text = level.name,
-                                        fontSize = 8.sp,
+                                        fontSize = if (isCompact) 8.sp else 28.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = theme.textColor.copy(alpha = 0.5f),
                                         textAlign = TextAlign.Center,
@@ -300,15 +305,15 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                     Text(
                                         text = "${level.id}",
                                         fontFamily = DisplayFontFamily,
-                                        fontSize = 26.sp,
+                                        fontSize = if (isCompact) 26.sp else 64.sp,
                                         fontWeight = FontWeight.ExtraBold,
                                         color = theme.textColor
                                     )
-                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(if (isCompact) 2.dp else 6.dp)) {
                                         repeat(3) { i ->
                                             Text(
                                                 text = "\u2605",
-                                                fontSize = 12.sp,
+                                                fontSize = if (isCompact) 12.sp else 28.sp,
                                                 color = if (i < stars) theme.starColor
                                                 else theme.textColor.copy(alpha = 0.25f)
                                             )
@@ -316,12 +321,20 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                     }
                                     Text(
                                         text = level.name,
-                                        fontSize = 8.sp,
+                                        fontSize = if (isCompact) 8.sp else 28.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = theme.textColor.copy(alpha = 0.7f),
                                         textAlign = TextAlign.Center,
                                         maxLines = 1
                                     )
+                                    if (isUpNext) {
+                                        Text(
+                                            text = "Up Next",
+                                            fontSize = if (isCompact) 8.sp else 56.sp,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
                                 }
                             }
                             if (isFavorite && unlocked) {
