@@ -49,6 +49,7 @@ fun HomeScreen(navController: NavHostController) {
     val cooldownActive = lives <= 0 && cooldownUntil > System.currentTimeMillis()
     var profile by remember { mutableStateOf(UserProfile()) }
     var currentWorld by remember { mutableIntStateOf(1) }
+    var nextLevel by remember { mutableIntStateOf(1) }
     var showFavorites by remember { mutableStateOf(false) }
     val allLevels = remember { LevelLoader.loadAllLevels(context) }
     var progress by remember { mutableStateOf(PlayerProgress()) }
@@ -64,6 +65,7 @@ fun HomeScreen(navController: NavHostController) {
         val effectiveStart = if (profile.overrideStartingLevel > 0)
             profile.overrideStartingLevel else difficulty.startingLevel
         val highestUnlocked = progress.highestUnlockedLevel(effectiveStart)
+        nextLevel = highestUnlocked.coerceAtMost(126)
         // Worlds run 1..14 (Pro+ adds 11-14); clamp to the full range so
         // Pro+ players land on their current world, not world 10.
         currentWorld = (((highestUnlocked - 1) / 9) + 1).coerceIn(1, 14)
@@ -188,7 +190,7 @@ fun HomeScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Button(
-                onClick = { navController.navigate(Screen.LevelSelect.create(currentWorld)) },
+                onClick = { navController.navigate(Screen.Game.create(nextLevel)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),

@@ -84,7 +84,8 @@ object HintSolver {
 
             for (state in beam) {
                 // Already solved
-                if (state.completedIds.size == goals.size) return state.steps
+                if (state.completedIds.size == goals.size)
+                    return compressSolution(board, goals, state.steps, difficulty)
 
                 // Generate all valid swaps from this state
                 for (r in 0 until state.board.height) {
@@ -139,7 +140,7 @@ object HintSolver {
 
             // Check for a full solution among candidates
             val solution = candidates.find { it.completedIds.size == goals.size }
-            if (solution != null) return solution.steps
+            if (solution != null) return compressSolution(board, goals, solution.steps, difficulty)
 
             // Score, deduplicate by completed goals count + progress, and keep top beamWidth
             beam = candidates
@@ -152,6 +153,33 @@ object HintSolver {
 
         // No fully-solving sequence found within maxMoves
         return null
+    }
+
+    /**
+     * Removes redundant moves from a solution by trying to drop each step
+     * and verifying the shorter sequence still completes all goals.
+     * Repeats until no more moves can be removed.
+     */
+    private fun compressSolution(
+        board: Board,
+        goals: List<Goal>,
+        steps: List<Pair<CellPos, CellPos>>,
+        difficulty: Difficulty
+    ): List<Pair<CellPos, CellPos>> {
+        var best = steps
+        var improved = true
+        while (improved) {
+            improved = false
+            for (i in best.indices) {
+                val candidate = best.toMutableList().apply { removeAt(i) }
+                if (verifySolution(board, goals, candidate, difficulty)) {
+                    best = candidate
+                    improved = true
+                    break
+                }
+            }
+        }
+        return best
     }
 
     /**

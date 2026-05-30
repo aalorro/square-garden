@@ -1301,7 +1301,7 @@
     "name": "Ancient Roots",
     "width": 7,
     "height": 7,
-    "maxMoves": 18,
+    "maxMoves": 28,
     "tiles": [
       [
         "RED",
@@ -1369,9 +1369,9 @@
     ],
     "goals": [
       {
-        "type": "shape",
+        "type": "line",
         "color": "RED",
-        "shape": "CROSS"
+        "length": 4
       },
       {
         "type": "line",
@@ -1381,11 +1381,15 @@
       {
         "type": "square",
         "color": "BLUE"
+      },
+      {
+        "type": "square",
+        "color": "YELLOW"
       }
     ],
     "stars": {
-      "twoStar": 6,
-      "threeStar": 10
+      "twoStar": 8,
+      "threeStar": 14
     }
   },
   {
@@ -1394,7 +1398,7 @@
     "name": "Mossy Steps",
     "width": 7,
     "height": 7,
-    "maxMoves": 18,
+    "maxMoves": 22,
     "tiles": [
       [
         "GREEN",
@@ -1474,11 +1478,16 @@
       {
         "type": "square",
         "color": "RED"
+      },
+      {
+        "type": "line",
+        "color": "YELLOW",
+        "length": 4
       }
     ],
     "stars": {
-      "twoStar": 5,
-      "threeStar": 10
+      "twoStar": 6,
+      "threeStar": 12
     }
   },
   {
@@ -1487,7 +1496,7 @@
     "name": "Deep Canopy",
     "width": 7,
     "height": 7,
-    "maxMoves": 18,
+    "maxMoves": 22,
     "tiles": [
       [
         "BLUE",
@@ -1568,11 +1577,15 @@
         "type": "line",
         "color": "GREEN",
         "length": 5
+      },
+      {
+        "type": "square",
+        "color": "YELLOW"
       }
     ],
     "stars": {
-      "twoStar": 5,
-      "threeStar": 10
+      "twoStar": 6,
+      "threeStar": 12
     }
   },
   {
@@ -1777,7 +1790,7 @@
     "name": "Stone Circle",
     "width": 7,
     "height": 7,
-    "maxMoves": 20,
+    "maxMoves": 24,
     "tiles": [
       [
         "BLUE",
@@ -1858,11 +1871,15 @@
         "type": "line",
         "color": "GREEN",
         "length": 4
+      },
+      {
+        "type": "square",
+        "color": "YELLOW"
       }
     ],
     "stars": {
-      "twoStar": 6,
-      "threeStar": 11
+      "twoStar": 7,
+      "threeStar": 13
     }
   },
   {
@@ -2191,7 +2208,7 @@
     "name": "Crystal Entry",
     "width": 7,
     "height": 7,
-    "maxMoves": 18,
+    "maxMoves": 22,
     "tiles": [
       [
         "RED",
@@ -2291,11 +2308,16 @@
         "type": "shape",
         "color": "GREEN",
         "shape": "L_SHAPE"
+      },
+      {
+        "type": "line",
+        "color": "ORANGE",
+        "length": 4
       }
     ],
     "stars": {
-      "twoStar": 5,
-      "threeStar": 10
+      "twoStar": 6,
+      "threeStar": 12
     }
   },
   {
@@ -2304,7 +2326,7 @@
     "name": "Frost Shard",
     "width": 7,
     "height": 7,
-    "maxMoves": 18,
+    "maxMoves": 22,
     "tiles": [
       [
         "BLUE",
@@ -2409,11 +2431,15 @@
         "type": "shape",
         "color": "RED",
         "shape": "T_SHAPE"
+      },
+      {
+        "type": "square",
+        "color": "ORANGE"
       }
     ],
     "stars": {
-      "twoStar": 5,
-      "threeStar": 10
+      "twoStar": 6,
+      "threeStar": 12
     }
   },
   {
