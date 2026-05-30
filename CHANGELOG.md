@@ -2,6 +2,19 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.7.1] - 2026-05-30 (Build 15)
+
+### Gameplay
+- **All Pro-level games now have 4 goals** — eliminated all 3-goal levels from World 3+ for a more engaging Pro experience.
+- **Level 19 rebalanced** — Pro players start World 3 with a proper 4-goal warmup (Line/Square mix) rated Easy instead of a boring 3-goal Hard.
+- **Play button goes directly to next level** — tapping Play on the Home screen launches your next unplayed level instead of the world menu.
+
+### Improvements
+- **Smarter solutions** — HintSolver now compresses solutions by removing redundant moves, producing cleaner and shorter solutions.
+- **Level number on game board** — level name shows the number in parentheses (auto-hidden on phones if it would overflow).
+- **"Up Next" label on LevelSelect** — the next unplayed level card is clearly marked.
+- **Tablet-optimized LevelSelect cards** — level number, stars, game name, and "Up Next" label scale up for tablet screens.
+
 ## [1.7.0] - 2026-05-29 (Build 14)
 
 ### New Features

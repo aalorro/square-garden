@@ -45,6 +45,19 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.7.1 (What's New)
+
+What's new in 1.7.1:
+
+- All Pro-level games now have 4 goals — no more boring 3-goal levels from World 3 onward.
+- Play button takes you straight to your next level — no more detour through the world menu.
+- Smarter solutions — the solver now trims unnecessary moves for cleaner, shorter solutions.
+- Level number shown next to the level name on the game board.
+- "Up Next" label highlights your next level on the world screen.
+- Tablet-friendly level cards with larger fonts for level number, name, stars, and Up Next.
+
+Happy gardening!
+
 ## Release Notes — Version 1.7.0 (What's New)
 
 What's new in 1.7.0:
