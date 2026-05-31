@@ -1795,6 +1795,11 @@ class GameViewModel(
                 _state.value = _state.value.copy(gameCompleted = true)
             }
 
+            // ── Pro+ upgrade prompt (Pro player just completed level 90) ──
+            if (pendingWinLevelId == 90 && difficulty == Difficulty.HARD) {
+                _state.value = _state.value.copy(proUpgradePrompt = true)
+            }
+
             val result = progressRepo.recordWin(difficulty.ordinal, pendingWinLevelId)
             profileRepo.incrementPlayerLevel()
             val playerLevel = profileRepo.loadProfile().playerLevel

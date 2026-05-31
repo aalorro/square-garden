@@ -494,11 +494,16 @@ fun GameScreen(
             },
             isChallenge = state.isChallenge,
             challengeGoalsCleared = state.challengeState?.goalsCleared ?: 0,
-            onNext = if (!state.isChallenge && state.level.id < 126) {
+            onNext = if (!state.isChallenge && state.level.id < 126 && !state.proUpgradePrompt) {
                 {
                     MusicManager.stopWinMusic()
                     viewModel.commitWinResult()
-                    val nextId = state.level.id + 1
+                    // Pro players past level 90: cycle random levels from World 7-10
+                    val nextId = if (state.level.id >= 90 && state.difficulty == Difficulty.HARD) {
+                        (55..90).random()
+                    } else {
+                        state.level.id + 1
+                    }
                     navController.navigate(Screen.Game.create(nextId)) {
                         popUpTo(Screen.Game.route) { inclusive = true }
                     }
@@ -517,6 +522,42 @@ fun GameScreen(
             ConfettiOverlay(stars = stars, perfectGame = maxCelebration)
             BalloonOverlay(stars = stars, perfectGame = maxCelebration)
             StarBurstOverlay(stars = stars, perfectGame = maxCelebration)
+        }
+    }
+
+    // Pro+ upgrade prompt (after beating level 90 as Pro)
+    if (state.phase == GamePhase.WON && state.proUpgradePrompt) {
+        var showUpgrade by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) {
+            delay(3000) // Let normal win celebration play first
+            showUpgrade = true
+        }
+        if (showUpgrade) {
+            val upgradeProfileRepo = remember { ProfileRepository(context) }
+            val upgTotalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
+            val upgPerfectGames by progressRepo.perfectGamesFlow.collectAsState(initial = 0)
+            ProUpgradeOverlay(
+                totalStars = upgTotalStars,
+                perfectGames = upgPerfectGames,
+                onUpgrade = {
+                    scope.launch {
+                        upgradeProfileRepo.upgradeSkill(Difficulty.PRO_PLUS, Difficulty.PRO_PLUS.startingLevel)
+                    }
+                    MusicManager.stopWinMusic()
+                    viewModel.commitWinResult()
+                    navController.navigate(Screen.Game.create(91)) {
+                        popUpTo(Screen.Game.route) { inclusive = true }
+                    }
+                },
+                onDecline = {
+                    MusicManager.stopWinMusic()
+                    viewModel.commitWinResult()
+                    val randomLevel = (55..90).random()
+                    navController.navigate(Screen.Game.create(randomLevel)) {
+                        popUpTo(Screen.Game.route) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 

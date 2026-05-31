@@ -38,7 +38,8 @@ data class GameState(
     val challengeState: ChallengeState? = null,
     val pendingChallenge: ChallengeType? = null,
     val boardGenerating: Boolean = false,
-    val gameCompleted: Boolean = false
+    val gameCompleted: Boolean = false,
+    val proUpgradePrompt: Boolean = false
 ) {
     val isChallenge: Boolean get() = challengeState != null
 }
