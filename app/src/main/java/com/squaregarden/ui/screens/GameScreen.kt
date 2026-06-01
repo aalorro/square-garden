@@ -1271,6 +1271,7 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
 
 @Composable
 private fun LoseDialog(onRetry: (() -> Unit)?, onMenu: () -> Unit, onShowSolution: (() -> Unit)?) {
+    val isTablet = LocalConfiguration.current.screenWidthDp >= 600
     Dialog(onDismissRequest = {}) {
         Card(
             shape = RoundedCornerShape(24.dp),
@@ -1317,14 +1318,14 @@ private fun LoseDialog(onRetry: (() -> Unit)?, onMenu: () -> Unit, onShowSolutio
                             shape = RoundedCornerShape(20.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Menu", maxLines = 1, fontSize = 13.sp)
+                            Text("Menu", maxLines = 1, fontSize = if (isTablet) 13.sp else 11.sp)
                         }
                         Button(
                             onClick = onRetry,
                             shape = RoundedCornerShape(20.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Try Again", maxLines = 1, fontSize = 13.sp)
+                            Text("Try Again", maxLines = 1, fontSize = if (isTablet) 13.sp else 11.sp)
                         }
                     }
                 } else {
