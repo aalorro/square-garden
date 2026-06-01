@@ -2,6 +2,17 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.7.2] - 2026-05-31 (Build 16)
+
+### New Features
+- **Pro+ upgrade celebration** — Completing level 90 as a Pro player triggers a dramatic celebration overlay with confetti, balloons, music, and stats summary. Choose to upgrade to Pro+ or stay in Pro.
+- **Post-90 replay mode** — Pro players who decline the Pro+ upgrade get randomized games from World 5–10 (levels 37–90) instead of sequential progression.
+- **Redo confirmation dialog** — Using the Redo power-up now asks "Are you sure?" before refreshing the board.
+
+### Improvements
+- **"Next Game" button** — Win overlay and life restored splash now consistently say "Next Game" instead of "Next Level".
+- **Life restored splash** — Always shows both "Menu" and "Next Game" buttons.
+
 ## [1.7.1] - 2026-05-30 (Build 15)
 
 ### Gameplay

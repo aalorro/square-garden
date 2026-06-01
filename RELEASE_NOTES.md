@@ -45,6 +45,18 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.7.2 (What's New)
+
+What's new in 1.7.2:
+
+- Pro+ upgrade celebration! Complete level 90 as a Pro player for a dramatic celebration with confetti, music, and stats — then choose to upgrade to Pro+ or keep playing Pro.
+- Endless replay after Pro mastery — decline the Pro+ upgrade and enjoy randomized games from World 5–10.
+- Redo power-up now asks for confirmation before refreshing the board.
+- Win buttons consistently say "Next Game" instead of "Next Level".
+- Life restored splash always shows both "Menu" and "Next Game" options.
+
+Happy gardening!
+
 ## Release Notes — Version 1.7.1 (What's New)
 
 What's new in 1.7.1:

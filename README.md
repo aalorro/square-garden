@@ -49,7 +49,7 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 - **Pro+ exclusive worlds**: Worlds 11–14 (Nebula Verge → Infinity Prism, levels 91–126) are reserved for Pro+ players. The Diagonal Movement power-up is gated to these worlds.
 - **Pro+ exclusive power-up**: Diagonal Movement tokens spawn only on World 11+ boards and are awarded as part of the Perfect Game bonus only on World 11+.
 
-Players start at a world matching their skill level — no grinding through easy content. Players can upgrade their skill anytime in Settings (but not downgrade) — progress and unlocked worlds are preserved. Reset progress in Settings to change to a lower skill. Upgrading to Pro+ unlocks Worlds 11–14 once enough stars have been earned.
+Players start at a world matching their skill level — no grinding through easy content. Players can upgrade their skill anytime in Settings (but not downgrade) — progress and unlocked worlds are preserved. Reset progress in Settings to change to a lower skill. Upgrading to Pro+ unlocks Worlds 11–14 once enough stars have been earned. Completing all 90 levels as Pro triggers a celebration with the option to upgrade to Pro+ or stay in Pro with endless randomized replay.
 
 ### World Unlock Stars
 
@@ -103,6 +103,7 @@ Special reward events triggered by exceptional play. Challenges cost no lives an
 - Star trail animations on win
 - Life system with difficulty-gated recovery
 - Win streak tracking
+- Pro+ upgrade celebration after completing all 90 Pro levels
 - Google Play Games leaderboards (opt-in)
 
 ## Tech Stack
