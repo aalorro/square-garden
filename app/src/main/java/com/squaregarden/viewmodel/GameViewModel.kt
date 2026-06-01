@@ -1130,6 +1130,7 @@ class GameViewModel(
                         val isGameComplete = current.level.id == 126
                         MusicManager.startWinMusic(context, perfectGame = isPerfect || isGameComplete, loop = isGameComplete)
                         audioManager.playWinClap(perfectGame = isPerfect || isGameComplete)
+                        vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 120, 80, 120), -1))
                         val oldTotal = progressRepo.totalStarsFlow.first()
                         unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
                         winResultCommitted = false
@@ -1389,6 +1390,7 @@ class GameViewModel(
                         val isGameComplete = current.level.id == 126
                         MusicManager.startWinMusic(context, perfectGame = isPerfect || isGameComplete, loop = isGameComplete)
                         audioManager.playWinClap(perfectGame = isPerfect || isGameComplete)
+                        vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 120, 80, 120), -1))
                         val oldTotal = progressRepo.totalStarsFlow.first()
                         unlockedWorld = detectNewWorldUnlock(oldTotal, oldTotal + starsAwarded)
                         winResultCommitted = false

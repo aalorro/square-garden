@@ -1053,7 +1053,13 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                             "Bravo!",
                             "Nicely done!",
                             "Spectacular!",
-                            "Outstanding!"
+                            "Outstanding!",
+                            "Kapow!",
+                            "Bazooka!",
+                            "Unstoppable!",
+                            "Legendary!",
+                            "Boom!",
+                            "Crushed it!"
                         ).random()
                     }
                     Text(
@@ -1088,7 +1094,13 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                                 "Maximum stars! Incredible!",
                                 "Perfection! Not a move wasted!",
                                 "Masterful! A perfect score!",
-                                "Stunning! All three stars!"
+                                "Stunning! All three stars!",
+                                "Hat trick! Triple star glory!",
+                                "Full marks! You're on fire!",
+                                "Clean sweep! Nothing left behind!",
+                                "Peak performance! Chef's kiss!",
+                                "Absolute domination! Three stars!",
+                                "Textbook win! Every move counted!"
                             ).random()
                             2 -> listOf(
                                 "Great job! Almost perfect!",
@@ -1096,7 +1108,13 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                                 "Two stars! Impressive work!",
                                 "Nearly flawless! Great effort!",
                                 "Solid win! One more star awaits!",
-                                "Strong finish! Can you get three?"
+                                "Strong finish! Can you get three?",
+                                "So close! One star away from glory!",
+                                "Sharp moves! Almost had it all!",
+                                "Two down, one to go!",
+                                "Smooth sailing! Just a touch more!",
+                                "Nailed it! Perfection is within reach!",
+                                "Power play! Come back for the triple!"
                             ).random()
                             else -> listOf(
                                 "Well done! Try again for more stars!",
@@ -1104,7 +1122,13 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                                 "Good start! Room to grow!",
                                 "You cleared it! Aim higher next time!",
                                 "Nice work! More stars await!",
-                                "Victory! Replay for a better score!"
+                                "Victory! Replay for a better score!",
+                                "On the board! Stars are calling!",
+                                "First step to greatness!",
+                                "Got it done! Now aim for more!",
+                                "Tough level, tough you!",
+                                "That's a wrap! Try for two stars!",
+                                "Scraped through! You'll nail it next time!"
                             ).random()
                         }
                     }
