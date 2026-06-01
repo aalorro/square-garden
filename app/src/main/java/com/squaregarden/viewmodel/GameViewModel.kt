@@ -1,6 +1,10 @@
 package com.squaregarden.viewmodel
 
 import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -52,6 +56,12 @@ class GameViewModel(
     private val progressRepo = ProgressRepository(context)
     private val profileRepo = ProfileRepository(context)
     private val audioManager = AudioManager(context)
+    private val vibrator: Vibrator = if (Build.VERSION.SDK_INT >= 31) {
+        (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
+    } else {
+        @Suppress("DEPRECATION")
+        context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    }
     private var usedPowerUpThisGame: Boolean = false
     private var effectiveStartingLevel: Int = 1
     private var blitzTimerJob: Job? = null
@@ -640,6 +650,7 @@ class GameViewModel(
                 )
             } else current.challengeState
             audioManager.playMatch()
+            vibrator.vibrate(VibrationEffect.createOneShot(100, 255))
             _state.value = current.copy(
                 completedGoalIds = metGoalIds,
                 completedGoalCells = goalCells,
@@ -1062,6 +1073,7 @@ class GameViewModel(
                     }
                     boardAfterCapture = boardAfterCapture.copy(tiles = updatedTiles)
                     audioManager.playTokenCapture()
+                    vibrator.vibrate(VibrationEffect.createOneShot(80, 200))
                 }
             }
 
@@ -1069,7 +1081,10 @@ class GameViewModel(
             val won = BoardEngine.checkWin(newCompleted, current.level.goals)
             val lost = BoardEngine.checkLose(newMoves, won)
 
-            if (newlyCompleted.isNotEmpty()) audioManager.playMatch()
+            if (newlyCompleted.isNotEmpty()) {
+                audioManager.playMatch()
+                vibrator.vibrate(VibrationEffect.createOneShot(100, 255))
+            }
 
             var starsAwarded = 0; var winsNeeded = 0; var unlockedWorld: String? = null
             var isPerfect = false
@@ -1318,6 +1333,7 @@ class GameViewModel(
                     }
                     boardAfterCapture = boardAfterCapture.copy(tiles = updatedTiles)
                     audioManager.playTokenCapture()
+                    vibrator.vibrate(VibrationEffect.createOneShot(80, 200))
                 }
             }
 
@@ -1325,7 +1341,10 @@ class GameViewModel(
             val won = BoardEngine.checkWin(newCompleted, current.level.goals)
             val lost = BoardEngine.checkLose(newMoves, won)
 
-            if (newlyCompletedPt.isNotEmpty()) audioManager.playMatch()
+            if (newlyCompletedPt.isNotEmpty()) {
+                audioManager.playMatch()
+                vibrator.vibrate(VibrationEffect.createOneShot(100, 255))
+            }
 
             var starsAwarded = 0; var winsNeeded = 0; var unlockedWorld: String? = null
             var isPerfect = false
