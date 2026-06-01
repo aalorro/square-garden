@@ -691,19 +691,26 @@ fun GameScreen(
                         ) {
                             Text("Menu", fontSize = 13.sp)
                         }
-                        if (state.level.id < 90) {
-                            Button(
-                                onClick = {
-                                    viewModel.commitWinResult()
-                                    val nextId = state.level.id + 1
+                        Button(
+                            onClick = {
+                                viewModel.commitWinResult()
+                                scope.launch {
+                                    val profile = profileRepo.loadProfile()
+                                    val isPro_Plus = state.difficulty == Difficulty.PRO_PLUS
+                                    val maxLevel = if (isPro_Plus) 126 else 90
+                                    val nextId = if (profile.proUpgradeDeclined && !isPro_Plus) {
+                                        (37..90).random()
+                                    } else {
+                                        (state.level.id + 1).coerceAtMost(maxLevel)
+                                    }
                                     navController.navigate(Screen.Game.create(nextId)) {
                                         popUpTo(Screen.Game.route) { inclusive = true }
                                     }
-                                },
-                                shape = RoundedCornerShape(20.dp)
-                            ) {
-                                Text("Next Game", fontSize = 13.sp)
-                            }
+                                }
+                            },
+                            shape = RoundedCornerShape(20.dp)
+                        ) {
+                            Text("Next Game", fontSize = 13.sp)
                         }
                     }
                 }
