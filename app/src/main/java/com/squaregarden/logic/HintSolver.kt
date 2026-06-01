@@ -158,7 +158,8 @@ object HintSolver {
     /**
      * Removes redundant moves from a solution by trying to drop each step
      * and verifying the shorter sequence still completes all goals.
-     * Repeats until no more moves can be removed.
+     * Also tries removing pairs of moves (e.g. swap-and-swap-back) that
+     * can't be removed individually. Repeats until no more can be removed.
      */
     private fun compressSolution(
         board: Board,
@@ -167,6 +168,8 @@ object HintSolver {
         difficulty: Difficulty
     ): List<Pair<CellPos, CellPos>> {
         var best = steps
+
+        // Pass 1: remove single moves
         var improved = true
         while (improved) {
             improved = false
@@ -179,6 +182,37 @@ object HintSolver {
                 }
             }
         }
+
+        // Pass 2: remove pairs of moves (catches swap-and-swap-back patterns)
+        improved = true
+        while (improved) {
+            improved = false
+            outer@ for (i in best.indices) {
+                for (j in i + 1 until best.size) {
+                    val candidate = best.filterIndexed { idx, _ -> idx != i && idx != j }
+                    if (verifySolution(board, goals, candidate, difficulty)) {
+                        best = candidate
+                        improved = true
+                        break@outer
+                    }
+                }
+            }
+        }
+
+        // Pass 3: final single-move pass (pair removal may expose new singles)
+        improved = true
+        while (improved) {
+            improved = false
+            for (i in best.indices) {
+                val candidate = best.toMutableList().apply { removeAt(i) }
+                if (verifySolution(board, goals, candidate, difficulty)) {
+                    best = candidate
+                    improved = true
+                    break
+                }
+            }
+        }
+
         return best
     }
 
