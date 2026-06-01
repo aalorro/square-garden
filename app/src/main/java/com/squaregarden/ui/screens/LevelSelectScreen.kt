@@ -113,6 +113,7 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
     val challengeEntries = remember {
         if (worldId == 0) ChallengeType.entries.toList() else emptyList()
     }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         progress = progressRepo.loadProgress()
@@ -244,6 +245,85 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                 text = challenge.description,
                                 fontSize = 9.sp,
                                 color = theme.textColor.copy(alpha = 0.7f),
+                                textAlign = TextAlign.Center,
+                                maxLines = 2
+                            )
+                        }
+                    }
+                }
+
+                // ── Pro+ Upgrade Test cards ──
+                item {
+                    Card(
+                        onClick = {
+                            navController.navigate(Screen.Game.create(90)) {
+                                popUpTo(Screen.LevelSelect.create(0)) { inclusive = true }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth().aspectRatio(0.85f),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFD4A017)),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxSize().padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text("\uD83D\uDE80", fontSize = 32.sp)
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = "Play Game 90",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Play level 90 as Pro — win to trigger Pro+ upgrade prompt",
+                                fontSize = 9.sp,
+                                color = Color.White.copy(alpha = 0.8f),
+                                textAlign = TextAlign.Center,
+                                maxLines = 2
+                            )
+                        }
+                    }
+                }
+                item {
+                    val currentDiff = difficulty
+                    Card(
+                        onClick = {
+                            scope.launch {
+                                profileRepo.upgradeSkill(Difficulty.HARD, Difficulty.HARD.startingLevel)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth().aspectRatio(0.85f),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (currentDiff == Difficulty.PRO_PLUS) Color(0xFF4CAF50) else Color(0xFF9E9E9E)
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxSize().padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text("\uD83D\uDD04", fontSize = 32.sp)
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = "Reset to Pro",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = if (currentDiff == Difficulty.PRO_PLUS) "Currently Pro+ \u2014 tap to reset" else "Currently ${currentDiff?.label ?: "?"} \u2014 no reset needed",
+                                fontSize = 9.sp,
+                                color = Color.White.copy(alpha = 0.8f),
                                 textAlign = TextAlign.Center,
                                 maxLines = 2
                             )
@@ -464,6 +544,7 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                 )
             }
         }
+
     }
 }
 

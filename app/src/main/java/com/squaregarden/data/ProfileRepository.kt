@@ -27,6 +27,7 @@ class ProfileRepository(private val context: Context) {
         private val OVERRIDE_STARTING_LEVEL = intPreferencesKey("override_starting_level")
         private val PERFECT_GAME_SPLASH_SHOWN = booleanPreferencesKey("perfect_game_splash_shown")
         private val MASTERY_BADGE_EARNED = booleanPreferencesKey("mastery_badge_earned")
+        private val PRO_UPGRADE_DECLINED = booleanPreferencesKey("pro_upgrade_declined")
     }
 
     val profileFlow: Flow<UserProfile> = context.profileDataStore.data.map { prefs ->
@@ -42,7 +43,8 @@ class ProfileRepository(private val context: Context) {
             leaderboardOptIn = prefs[LEADERBOARD_OPT_IN] ?: false,
             overrideStartingLevel = prefs[OVERRIDE_STARTING_LEVEL] ?: 0,
             perfectGameSplashShown = prefs[PERFECT_GAME_SPLASH_SHOWN] ?: false,
-            masteryBadgeEarned = prefs[MASTERY_BADGE_EARNED] ?: false
+            masteryBadgeEarned = prefs[MASTERY_BADGE_EARNED] ?: false,
+            proUpgradeDeclined = prefs[PRO_UPGRADE_DECLINED] ?: false
         )
     }
 
@@ -87,6 +89,14 @@ class ProfileRepository(private val context: Context) {
         context.profileDataStore.edit { prefs ->
             prefs[DIFFICULTY] = newDifficulty.id
             prefs[OVERRIDE_STARTING_LEVEL] = overrideStartingLevel
+            // Clear declined flag when upgrading (e.g. to Pro+)
+            prefs[PRO_UPGRADE_DECLINED] = false
+        }
+    }
+
+    suspend fun markProUpgradeDeclined() {
+        context.profileDataStore.edit { prefs ->
+            prefs[PRO_UPGRADE_DECLINED] = true
         }
     }
 

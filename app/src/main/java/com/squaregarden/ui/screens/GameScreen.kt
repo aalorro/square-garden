@@ -58,6 +58,7 @@ fun GameScreen(
     val progressRepo = remember { ProgressRepository(context) }
     val scope = rememberCoroutineScope()
     var isFavorite by remember { mutableStateOf(false) }
+    var showRedoConfirm by remember { mutableStateOf(false) }
     val lives by progressRepo.livesFlow.collectAsState(initial = 3)
     val cooldownUntil by progressRepo.cooldownUntilFlow.collectAsState(initial = 0L)
 
@@ -76,7 +77,13 @@ fun GameScreen(
                 difficulty.startingLevel,
                 profile?.overrideStartingLevel ?: 0
             )
-            val nextLevel = progress.highestUnlockedLevel(startingLevel).coerceIn(1, 126)
+            val isPro_Plus = difficulty == Difficulty.PRO_PLUS
+            val maxLevel = if (isPro_Plus) 126 else 90
+            val nextLevel = if (profile?.proUpgradeDeclined == true && !isPro_Plus) {
+                (37..90).random()
+            } else {
+                progress.highestUnlockedLevel(startingLevel).coerceAtMost(maxLevel)
+            }
             // Pop current Game entry, then pop the underlying source Game WON entry if present.
             navController.popBackStack()
             if (navController.currentBackStackEntry?.destination?.route == Screen.Game.route) {
@@ -91,6 +98,24 @@ fun GameScreen(
 
     // Stop any music when GameScreen exits
     DisposableEffect(Unit) { onDispose { MusicManager.stopAll() } }
+
+    // Redo confirmation dialog
+    if (showRedoConfirm) {
+        AlertDialog(
+            onDismissRequest = { showRedoConfirm = false },
+            title = { Text("Refresh Board") },
+            text = { Text("This will generate a fresh board without losing a life. Are you sure?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showRedoConfirm = false
+                    viewModel.executeRedo()
+                }) { Text("Yes", fontWeight = FontWeight.Bold) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRedoConfirm = false }) { Text("Cancel") }
+            }
+        )
+    }
 
     // Safety net: if cooldown is active, pop back immediately (skip for challenges)
     LaunchedEffect(lives, cooldownUntil) {
@@ -367,7 +392,7 @@ fun GameScreen(
                 ActionCircle(
                     icon = "\u21BB",
                     label = "\u00D7${state.redoTokens}",
-                    onClick = { viewModel.executeRedo() },
+                    onClick = { showRedoConfirm = true },
                     enabled = state.redoTokens > 0 && state.phase == GamePhase.PLAYING,
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
@@ -498,14 +523,18 @@ fun GameScreen(
                 {
                     MusicManager.stopWinMusic()
                     viewModel.commitWinResult()
-                    // Pro players past level 90: cycle random levels from World 7-10
-                    val nextId = if (state.level.id >= 90 && state.difficulty == Difficulty.HARD) {
-                        (55..90).random()
-                    } else {
-                        state.level.id + 1
-                    }
-                    navController.navigate(Screen.Game.create(nextId)) {
-                        popUpTo(Screen.Game.route) { inclusive = true }
+                    scope.launch {
+                        val profile = profileRepo.loadProfile()
+                        val isPro_Plus = state.difficulty == Difficulty.PRO_PLUS
+                        val maxLevel = if (isPro_Plus) 126 else 90
+                        val nextId = if (profile.proUpgradeDeclined && !isPro_Plus) {
+                            (37..90).random()
+                        } else {
+                            (state.level.id + 1).coerceAtMost(maxLevel)
+                        }
+                        navController.navigate(Screen.Game.create(nextId)) {
+                            popUpTo(Screen.Game.route) { inclusive = true }
+                        }
                     }
                 }
             } else null,
@@ -550,9 +579,10 @@ fun GameScreen(
                     }
                 },
                 onDecline = {
+                    scope.launch { upgradeProfileRepo.markProUpgradeDeclined() }
                     MusicManager.stopWinMusic()
                     viewModel.commitWinResult()
-                    val randomLevel = (55..90).random()
+                    val randomLevel = (37..90).random()
                     navController.navigate(Screen.Game.create(randomLevel)) {
                         popUpTo(Screen.Game.route) { inclusive = true }
                     }
@@ -672,7 +702,7 @@ fun GameScreen(
                                 },
                                 shape = RoundedCornerShape(20.dp)
                             ) {
-                                Text("Next Level", fontSize = 13.sp)
+                                Text("Next Game", fontSize = 13.sp)
                             }
                         }
                     }
@@ -1210,7 +1240,7 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
 
                 if (onNext != null) {
                     Button(onClick = onNext, shape = RoundedCornerShape(20.dp)) {
-                        Text("Next Level")
+                        Text("Next Game")
                     }
                 } else {
                     OutlinedButton(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {

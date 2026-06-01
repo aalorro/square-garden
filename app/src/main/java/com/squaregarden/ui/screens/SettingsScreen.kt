@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.squaregarden.DevFlags
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.data.SettingsRepository
@@ -239,6 +240,19 @@ fun SettingsScreen(navController: NavHostController) {
             border = androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFC62828))
         ) {
             Text("Reset progress", color = Color(0xFFC62828), fontWeight = FontWeight.Bold)
+        }
+
+        if (DevFlags.CHALLENGE_LAB_ENABLED) {
+            Spacer(modifier = Modifier.height(12.dp))
+            OutlinedButton(
+                onClick = {
+                    navController.navigate(Screen.LevelSelect.create(0))
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("\uD83E\uDDEA Challenge Lab", fontWeight = FontWeight.Bold)
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
