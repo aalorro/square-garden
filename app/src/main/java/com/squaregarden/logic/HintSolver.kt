@@ -53,7 +53,8 @@ object HintSolver {
 
     /**
      * Beam search solver: explores multiple paths in parallel to find a solution
-     * that completes all goals within maxMoves. Honors difficulty-specific rules:
+     * that completes all goals within maxMoves. Uses iterative deepening to find
+     * the shortest solution first. Honors difficulty-specific rules:
      *   - Standard/Pro/Pro+: never swap through cells of an already-completed goal
      *   - Pro/Pro+: cells of completed goals can't be reused to satisfy new goals
      */
@@ -63,6 +64,22 @@ object HintSolver {
         maxMoves: Int,
         difficulty: Difficulty = Difficulty.MEDIUM,
         beamWidth: Int = 80
+    ): List<Pair<CellPos, CellPos>>? {
+        // Iterative deepening: try shortest solutions first
+        val minMoves = goals.size
+        for (limit in minMoves..maxMoves) {
+            val result = solveWithLimit(board, goals, limit, difficulty, beamWidth)
+            if (result != null) return result
+        }
+        return null
+    }
+
+    private fun solveWithLimit(
+        board: Board,
+        goals: List<Goal>,
+        maxMoves: Int,
+        difficulty: Difficulty,
+        beamWidth: Int
     ): List<Pair<CellPos, CellPos>>? {
         val blockSwapsThroughGoals = difficulty != Difficulty.EASY
         val excludeCompletedFromMatch =
@@ -151,7 +168,7 @@ object HintSolver {
                 .take(beamWidth)
         }
 
-        // No fully-solving sequence found within maxMoves
+        // No fully-solving sequence found within this limit
         return null
     }
 

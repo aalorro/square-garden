@@ -43,10 +43,10 @@ import kotlinx.coroutines.launch
 private val worldStarsToUnlock = mapOf(
     // World 0 = Challenge Lab (dev/test only, free to access)
     0 to 0,
-    1 to 0, 2 to 8, 3 to 20, 4 to 35, 5 to 55,
-    6 to 80, 7 to 110, 8 to 145, 9 to 185, 10 to 230,
+    1 to 0, 2 to 7, 3 to 13, 4 to 15, 5 to 27,
+    6 to 40, 7 to 54, 8 to 68, 9 to 84, 10 to 100,
     // Pro+ worlds 11-14 (strict consecutive numbering)
-    11 to 280, 12 to 335, 13 to 395, 14 to 460
+    11 to 280, 12 to 14, 13 to 29, 14 to 43
 )
 
 // World theme colors: (tile background, tile text, accent/star color, gradient)

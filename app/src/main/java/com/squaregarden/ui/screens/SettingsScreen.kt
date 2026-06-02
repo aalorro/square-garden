@@ -269,7 +269,7 @@ fun SettingsScreen(navController: NavHostController) {
                         showResetDialog = false
                         scope.launch {
                             progressRepo.clearAll()
-                            profileRepo.resetPlayerLevel()
+                            profileRepo.clearAll()
                             settingsRepo.setShapesExplainerDismissed(false)
                             navController.navigate(Screen.ProfileSetup.route) {
                                 popUpTo(0) { inclusive = true }

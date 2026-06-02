@@ -44,22 +44,22 @@ data class WorldInfo(
 
 private val worlds = listOf(
     WorldInfo(1, "Seedling Garden", "Levels 1-9", 0, Sage),
-    WorldInfo(2, "Blooming Meadow", "Levels 10-18", 8, TileBlue),
-    WorldInfo(3, "Ancient Grove", "Levels 19-27", 20, WarmBrown),
-    WorldInfo(4, "Crystal Cavern", "Levels 28-36", 35, Color(0xFF81D4FA)),
-    WorldInfo(5, "Shattered Isles", "Levels 37-45", 55, Color(0xFFCE93D8)),
-    WorldInfo(6, "Void Fortress", "Levels 46-54", 80, Color(0xFF78909C)),
-    WorldInfo(7, "Molten Core", "Levels 55-63", 110, Color(0xFFFF6D00)),
-    WorldInfo(8, "Starfall Summit", "Levels 64-72", 145, Color(0xFF7C4DFF)),
-    WorldInfo(9, "Abyssal Depths", "Levels 73-81", 185, Color(0xFF00897B)),
-    WorldInfo(10, "Prism Citadel", "Levels 82-90", 230, Color(0xFFE91E63)),
+    WorldInfo(2, "Blooming Meadow", "Levels 10-18", 7, TileBlue),
+    WorldInfo(3, "Ancient Grove", "Levels 19-27", 13, WarmBrown),
+    WorldInfo(4, "Crystal Cavern", "Levels 28-36", 15, Color(0xFF81D4FA)),
+    WorldInfo(5, "Shattered Isles", "Levels 37-45", 27, Color(0xFFCE93D8)),
+    WorldInfo(6, "Void Fortress", "Levels 46-54", 40, Color(0xFF78909C)),
+    WorldInfo(7, "Molten Core", "Levels 55-63", 54, Color(0xFFFF6D00)),
+    WorldInfo(8, "Starfall Summit", "Levels 64-72", 68, Color(0xFF7C4DFF)),
+    WorldInfo(9, "Abyssal Depths", "Levels 73-81", 84, Color(0xFF00897B)),
+    WorldInfo(10, "Prism Citadel", "Levels 82-90", 100, Color(0xFFE91E63)),
     // Pro+ worlds (require PRO_PLUS skill) — strict consecutive numbering 11-14.
     // The Challenge Lab lives at world 0 (dev-only, reachable via a hidden button
     // on World 10's level select) so it doesn't consume a world number.
     WorldInfo(11, "Nebula Verge", "Levels 91-99", 280, Color(0xFF7E57C2)),
-    WorldInfo(12, "Quantum Lattice", "Levels 100-108", 335, Color(0xFF26C6DA)),
-    WorldInfo(13, "Singularity Spire", "Levels 109-117", 395, Color(0xFFEC407A)),
-    WorldInfo(14, "Infinity Prism", "Levels 118-126", 460, Color(0xFFFFD600))
+    WorldInfo(12, "Quantum Lattice", "Levels 100-108", 14, Color(0xFF26C6DA)),
+    WorldInfo(13, "Singularity Spire", "Levels 109-117", 29, Color(0xFFEC407A)),
+    WorldInfo(14, "Infinity Prism", "Levels 118-126", 43, Color(0xFFFFD600))
 )
 
 @Composable
@@ -132,6 +132,8 @@ fun WorldSelectScreen(navController: NavHostController) {
             // stars toward unlocking Pro+ worlds (12+). Everything below that is hidden.
             val visibilityFloor = if (difficulty == Difficulty.PRO_PLUS) 9 else startingWorld
             worlds.forEach { world ->
+                // Worlds 11-14 are Pro+ exclusive
+                if (world.id >= 11 && difficulty != Difficulty.PRO_PLUS) return@forEach
                 val starsToUnlock = world.baseStarsToUnlock * skillMultiplier
                 // Skip rendering worlds the player has outgrown.
                 if (world.id < visibilityFloor) return@forEach
