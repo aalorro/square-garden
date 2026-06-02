@@ -1924,12 +1924,12 @@ class GameViewModel(
             Triple(2, 7, "Blooming Meadow"),
             Triple(3, 14, "Ancient Grove"),
             Triple(4, 18, "Crystal Cavern"),
-            Triple(5, 36, "Shattered Isles"),
-            Triple(6, 50, "Void Fortress"),
-            Triple(7, 70, "Molten Core"),
-            Triple(8, 95, "Starfall Summit"),
-            Triple(9, 120, "Abyssal Depths"),
-            Triple(10, 145, "Prism Citadel")
+            Triple(5, 40, "Shattered Isles"),
+            Triple(6, 65, "Void Fortress"),
+            Triple(7, 90, "Molten Core"),
+            Triple(8, 120, "Starfall Summit"),
+            Triple(9, 145, "Abyssal Depths"),
+            Triple(10, 170, "Prism Citadel")
         )
         for ((worldId, baseThreshold, name) in worldThresholds) {
             if (worldId <= startingWorld) continue

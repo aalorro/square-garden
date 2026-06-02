@@ -47,12 +47,12 @@ private val worlds = listOf(
     WorldInfo(2, "Blooming Meadow", "Levels 10-18", 7, TileBlue),
     WorldInfo(3, "Ancient Grove", "Levels 19-27", 14, WarmBrown),
     WorldInfo(4, "Crystal Cavern", "Levels 28-36", 18, Color(0xFF81D4FA)),
-    WorldInfo(5, "Shattered Isles", "Levels 37-45", 36, Color(0xFFCE93D8)),
-    WorldInfo(6, "Void Fortress", "Levels 46-54", 50, Color(0xFF78909C)),
-    WorldInfo(7, "Molten Core", "Levels 55-63", 70, Color(0xFFFF6D00)),
-    WorldInfo(8, "Starfall Summit", "Levels 64-72", 95, Color(0xFF7C4DFF)),
-    WorldInfo(9, "Abyssal Depths", "Levels 73-81", 120, Color(0xFF00897B)),
-    WorldInfo(10, "Prism Citadel", "Levels 82-90", 145, Color(0xFFE91E63)),
+    WorldInfo(5, "Shattered Isles", "Levels 37-45", 40, Color(0xFFCE93D8)),
+    WorldInfo(6, "Void Fortress", "Levels 46-54", 65, Color(0xFF78909C)),
+    WorldInfo(7, "Molten Core", "Levels 55-63", 90, Color(0xFFFF6D00)),
+    WorldInfo(8, "Starfall Summit", "Levels 64-72", 120, Color(0xFF7C4DFF)),
+    WorldInfo(9, "Abyssal Depths", "Levels 73-81", 145, Color(0xFF00897B)),
+    WorldInfo(10, "Prism Citadel", "Levels 82-90", 170, Color(0xFFE91E63)),
     // Pro+ worlds (require PRO_PLUS skill) — strict consecutive numbering 11-14.
     // The Challenge Lab lives at world 0 (dev-only, reachable via a hidden button
     // on World 10's level select) so it doesn't consume a world number.

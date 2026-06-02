@@ -43,8 +43,8 @@ import kotlinx.coroutines.launch
 private val worldStarsToUnlock = mapOf(
     // World 0 = Challenge Lab (dev/test only, free to access)
     0 to 0,
-    1 to 0, 2 to 7, 3 to 14, 4 to 18, 5 to 36,
-    6 to 50, 7 to 70, 8 to 95, 9 to 120, 10 to 145,
+    1 to 0, 2 to 7, 3 to 14, 4 to 18, 5 to 40,
+    6 to 65, 7 to 90, 8 to 120, 9 to 145, 10 to 170,
     // Pro+ worlds 11-14 (strict consecutive numbering)
     11 to 280, 12 to 14, 13 to 29, 14 to 43
 )
