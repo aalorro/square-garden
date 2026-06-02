@@ -1,11 +1,11 @@
 package com.squaregarden
 
 import android.app.Application
-import com.google.android.gms.games.PlayGamesSdk
+import com.google.firebase.database.FirebaseDatabase
 
 class SquareGardenApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        PlayGamesSdk.initialize(this)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
     }
 }

@@ -20,7 +20,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import com.squaregarden.audio.MusicManager
-import com.squaregarden.data.PlayGamesManager
+import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.data.SettingsRepository
@@ -33,7 +33,6 @@ import com.squaregarden.ui.components.BasReliefAvatar
 import com.squaregarden.ui.components.FavoritesDialog
 import com.squaregarden.ui.components.getAvatar
 import com.squaregarden.ui.components.LogoMark
-import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.ui.theme.DisplayFontFamily
 
 @Composable
@@ -270,34 +269,9 @@ fun HomeScreen(navController: NavHostController) {
                 }
             }
 
-            // Leaderboards disabled — revisiting provider
-            if (false && profile.leaderboardOptIn) {
+            if (profile.leaderboardOptIn) {
                 OutlinedButton(
-                    onClick = {
-                        val activity = context as? android.app.Activity ?: return@OutlinedButton
-                        PlayGamesManager.checkSignIn(activity) { signedIn ->
-                            val openLeaderboards = {
-                                scope.launch {
-                                    val diff = Difficulty.fromId(profile.difficulty)
-                                    val effectiveStart = if (profile.overrideStartingLevel > 0)
-                                        profile.overrideStartingLevel else diff.startingLevel
-                                    val progress = progressRepo.loadProgress()
-                                    val stars = progressRepo.totalStarsFlow.first()
-                                    val highestLevel = progress.highestUnlockedLevel(effectiveStart)
-                                    PlayGamesManager.submitAndShowLeaderboards(
-                                        activity, diff, stars, highestLevel
-                                    )
-                                }
-                            }
-                            if (signedIn) {
-                                openLeaderboards()
-                            } else {
-                                PlayGamesManager.signIn(activity) { success ->
-                                    if (success) openLeaderboards()
-                                }
-                            }
-                        }
-                    },
+                    onClick = { navController.navigate(Screen.Leaderboard.route) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp),

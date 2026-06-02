@@ -55,16 +55,18 @@ fun PrivacyScreen(navController: NavHostController) {
 
         PolicySection(
             title = "Data Collection",
-            body = "Square Garden does not collect, transmit, or share any personal data. " +
-                "All game progress, profile information, and settings are stored locally " +
-                "on your device and never leave it."
+            body = "Square Garden stores all game progress locally on your device. " +
+                "If you opt in to Leaderboards (in your Profile), your display name, " +
+                "avatar emoji, and star scores are shared anonymously with our " +
+                "leaderboard service. No email, real name, or device identifiers " +
+                "are collected."
         )
 
         PolicySection(
-            title = "No Internet Required",
-            body = "Square Garden works entirely offline. The game does not connect to " +
-                "the internet, does not use analytics services, and does not contain " +
-                "any tracking or advertising SDKs."
+            title = "Internet Usage",
+            body = "Square Garden works entirely offline. Internet is used only when " +
+                "the optional Leaderboards feature is enabled, to submit and view " +
+                "scores. No analytics, ads, or tracking services are used."
         )
 
         PolicySection(
@@ -84,9 +86,10 @@ fun PrivacyScreen(navController: NavHostController) {
 
         PolicySection(
             title = "Third-Party Services",
-            body = "Square Garden does not integrate with any third-party services, " +
-                "ad networks, or analytics platforms. Your gameplay experience is " +
-                "completely private."
+            body = "When Leaderboards are enabled, Square Garden uses Google Firebase " +
+                "(Anonymous Authentication and Realtime Database) to store and display " +
+                "scores. Firebase is operated by Google and subject to Google's privacy " +
+                "policy. No analytics, ads, or tracking services are used."
         )
 
         PolicySection(
@@ -104,7 +107,7 @@ fun PrivacyScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Last updated: May 2026",
+            text = "Last updated: June 2026",
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.CenterHorizontally)

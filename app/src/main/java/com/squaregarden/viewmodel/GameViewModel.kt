@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import android.app.Activity
 import com.squaregarden.audio.AudioManager
 import com.squaregarden.audio.MusicManager
-import com.squaregarden.data.PlayGamesManager
+import com.squaregarden.data.LeaderboardRepository
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.logic.BoardEngine
@@ -1866,15 +1866,20 @@ class GameViewModel(
                 _state.value = _state.value.copy(lifeRestored = true)
             }
 
-            // Submit scores to Google Play Games leaderboards (disabled — revisiting provider)
+            // Submit scores to Firebase leaderboard
             val profile = profileRepo.loadProfile()
-            if (false && profile.leaderboardOptIn) {
-                activity?.let { act ->
+            if (profile.leaderboardOptIn) {
+                try {
+                    val leaderboardRepo = LeaderboardRepository()
                     val totalStars = progressRepo.totalStarsFlow.first()
                     val progress = progressRepo.loadProgress()
                     val highestLevel = progress.highestUnlockedLevel(effectiveStartingLevel)
-                    PlayGamesManager.submitTotalStars(act, difficulty, totalStars)
-                    PlayGamesManager.submitHighestLevel(act, difficulty, highestLevel)
+                    val emoji = com.squaregarden.ui.components.getAvatar(profile.avatarId).emoji
+                    leaderboardRepo.submitTotalStars(
+                        profile.username, emoji, difficulty, totalStars, highestLevel
+                    )
+                } catch (e: Exception) {
+                    android.util.Log.w("GameVM", "Leaderboard submit failed", e)
                 }
             }
 

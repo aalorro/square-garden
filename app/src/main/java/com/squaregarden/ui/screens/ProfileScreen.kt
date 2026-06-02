@@ -504,8 +504,8 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
             }
         }
 
-        // ── Leaderboard Opt-In (disabled — revisiting provider) ──
-        if (false) Row(
+        // ── Leaderboard Opt-In ──
+        Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -513,7 +513,7 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
             Column(modifier = Modifier.weight(1f)) {
                 Text("Leaderboards", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onBackground)
                 Text(
-                    "Submit scores to Google Play Games leaderboards",
+                    "Share your scores on global leaderboards",
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
