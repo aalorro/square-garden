@@ -29,7 +29,8 @@
       "Bash(rm:*)",
       "Bash(awk:*)",
       "Bash(JAVA_HOME=\"/c/Program Files/Android/Android Studio/jbr\" ./gradlew :app:compileDebugKotlin:*)",
-      "Bash(JAVA_HOME=\"/c/Program Files/Android/Android Studio/jbr\" ./gradlew :app:assembleDebug:*)"
+      "Bash(JAVA_HOME=\"/c/Program Files/Android/Android Studio/jbr\" ./gradlew :app:assembleDebug:*)",
+      "Bash(node:*)"
     ]
   }
 }

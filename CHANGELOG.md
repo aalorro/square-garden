@@ -2,6 +2,16 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.7.3] - 2026-06-02 (Build 17)
+
+### New Features
+- **Haptic feedback** — Tactile vibration on goal completion, power-up token capture, and winning a level for a more satisfying feel.
+- **Expanded congratulatory messages** — More variety in win celebration text.
+
+### Improvements
+- **Smarter solutions (pair-removal)** — HintSolver now removes redundant move pairs (swap-and-swap-back patterns) for even cleaner solutions.
+- **Lose dialog button sizing** — Reduced button font size on phones to prevent text wrapping.
+
 ## [1.7.2] - 2026-05-31 (Build 16)
 
 ### New Features

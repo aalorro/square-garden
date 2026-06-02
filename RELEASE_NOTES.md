@@ -45,6 +45,17 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.7.3 (What's New)
+
+What's new in 1.7.3:
+
+- Haptic feedback! Feel a satisfying vibration when you complete a goal, capture a power-up token, or win a level.
+- More congratulatory messages to celebrate your wins.
+- Smarter hint solutions — redundant move pairs are now eliminated for cleaner paths.
+- Fixed lose dialog button text wrapping on smaller phones.
+
+Happy gardening!
+
 ## Release Notes — Version 1.7.2 (What's New)
 
 What's new in 1.7.2:
