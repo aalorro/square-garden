@@ -113,7 +113,7 @@ fun AboutScreen(navController: NavHostController) {
                 color = MaterialTheme.colorScheme.outlineVariant
             )
             Text(
-                text = "Version 1.7.3",
+                text = "Version 1.8.0",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

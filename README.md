@@ -56,19 +56,19 @@ Players start at a world matching their skill level — no grinding through easy
 | World | Name | Casual (×1) | Standard (×2) | Pro (×3) | Pro+ (×4) |
 |-------|------|-------------|---------------|----------|-----------|
 | 1 | Seedling Garden | 0 | 0 | 0 | 0 |
-| 2 | Blooming Meadow | 8 | 16 | 24 | 32 |
-| 3 | Ancient Grove | 20 | 40 | 60 | 80 |
-| 4 | Crystal Cavern | 35 | 70 | 105 | 140 |
-| 5 | Shattered Isles | 55 | 110 | 165 | 220 |
-| 6 | Void Fortress | 80 | 160 | 240 | 320 |
-| 7 | Molten Core | 110 | 220 | 330 | 440 |
-| 8 | Starfall Summit | 145 | 290 | 435 | 580 |
-| 9 | Abyssal Depths | 185 | 370 | 555 | 740 |
-| 10 | Prism Citadel | 230 | 460 | 690 | 920 |
+| 2 | Blooming Meadow | 7 | 14 | 21 | 28 |
+| 3 | Ancient Grove | 14 | 28 | 42 | 56 |
+| 4 | Crystal Cavern | 18 | 36 | 54 | 72 |
+| 5 | Shattered Isles | 42 | 84 | 126 | 168 |
+| 6 | Void Fortress | 68 | 136 | 204 | 272 |
+| 7 | Molten Core | 98 | 196 | 294 | 392 |
+| 8 | Starfall Summit | 132 | 264 | 396 | 528 |
+| 9 | Abyssal Depths | 172 | 344 | 516 | 688 |
+| 10 | Prism Citadel | 240 | 480 | 720 | 960 |
 | 11 | Nebula Verge | — | — | — | 1120 |
-| 12 | Quantum Lattice | — | — | — | 1340 |
-| 13 | Singularity Spire | — | — | — | 1580 |
-| 14 | Infinity Prism | — | — | — | 1840 |
+| 12 | Quantum Lattice | — | — | — | 56 |
+| 13 | Singularity Spire | — | — | — | 116 |
+| 14 | Infinity Prism | — | — | — | 172 |
 
 ### Power-Ups
 - **Shuffle** — Rearranges remaining tiles with a mild bias toward progress when stuck (completed goals stay put)
@@ -104,7 +104,7 @@ Special reward events triggered by exceptional play. Challenges cost no lives an
 - Life system with difficulty-gated recovery
 - Win streak tracking
 - Pro+ upgrade celebration after completing all 90 Pro levels
-- Google Play Games leaderboards (opt-in)
+- Global leaderboards via Firebase (opt-in)
 
 ## Tech Stack
 
@@ -137,6 +137,6 @@ com.squaregarden/
     navigation/- Screen routes
     screens/   - Splash, Home, WorldSelect, LevelSelect, Game, Settings, Profile
     components/- GameBoardCanvas, GoalPanel, MoveCounter, StarDisplay, etc.
-  data/        - ProgressRepository, SettingsRepository, ProfileRepository, PlayGamesManager
+  data/        - ProgressRepository, SettingsRepository, ProfileRepository, LeaderboardRepository
   audio/       - AudioManager, SoundGenerator, MusicManager
 ```

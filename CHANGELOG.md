@@ -2,6 +2,21 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.8.0] - 2026-06-03 (Build 18)
+
+### New Features
+- **Global leaderboards** — Opt in from your Profile to share scores on global leaderboards powered by Firebase. See your rank among players of the same skill level. Zero sign-in friction with anonymous authentication.
+- **Solver-based difficulty labels** — Game difficulty is now calibrated by the solver's optimal solution length instead of heuristics. Labels accurately reflect how many moves are actually needed.
+
+### Improvements
+- **Smarter solutions (iterative deepening)** — The solver now tries the shortest possible solution first, producing much more realistic move sequences.
+- **Two-phase solver** — A quick wide-beam probe catches easy/medium boards instantly; the full solver handles harder boards.
+- **World unlock thresholds rebalanced** — Strong players no longer unlock worlds 2+ ahead of their current progress. Thresholds scale progressively through later worlds.
+
+### Fixes
+- **Profile reset** — Resetting progress now fully clears difficulty, starting level, and all profile state.
+- **Pro+ world visibility** — Non-Pro+ players no longer see worlds 11–14 in the world menu.
+
 ## [1.7.3] - 2026-06-02 (Build 17)
 
 ### New Features

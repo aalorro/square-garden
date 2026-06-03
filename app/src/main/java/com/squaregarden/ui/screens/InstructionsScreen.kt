@@ -158,6 +158,13 @@ fun InstructionsScreen(navController: NavHostController) {
         )
 
         InstructionSection(
+            title = "Tip: Leaderboards",
+            body = "Go to your Profile and toggle on Leaderboards to share your scores globally. " +
+                "See how you rank against other players at your skill level. " +
+                "Your total stars are submitted after each win. No sign-in required."
+        )
+
+        InstructionSection(
             title = "Challenge Rounds",
             body = "Starting from World 5, special challenge rounds can be unlocked by exceptional play. " +
                 "Challenges cost no lives and award bonus stars + one of every power-up token on completion.\n\n" +

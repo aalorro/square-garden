@@ -45,6 +45,19 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.8.0 (What's New)
+
+What's new in 1.8.0:
+
+- Global leaderboards! Opt in from your Profile to see how you rank against other players at your skill level. Powered by Firebase with zero sign-in friction.
+- Smarter difficulty labels — game difficulty is now based on how many moves the solver actually needs, not guesswork. Labels finally match the real challenge.
+- Much shorter hint solutions — the solver finds the quickest path first instead of using all available moves.
+- World unlock progression rebalanced — no more unlocking worlds far ahead of where you're playing.
+- Fixed profile reset not fully clearing all settings.
+- Fixed non-Pro+ players seeing Pro+-exclusive worlds.
+
+Happy gardening!
+
 ## Release Notes — Version 1.7.3 (What's New)
 
 What's new in 1.7.3:
