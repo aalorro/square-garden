@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
+import com.squaregarden.SquareGardenApp
 import com.squaregarden.model.Difficulty
 import com.squaregarden.model.LeaderboardEntry
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,7 @@ import kotlinx.coroutines.withContext
 class LeaderboardRepository {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val db = FirebaseDatabase.getInstance().reference
+    private val db = FirebaseDatabase.getInstance(SquareGardenApp.DB_URL).reference
 
     private var cachedEntries: List<LeaderboardEntry>? = null
     private var cachedDifficulty: String? = null

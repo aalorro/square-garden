@@ -37,8 +37,9 @@ fun LeaderboardScreen(navController: NavHostController) {
     var error by remember { mutableStateOf<String?>(null) }
     var lastRefreshed by remember { mutableLongStateOf(0L) }
 
-    // Load profile to set default difficulty
+    // Load profile to set default difficulty; invalidate cache so we always fetch fresh
     LaunchedEffect(Unit) {
+        leaderboardRepo.invalidateCache()
         val profile = profileRepo.loadProfile()
         selectedDifficulty = Difficulty.fromId(profile.difficulty)
     }
@@ -104,8 +105,9 @@ fun LeaderboardScreen(navController: NavHostController) {
                     label = {
                         Text(
                             diff.label,
-                            fontSize = 13.sp,
-                            fontWeight = if (selectedDifficulty == diff) FontWeight.Bold else FontWeight.Normal
+                            fontSize = 11.sp,
+                            fontWeight = if (selectedDifficulty == diff) FontWeight.Bold else FontWeight.Normal,
+                            maxLines = 1
                         )
                     },
                     modifier = Modifier.weight(1f),
