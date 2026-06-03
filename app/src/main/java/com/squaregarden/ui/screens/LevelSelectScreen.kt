@@ -372,28 +372,29 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 if (!unlocked) {
-                                    Text("\uD83D\uDD12", fontSize = if (isCompact) 22.sp else 48.sp, color = theme.textColor.copy(alpha = 0.6f))
+                                    Text("\uD83D\uDD12", fontSize = if (isCompact) 11.sp else 24.sp, color = theme.textColor.copy(alpha = 0.6f))
                                     Text(
                                         text = level.name,
-                                        fontSize = if (isCompact) 8.sp else 28.sp,
+                                        fontSize = if (isCompact) 5.sp else 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = theme.textColor.copy(alpha = 0.5f),
                                         textAlign = TextAlign.Center,
-                                        maxLines = 1
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 } else {
                                     Text(
                                         text = "${level.id}",
                                         fontFamily = DisplayFontFamily,
-                                        fontSize = if (isCompact) 26.sp else 64.sp,
+                                        fontSize = if (isCompact) 13.sp else 32.sp,
                                         fontWeight = FontWeight.ExtraBold,
                                         color = theme.textColor
                                     )
-                                    Row(horizontalArrangement = Arrangement.spacedBy(if (isCompact) 2.dp else 6.dp)) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(if (isCompact) 1.dp else 3.dp)) {
                                         repeat(3) { i ->
                                             Text(
                                                 text = "\u2605",
-                                                fontSize = if (isCompact) 12.sp else 28.sp,
+                                                fontSize = if (isCompact) 6.sp else 14.sp,
                                                 color = if (i < stars) theme.starColor
                                                 else theme.textColor.copy(alpha = 0.25f)
                                             )
@@ -401,16 +402,17 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                     }
                                     Text(
                                         text = level.name,
-                                        fontSize = if (isCompact) 8.sp else 28.sp,
+                                        fontSize = if (isCompact) 5.sp else 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = theme.textColor.copy(alpha = 0.7f),
                                         textAlign = TextAlign.Center,
-                                        maxLines = 1
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                     if (isUpNext) {
                                         Text(
                                             text = "Up Next",
-                                            fontSize = if (isCompact) 8.sp else 56.sp,
+                                            fontSize = if (isCompact) 5.sp else 28.sp,
                                             fontWeight = FontWeight.ExtraBold,
                                             color = MaterialTheme.colorScheme.primary
                                         )
