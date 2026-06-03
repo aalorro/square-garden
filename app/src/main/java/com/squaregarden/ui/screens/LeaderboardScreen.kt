@@ -21,6 +21,7 @@ import com.squaregarden.model.Difficulty
 import com.squaregarden.model.LeaderboardEntry
 import com.squaregarden.ui.theme.DarkSage
 import com.squaregarden.ui.theme.DisplayFontFamily
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,24 +38,34 @@ fun LeaderboardScreen(navController: NavHostController) {
     var error by remember { mutableStateOf<String?>(null) }
     var lastRefreshed by remember { mutableLongStateOf(0L) }
 
-    // Load profile to set default difficulty; invalidate cache so we always fetch fresh
+    // Load profile to set default difficulty; warm up Firebase connection
     LaunchedEffect(Unit) {
         leaderboardRepo.invalidateCache()
+        leaderboardRepo.ensureAuthenticated()
         val profile = profileRepo.loadProfile()
         selectedDifficulty = Difficulty.fromId(profile.difficulty)
     }
 
-    // Fetch leaderboard when difficulty changes
+    // Fetch leaderboard when difficulty changes (auto-retry once on failure)
     LaunchedEffect(selectedDifficulty) {
         loading = true
         error = null
-        try {
-            val result = leaderboardRepo.fetchLeaderboard(selectedDifficulty)
-            entries = result
-            playerEntry = leaderboardRepo.findPlayerRank(result)
-            lastRefreshed = System.currentTimeMillis()
-        } catch (e: Exception) {
-            error = "Could not load leaderboard. Check your connection."
+        for (attempt in 1..2) {
+            try {
+                val result = leaderboardRepo.fetchLeaderboard(selectedDifficulty)
+                entries = result
+                playerEntry = leaderboardRepo.findPlayerRank(result)
+                lastRefreshed = System.currentTimeMillis()
+                error = null
+                break
+            } catch (e: Exception) {
+                if (attempt == 1) {
+                    delay(1500)
+                    leaderboardRepo.invalidateCache()
+                } else {
+                    error = "Could not load leaderboard. Check your connection."
+                }
+            }
         }
         loading = false
     }
