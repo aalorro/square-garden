@@ -465,17 +465,29 @@ class GameViewModel(
 
     private fun computeSolutionAsync(board: Board) {
         viewModelScope.launch {
+            val goals = level.goals
+            val maxMoves = adjustedMaxMoves
             val solution = withContext(Dispatchers.Default) {
-                // Use wider beam for async solving (runs on background thread)
-                HintSolver.findSolution(board, level.goals, adjustedMaxMoves, difficulty, beamWidth = 200)
+                // Quick probe: try short solutions with wider beam (catches easy/medium boards fast)
+                val quickLimit = goals.size + 3
+                val quick = HintSolver.findSolution(board, goals, quickLimit, difficulty, beamWidth = 500)
+                // If quick probe fails, do full solve with standard beam
+                quick ?: HintSolver.findSolution(board, goals, maxMoves, difficulty, beamWidth = 200)
             }
+            val current = _state.value
+            if (current.initialBoard != board) return@launch
             if (solution != null) {
                 precomputedSolution = solution
-                val current = _state.value
-                if (current.initialBoard == board) {
-                    _state.value = current.copy(hasSolution = true)
-                }
+                val solverDifficulty = GameDifficulty.fromSolverResult(
+                    solutionLength = solution.size,
+                    maxMoves = maxMoves
+                )
+                _state.value = current.copy(
+                    hasSolution = true,
+                    gameDifficulty = solverDifficulty
+                )
             }
+            // If solver fails entirely, keep heuristic difficulty as-is
         }
     }
 
@@ -590,8 +602,8 @@ class GameViewModel(
                 phase = GamePhase.SCRAMBLING,
                 challengeState = chalState
             )
-            // If reverse-construction failed, try solver in background
-            if (solution == null && challengeType != ChallengeType.BLITZ) computeSolutionAsync(board)
+            // Always run solver async to find optimal solution and calibrate difficulty
+            if (challengeType != ChallengeType.BLITZ) computeSolutionAsync(board)
             viewModelScope.launch {
                 animateScramble(board)
                 // Start challenge-specific setup after scramble
@@ -782,7 +794,7 @@ class GameViewModel(
                     shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
                     phase = GamePhase.SCRAMBLING
                 )
-                if (solution == null) computeSolutionAsync(board)
+                computeSolutionAsync(board)
                 animateScramble(board)
             }
             return
@@ -825,7 +837,7 @@ class GameViewModel(
             shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
             phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )
-        if (solution == null) computeSolutionAsync(board)
+        computeSolutionAsync(board)
     }
 
     // ── Gameplay ──
@@ -1924,12 +1936,12 @@ class GameViewModel(
             Triple(2, 7, "Blooming Meadow"),
             Triple(3, 14, "Ancient Grove"),
             Triple(4, 18, "Crystal Cavern"),
-            Triple(5, 40, "Shattered Isles"),
-            Triple(6, 65, "Void Fortress"),
-            Triple(7, 90, "Molten Core"),
-            Triple(8, 120, "Starfall Summit"),
-            Triple(9, 145, "Abyssal Depths"),
-            Triple(10, 170, "Prism Citadel")
+            Triple(5, 42, "Shattered Isles"),
+            Triple(6, 68, "Void Fortress"),
+            Triple(7, 98, "Molten Core"),
+            Triple(8, 132, "Starfall Summit"),
+            Triple(9, 172, "Abyssal Depths"),
+            Triple(10, 240, "Prism Citadel")
         )
         for ((worldId, baseThreshold, name) in worldThresholds) {
             if (worldId <= startingWorld) continue

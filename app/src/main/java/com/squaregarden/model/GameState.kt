@@ -156,6 +156,18 @@ enum class GameDifficulty(val label: String, val starMultiplier: Float) {
                 }
             }
         }
+
+        /** Calibrate difficulty from the solver's optimal solution length. */
+        fun fromSolverResult(solutionLength: Int, maxMoves: Int): GameDifficulty {
+            val ratio = solutionLength.toFloat() / maxMoves
+            return when {
+                ratio <= 0.35f -> EASY
+                ratio <= 0.55f -> MEDIUM
+                ratio <= 0.75f -> HARD
+                ratio <= 0.90f -> VERY_HARD
+                else -> EXTREMELY_HARD
+            }
+        }
     }
 }
 
