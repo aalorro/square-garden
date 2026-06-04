@@ -2,6 +2,16 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.8.2] - 2026-06-04 (Build 20)
+
+### Improvements
+- **World unlock thresholds rebalanced** — Casual uses steeper flat thresholds for smoother progression; Standard and Pro keep legacy scaling. Pro+ thresholds now continue the Pro curve (W11=850, W12=990, W13=1140, W14=1300).
+- **"You are here" indicator** — World Select screen shows a green badge on the world containing your next unplayed level.
+- **Encouraging leaderboard messages** — Replaced generic "not in top 50" text with 8 randomized encouraging messages, shown only on your own skill tab.
+
+### Fixes
+- **Redo power-up performance** — Fixed device slowdown after repeated Redo usage. Solver and board generation coroutines now cancel properly instead of stacking, preventing CPU saturation on large boards.
+
 ## [1.8.1] - 2026-06-03 (Build 19)
 
 ### Fixes

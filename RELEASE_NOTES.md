@@ -45,6 +45,17 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.8.2 (What's New)
+
+What's new in 1.8.2:
+
+- World unlock progression refined — thresholds smoothed out across all skill levels for a more natural pace.
+- "You are here" badge on the World Select screen — quickly spot which world you're currently playing.
+- Friendlier leaderboard messages when you're climbing toward the top 50.
+- Fixed a performance issue where using the Redo power-up repeatedly could slow down or freeze the app on later levels.
+
+Happy gardening!
+
 ## Release Notes — Version 1.8.1 (What's New)
 
 What's new in 1.8.1:
