@@ -45,6 +45,17 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.8.1 (What's New)
+
+What's new in 1.8.1:
+
+- Leaderboard fix — other players' scores now show up! Previously only your own device's scores were visible.
+- Leaderboard auto-refresh — scores load automatically when you open the page, no more tapping Retry.
+- Fixed difficulty filter chips ("Casual", "Standard") wrapping on phones.
+- Level select cards restored to proper sizing on phones and small tablets.
+
+Happy gardening!
+
 ## Release Notes — Version 1.8.0 (What's New)
 
 What's new in 1.8.0:

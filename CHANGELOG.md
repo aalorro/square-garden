@@ -2,6 +2,15 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.8.1] - 2026-06-03 (Build 19)
+
+### Fixes
+- **Leaderboard cross-device sync** — Other players' scores now appear correctly. Fixed Firebase persistence caching stale data instead of fetching from the server.
+- **Leaderboard auto-refresh** — Scores refresh automatically when entering the leaderboard screen, no manual retry needed.
+- **Leaderboard auto-retry** — If the first fetch fails (connection warming up), retries once automatically before showing an error.
+- **Leaderboard chip labels** — "Casual" and "Standard" filter chips no longer wrap text on mobile phones.
+- **Level select card sizing** — Restored original font sizes for phones and 8" tablets; reduced sizes apply only to 10"+ tablets to prevent label overflow.
+
 ## [1.8.0] - 2026-06-03 (Build 18)
 
 ### New Features

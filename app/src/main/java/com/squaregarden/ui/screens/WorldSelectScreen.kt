@@ -42,24 +42,30 @@ data class WorldInfo(
     val color: Color
 )
 
+// Original base thresholds used by Standard/Pro (scaled by starMultiplier)
+private val legacyBaseThresholds = mapOf(
+    1 to 0, 2 to 7, 3 to 14, 4 to 18, 5 to 42,
+    6 to 68, 7 to 98, 8 to 132, 9 to 172, 10 to 240
+)
+
 private val worlds = listOf(
     WorldInfo(1, "Seedling Garden", "Levels 1-9", 0, Sage),
-    WorldInfo(2, "Blooming Meadow", "Levels 10-18", 7, TileBlue),
-    WorldInfo(3, "Ancient Grove", "Levels 19-27", 14, WarmBrown),
-    WorldInfo(4, "Crystal Cavern", "Levels 28-36", 18, Color(0xFF81D4FA)),
-    WorldInfo(5, "Shattered Isles", "Levels 37-45", 42, Color(0xFFCE93D8)),
-    WorldInfo(6, "Void Fortress", "Levels 46-54", 68, Color(0xFF78909C)),
-    WorldInfo(7, "Molten Core", "Levels 55-63", 98, Color(0xFFFF6D00)),
-    WorldInfo(8, "Starfall Summit", "Levels 64-72", 132, Color(0xFF7C4DFF)),
-    WorldInfo(9, "Abyssal Depths", "Levels 73-81", 172, Color(0xFF00897B)),
-    WorldInfo(10, "Prism Citadel", "Levels 82-90", 240, Color(0xFFE91E63)),
+    WorldInfo(2, "Blooming Meadow", "Levels 10-18", 14, TileBlue),
+    WorldInfo(3, "Ancient Grove", "Levels 19-27", 32, WarmBrown),
+    WorldInfo(4, "Crystal Cavern", "Levels 28-36", 55, Color(0xFF81D4FA)),
+    WorldInfo(5, "Shattered Isles", "Levels 37-45", 80, Color(0xFFCE93D8)),
+    WorldInfo(6, "Void Fortress", "Levels 46-54", 108, Color(0xFF78909C)),
+    WorldInfo(7, "Molten Core", "Levels 55-63", 140, Color(0xFFFF6D00)),
+    WorldInfo(8, "Starfall Summit", "Levels 64-72", 176, Color(0xFF7C4DFF)),
+    WorldInfo(9, "Abyssal Depths", "Levels 73-81", 218, Color(0xFF00897B)),
+    WorldInfo(10, "Prism Citadel", "Levels 82-90", 270, Color(0xFFE91E63)),
     // Pro+ worlds (require PRO_PLUS skill) — strict consecutive numbering 11-14.
     // The Challenge Lab lives at world 0 (dev-only, reachable via a hidden button
     // on World 10's level select) so it doesn't consume a world number.
-    WorldInfo(11, "Nebula Verge", "Levels 91-99", 280, Color(0xFF7E57C2)),
-    WorldInfo(12, "Quantum Lattice", "Levels 100-108", 14, Color(0xFF26C6DA)),
-    WorldInfo(13, "Singularity Spire", "Levels 109-117", 29, Color(0xFFEC407A)),
-    WorldInfo(14, "Infinity Prism", "Levels 118-126", 43, Color(0xFFFFD600))
+    WorldInfo(11, "Nebula Verge", "Levels 91-99", 850, Color(0xFF7E57C2)),
+    WorldInfo(12, "Quantum Lattice", "Levels 100-108", 990, Color(0xFF26C6DA)),
+    WorldInfo(13, "Singularity Spire", "Levels 109-117", 1140, Color(0xFFEC407A)),
+    WorldInfo(14, "Infinity Prism", "Levels 118-126", 1300, Color(0xFFFFD600))
 )
 
 @Composable
@@ -70,6 +76,11 @@ fun WorldSelectScreen(navController: NavHostController) {
     val totalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
     val profile by profileRepo.profileFlow.collectAsState(initial = null)
     val difficulty = profile?.let { Difficulty.fromId(it.difficulty) }
+    val progress by produceState<com.squaregarden.model.PlayerProgress?>(initialValue = null) {
+        value = progressRepo.loadProgress()
+    }
+    val highestUnlocked = progress?.highestUnlockedLevel(difficulty?.startingLevel ?: 1) ?: (difficulty?.startingLevel ?: 1)
+    val currentWorld = ((highestUnlocked - 1) / 9) + 1
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -127,14 +138,17 @@ fun WorldSelectScreen(navController: NavHostController) {
             val overrideLevel = profile?.overrideStartingLevel ?: 0
             val effectiveStartingLevel = if (overrideLevel > 0) overrideLevel else (difficulty?.startingLevel ?: 1)
             val startingWorld = (effectiveStartingLevel - 1) / 9 + 1
-            val skillMultiplier = difficulty?.starMultiplier ?: 1
             // Pro+ players can replay worlds 9-10 at elevated difficulty to farm
             // stars toward unlocking Pro+ worlds (12+). Everything below that is hidden.
             val visibilityFloor = if (difficulty == Difficulty.PRO_PLUS) 9 else startingWorld
             worlds.forEach { world ->
                 // Worlds 11-14 are Pro+ exclusive
                 if (world.id >= 11 && difficulty != Difficulty.PRO_PLUS) return@forEach
-                val starsToUnlock = world.baseStarsToUnlock * skillMultiplier
+                val starsToUnlock = when (difficulty) {
+                    Difficulty.MEDIUM, Difficulty.HARD ->
+                        (legacyBaseThresholds[world.id] ?: world.baseStarsToUnlock) * difficulty.starMultiplier
+                    else -> world.baseStarsToUnlock
+                }
                 // Skip rendering worlds the player has outgrown.
                 if (world.id < visibilityFloor) return@forEach
                 val unlocked = totalStars >= starsToUnlock || world.id <= startingWorld
@@ -227,6 +241,21 @@ fun WorldSelectScreen(navController: NavHostController) {
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color.White.copy(alpha = 0.85f)
                                 )
+                                if (unlocked && world.id == currentWorld) {
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Surface(
+                                        shape = RoundedCornerShape(50),
+                                        color = Color(0xFF4CAF50).copy(alpha = 0.85f)
+                                    ) {
+                                        Text(
+                                            text = "\u25B8 You are here",
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.White,
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                }
                             }
                             if (!unlocked) {
                                 Column(horizontalAlignment = Alignment.End) {

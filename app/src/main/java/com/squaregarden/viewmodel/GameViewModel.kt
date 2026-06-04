@@ -1931,22 +1931,26 @@ class GameViewModel(
     private fun detectNewWorldUnlock(oldStars: Int, newStars: Int): String? {
         val effectiveStartWorld = (effectiveStartingLevel - 1) / 9 + 1
         val startingWorld = effectiveStartWorld
-        val skillMultiplier = difficulty.starMultiplier
+        // Casual/Pro+ use new thresholds; Standard/Pro use legacy base × starMultiplier
+        data class WT(val id: Int, val casualBase: Int, val legacyBase: Int, val name: String)
         val worldThresholds = listOf(
-            Triple(2, 7, "Blooming Meadow"),
-            Triple(3, 14, "Ancient Grove"),
-            Triple(4, 18, "Crystal Cavern"),
-            Triple(5, 42, "Shattered Isles"),
-            Triple(6, 68, "Void Fortress"),
-            Triple(7, 98, "Molten Core"),
-            Triple(8, 132, "Starfall Summit"),
-            Triple(9, 172, "Abyssal Depths"),
-            Triple(10, 240, "Prism Citadel")
+            WT(2, 14, 7, "Blooming Meadow"),
+            WT(3, 32, 14, "Ancient Grove"),
+            WT(4, 55, 18, "Crystal Cavern"),
+            WT(5, 80, 42, "Shattered Isles"),
+            WT(6, 108, 68, "Void Fortress"),
+            WT(7, 140, 98, "Molten Core"),
+            WT(8, 176, 132, "Starfall Summit"),
+            WT(9, 218, 172, "Abyssal Depths"),
+            WT(10, 270, 240, "Prism Citadel")
         )
-        for ((worldId, baseThreshold, name) in worldThresholds) {
-            if (worldId <= startingWorld) continue
-            val threshold = baseThreshold * skillMultiplier
-            if (oldStars < threshold && newStars >= threshold) return name
+        for (wt in worldThresholds) {
+            if (wt.id <= startingWorld) continue
+            val threshold = when (difficulty) {
+                Difficulty.MEDIUM, Difficulty.HARD -> wt.legacyBase * difficulty.starMultiplier
+                else -> wt.casualBase
+            }
+            if (oldStars < threshold && newStars >= threshold) return wt.name
         }
         return null
     }

@@ -40,13 +40,18 @@ import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.ui.theme.*
 import kotlinx.coroutines.launch
 
+// Casual / Pro+ flat thresholds
 private val worldStarsToUnlock = mapOf(
-    // World 0 = Challenge Lab (dev/test only, free to access)
     0 to 0,
+    1 to 0, 2 to 14, 3 to 32, 4 to 55, 5 to 80,
+    6 to 108, 7 to 140, 8 to 176, 9 to 218, 10 to 270,
+    11 to 850, 12 to 990, 13 to 1140, 14 to 1300
+)
+
+// Original base thresholds used by Standard/Pro (scaled by starMultiplier)
+private val legacyBaseThresholds = mapOf(
     1 to 0, 2 to 7, 3 to 14, 4 to 18, 5 to 42,
-    6 to 68, 7 to 98, 8 to 132, 9 to 172, 10 to 240,
-    // Pro+ worlds 11-14 (strict consecutive numbering)
-    11 to 280, 12 to 14, 13 to 29, 14 to 43
+    6 to 68, 7 to 98, 8 to 132, 9 to 172, 10 to 240
 )
 
 // World theme colors: (tile background, tile text, accent/star color, gradient)
@@ -443,7 +448,6 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
         // clamped to the player's visibility floor — they cannot dip below their
         // skill's starting world (Pro+ players can revisit 9-10 to farm stars
         // toward Pro+ unlock thresholds, mirroring WorldSelectScreen).
-        val skillMultiplier = difficulty?.starMultiplier ?: 1
         val overrideLevel = profile?.overrideStartingLevel ?: 0
         val effectiveStart = if (overrideLevel > 0) overrideLevel else (difficulty?.startingLevel ?: 1)
         val startingWorld = (effectiveStart - 1) / 9 + 1
@@ -493,7 +497,11 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                 }
                 if (nextWorld != null) {
                     val nextThreshold = worldStarsToUnlock[nextWorld] ?: Int.MAX_VALUE
-                    val starsNeeded = nextThreshold * skillMultiplier
+                    val starsNeeded = when (difficulty) {
+                        Difficulty.MEDIUM, Difficulty.HARD ->
+                            (legacyBaseThresholds[nextWorld] ?: nextThreshold) * (difficulty?.starMultiplier ?: 1)
+                        else -> nextThreshold
+                    }
                     val nextUnlocked = nextWorld <= startingWorld || totalStars >= starsNeeded
                     val nextName = worldNames[nextWorld] ?: "World $nextWorld"
                     Button(

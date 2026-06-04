@@ -32,18 +32,34 @@ fun LeaderboardScreen(navController: NavHostController) {
     val scope = rememberCoroutineScope()
 
     var selectedDifficulty by remember { mutableStateOf(Difficulty.MEDIUM) }
+    var playerDifficulty by remember { mutableStateOf(Difficulty.MEDIUM) }
     var entries by remember { mutableStateOf<List<LeaderboardEntry>>(emptyList()) }
     var playerEntry by remember { mutableStateOf<LeaderboardEntry?>(null) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var lastRefreshed by remember { mutableLongStateOf(0L) }
 
+    val encouragingMessages = remember {
+        listOf(
+            "Every star counts — keep climbing!",
+            "You're building momentum. The top 50 awaits!",
+            "Great gardeners grow one level at a time.",
+            "Your best score is still ahead of you!",
+            "The leaderboard is watching — show them what you've got!",
+            "Champions start exactly where you are now.",
+            "Keep earning stars and you'll be up there soon!",
+            "Progress is progress — you're on your way!"
+        ).random()
+    }
+
     // Load profile to set default difficulty; warm up Firebase connection
     LaunchedEffect(Unit) {
         leaderboardRepo.invalidateCache()
         leaderboardRepo.ensureAuthenticated()
         val profile = profileRepo.loadProfile()
-        selectedDifficulty = Difficulty.fromId(profile.difficulty)
+        val diff = Difficulty.fromId(profile.difficulty)
+        selectedDifficulty = diff
+        playerDifficulty = diff
     }
 
     // Fetch leaderboard when difficulty changes (auto-retry once on failure)
@@ -233,14 +249,15 @@ fun LeaderboardScreen(navController: NavHostController) {
                                 )
                             }
 
-                            // Show player rank below if not in top 50
-                            if (playerEntry == null && leaderboardRepo.currentUid != null) {
+                            // Show encouraging message if player not in top 50 (own tab only)
+                            if (playerEntry == null && leaderboardRepo.currentUid != null
+                                && selectedDifficulty == playerDifficulty) {
                                 HorizontalDivider(
                                     modifier = Modifier.padding(vertical = 8.dp),
                                     color = MaterialTheme.colorScheme.outlineVariant
                                 )
                                 Text(
-                                    text = "Your score is not in the top 50 yet. Keep playing!",
+                                    text = encouragingMessages,
                                     fontSize = 13.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.padding(vertical = 4.dp)
