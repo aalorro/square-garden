@@ -64,6 +64,8 @@ class GameViewModel(
     }
     private var usedPowerUpThisGame: Boolean = false
     private var effectiveStartingLevel: Int = 1
+    private var solverJob: Job? = null
+    private var resetJob: Job? = null
     private var blitzTimerJob: Job? = null
     private var blitzTimerStarted: Boolean = false
     var activity: Activity? = null
@@ -311,7 +313,7 @@ class GameViewModel(
         // More attempts for complex levels (many goals or large boards)
         val maxAttempts = if (level.goals.size >= 5 || level.boardWidth >= 8) 300 else 100
         repeat(maxAttempts) {
-            if (System.currentTimeMillis() >= deadline) return Pair(placeTokenTiles(generateValidBoard()), null)
+            if (Thread.interrupted() || System.currentTimeMillis() >= deadline) return Pair(placeTokenTiles(generateValidBoard()), null)
             val solved = buildSolvedBoard(deadline) ?: return@repeat
             // Verify all goals actually met
             if (BoardEngine.evaluateGoals(solved, level.goals).size != level.goals.size) return@repeat
@@ -464,7 +466,8 @@ class GameViewModel(
     // ── Async fallback solver (for boards not built via reverse-construction) ──
 
     private fun computeSolutionAsync(board: Board) {
-        viewModelScope.launch {
+        solverJob?.cancel()
+        solverJob = viewModelScope.launch {
             val goals = level.goals
             val maxMoves = adjustedMaxMoves
             val solution = withContext(Dispatchers.Default) {
@@ -751,6 +754,8 @@ class GameViewModel(
     }
 
     fun resetLevel() {
+        resetJob?.cancel()
+        solverJob?.cancel()
         val current = _state.value
         val hasTutorial = level.tutorialSteps != null
 
@@ -771,7 +776,7 @@ class GameViewModel(
             val capturedMovesRemaining = current.movesRemaining
             val capturedRedoFullReset = redoFullReset
             _state.value = current.copy(boardGenerating = true)
-            viewModelScope.launch {
+            resetJob = viewModelScope.launch {
                 val result = withContext(Dispatchers.Default) {
                     generateBoardWithSolution(genMoves, System.currentTimeMillis() + 3000L)
                 }
