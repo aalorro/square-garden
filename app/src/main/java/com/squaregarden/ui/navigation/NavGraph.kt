@@ -65,5 +65,8 @@ fun SquareGardenNavGraph(navController: NavHostController) {
         composable(Screen.Leaderboard.route) {
             LeaderboardScreen(navController = navController)
         }
+        composable(Screen.MasterMode.route) {
+            MasterModeScreen(navController = navController)
+        }
     }
 }

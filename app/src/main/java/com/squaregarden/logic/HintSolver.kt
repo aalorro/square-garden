@@ -261,11 +261,17 @@ object HintSolver {
                 (from in completedCells || to in completedCells)) {
                 return false
             }
+            // Only goals matching the swapped tile colors can change status —
+            // skip evaluating unrelated goals for a significant speedup on
+            // large boards with many goals.
+            val colorA = current.tileAt(from.row, from.col).color
+            val colorB = current.tileAt(to.row, to.col).color
             current = BoardEngine.executeSwap(current, from, to)
 
             val excluded = if (excludeCompletedFromMatch) completedCells else emptySet()
-            val uncompleted = goals.filter { it.id !in completedIds }
-            val newlyMet = BoardEngine.evaluateGoals(current, uncompleted, excluded)
+            val relevant = goals.filter { it.id !in completedIds && (it.color == colorA || it.color == colorB) }
+            val newlyMet = if (relevant.isNotEmpty())
+                BoardEngine.evaluateGoals(current, relevant, excluded) else emptySet()
             val justCompleted = newlyMet - completedIds
             completedIds = completedIds + newlyMet
 

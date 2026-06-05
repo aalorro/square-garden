@@ -33,6 +33,7 @@ import com.squaregarden.ui.components.BasReliefAvatar
 import com.squaregarden.ui.components.FavoritesDialog
 import com.squaregarden.ui.components.getAvatar
 import com.squaregarden.ui.components.LogoMark
+import androidx.compose.ui.graphics.Color
 import com.squaregarden.ui.theme.DisplayFontFamily
 
 @Composable
@@ -192,14 +193,14 @@ fun HomeScreen(navController: NavHostController) {
         // Bottom CTAs
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
                 onClick = { navController.navigate(Screen.Game.create(nextLevel)) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(50),
+                    .height(48.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
@@ -213,71 +214,129 @@ fun HomeScreen(navController: NavHostController) {
                 )
             }
 
-            OutlinedButton(
-                onClick = { navController.navigate(Screen.WorldSelect.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(50),
-                enabled = !cooldownActive
-            ) {
-                Text("Worlds", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            }
-
-            if (progress.favoriteLevels.isNotEmpty()) {
-                OutlinedButton(
-                    onClick = { showFavorites = true },
+            if (profile.masteryBadgeEarned) {
+                Button(
+                    onClick = { navController.navigate(Screen.MasterMode.route) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(50),
+                        .height(44.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFB8860B),
+                        contentColor = Color.White
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
                     enabled = !cooldownActive
                 ) {
-                    Text("\u2605  Favorites", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("\uD83D\uDC51  Master Mode", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
-            OutlinedButton(
-                onClick = { navController.navigate(Screen.Settings.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(50)
+            // Worlds + Favorites row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Settings", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            }
-
-            OutlinedButton(
-                onClick = { navController.navigate(Screen.Instructions.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(50)
-            ) {
-                Text("How to Play", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            }
-
-            if (gamesPlayed > 0) {
                 OutlinedButton(
-                    onClick = { navController.navigate(Screen.Stats.route) },
+                    onClick = { navController.navigate(Screen.WorldSelect.route) },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(50)
+                        .weight(1f)
+                        .height(42.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    enabled = !cooldownActive
                 ) {
-                    Text("\uD83D\uDCCA  Stats", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("Worlds", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                }
+
+                if (progress.favoriteLevels.isNotEmpty()) {
+                    OutlinedButton(
+                        onClick = { showFavorites = true },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(42.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = !cooldownActive
+                    ) {
+                        Text("\u2605  Favorites", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
 
-            if (profile.leaderboardOptIn) {
+            // Settings + How to Play row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 OutlinedButton(
-                    onClick = { navController.navigate(Screen.Leaderboard.route) },
+                    onClick = { navController.navigate(Screen.Settings.route) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(42.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Settings", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                }
+
+                OutlinedButton(
+                    onClick = { navController.navigate(Screen.Instructions.route) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(42.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("How to Play", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+
+            // Stats + Leaderboards row
+            if (gamesPlayed > 0 || profile.leaderboardOptIn) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (gamesPlayed > 0) {
+                        OutlinedButton(
+                            onClick = { navController.navigate(Screen.Stats.route) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(42.dp),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text("\uD83D\uDCCA  Stats", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+
+                    if (profile.leaderboardOptIn) {
+                        OutlinedButton(
+                            onClick = { navController.navigate(Screen.Leaderboard.route) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(42.dp),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text("\uD83C\uDFC6  Leaderboards", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+
+            if (com.squaregarden.DevFlags.ENDGAME_SIM_ENABLED) {
+                Button(
+                    onClick = {
+                        navController.navigate(
+                            Screen.Game.create(com.squaregarden.viewmodel.GameViewModel.ENDGAME_SIM_SIGNAL)
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(50)
+                        .height(36.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = androidx.compose.ui.graphics.Color(0xFF8B0000),
+                        contentColor = androidx.compose.ui.graphics.Color.White
+                    )
                 ) {
-                    Text("\uD83C\uDFC6  Leaderboards", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("DEV: Sim 126", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

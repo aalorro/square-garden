@@ -38,6 +38,8 @@ fun LeaderboardScreen(navController: NavHostController) {
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     var lastRefreshed by remember { mutableLongStateOf(0L) }
+    var showMasterTab by remember { mutableStateOf(false) }
+    var masterTabSelected by remember { mutableStateOf(false) }
 
     val encouragingMessages = remember {
         listOf(
@@ -60,15 +62,20 @@ fun LeaderboardScreen(navController: NavHostController) {
         val diff = Difficulty.fromId(profile.difficulty)
         selectedDifficulty = diff
         playerDifficulty = diff
+        showMasterTab = profile.masteryBadgeEarned
     }
 
-    // Fetch leaderboard when difficulty changes (auto-retry once on failure)
-    LaunchedEffect(selectedDifficulty) {
+    // Fetch leaderboard when difficulty or tab changes (auto-retry once on failure)
+    LaunchedEffect(selectedDifficulty, masterTabSelected) {
         loading = true
         error = null
         for (attempt in 1..2) {
             try {
-                val result = leaderboardRepo.fetchLeaderboard(selectedDifficulty)
+                val result = if (masterTabSelected) {
+                    leaderboardRepo.fetchMasterLeaderboard()
+                } else {
+                    leaderboardRepo.fetchLeaderboard(selectedDifficulty)
+                }
                 entries = result
                 playerEntry = leaderboardRepo.findPlayerRank(result)
                 lastRefreshed = System.currentTimeMillis()
@@ -115,15 +122,16 @@ fun LeaderboardScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Difficulty chips
+        // Difficulty chips + Master tab
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Difficulty.entries.forEach { diff ->
                 FilterChip(
-                    selected = selectedDifficulty == diff,
+                    selected = selectedDifficulty == diff && !masterTabSelected,
                     onClick = {
+                        masterTabSelected = false
                         if (selectedDifficulty != diff) {
                             selectedDifficulty = diff
                             leaderboardRepo.invalidateCache()
@@ -133,7 +141,26 @@ fun LeaderboardScreen(navController: NavHostController) {
                         Text(
                             diff.label,
                             fontSize = 11.sp,
-                            fontWeight = if (selectedDifficulty == diff) FontWeight.Bold else FontWeight.Normal,
+                            fontWeight = if (selectedDifficulty == diff && !masterTabSelected) FontWeight.Bold else FontWeight.Normal,
+                            maxLines = 1
+                        )
+                    },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(50)
+                )
+            }
+            if (showMasterTab) {
+                FilterChip(
+                    selected = masterTabSelected,
+                    onClick = {
+                        masterTabSelected = true
+                        leaderboardRepo.invalidateCache()
+                    },
+                    label = {
+                        Text(
+                            "Master",
+                            fontSize = 11.sp,
+                            fontWeight = if (masterTabSelected) FontWeight.Bold else FontWeight.Normal,
                             maxLines = 1
                         )
                     },
@@ -175,7 +202,11 @@ fun LeaderboardScreen(navController: NavHostController) {
                                     loading = true
                                     error = null
                                     try {
-                                        val result = leaderboardRepo.fetchLeaderboard(selectedDifficulty)
+                                        val result = if (masterTabSelected) {
+                                            leaderboardRepo.fetchMasterLeaderboard()
+                                        } else {
+                                            leaderboardRepo.fetchLeaderboard(selectedDifficulty)
+                                        }
                                         entries = result
                                         playerEntry = leaderboardRepo.findPlayerRank(result)
                                         lastRefreshed = System.currentTimeMillis()
@@ -234,7 +265,7 @@ fun LeaderboardScreen(navController: NavHostController) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             // Header row
                             Text(
-                                text = "Total Stars \u2022 ${selectedDifficulty.label}",
+                                text = if (masterTabSelected) "Master Stars" else "Total Stars \u2022 ${selectedDifficulty.label}",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onBackground
@@ -245,7 +276,8 @@ fun LeaderboardScreen(navController: NavHostController) {
                                 val isPlayer = entry.uid == leaderboardRepo.currentUid
                                 LeaderboardRow(
                                     entry = entry,
-                                    isCurrentPlayer = isPlayer
+                                    isCurrentPlayer = isPlayer,
+                                    isMaster = masterTabSelected
                                 )
                             }
 
@@ -295,7 +327,11 @@ fun LeaderboardScreen(navController: NavHostController) {
                         loading = true
                         error = null
                         try {
-                            val result = leaderboardRepo.fetchLeaderboard(selectedDifficulty)
+                            val result = if (masterTabSelected) {
+                                leaderboardRepo.fetchMasterLeaderboard()
+                            } else {
+                                leaderboardRepo.fetchLeaderboard(selectedDifficulty)
+                            }
                             entries = result
                             playerEntry = leaderboardRepo.findPlayerRank(result)
                             lastRefreshed = System.currentTimeMillis()
@@ -315,7 +351,7 @@ fun LeaderboardScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun LeaderboardRow(entry: LeaderboardEntry, isCurrentPlayer: Boolean) {
+private fun LeaderboardRow(entry: LeaderboardEntry, isCurrentPlayer: Boolean, isMaster: Boolean = false) {
     val bgColor = if (isCurrentPlayer)
         MaterialTheme.colorScheme.primaryContainer
     else
@@ -362,7 +398,13 @@ private fun LeaderboardRow(entry: LeaderboardEntry, isCurrentPlayer: Boolean) {
                     color = MaterialTheme.colorScheme.onBackground,
                     maxLines = 1
                 )
-                if (entry.level > 0) {
+                if (isMaster && entry.level > 0) {
+                    Text(
+                        text = "Best streak: ${entry.level}",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else if (entry.level > 0) {
                     Text(
                         text = "Level ${entry.level}",
                         fontSize = 11.sp,

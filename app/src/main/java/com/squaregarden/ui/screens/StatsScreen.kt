@@ -18,12 +18,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.squaregarden.data.MasterModeRepository
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.model.Difficulty
 import com.squaregarden.ui.components.BasReliefAvatar
 import com.squaregarden.ui.theme.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -31,6 +33,7 @@ fun StatsScreen(navController: NavHostController) {
     val context = LocalContext.current
     val profileRepo = remember { ProfileRepository(context) }
     val progressRepo = remember { ProgressRepository(context) }
+    val masterRepo = remember { MasterModeRepository(context) }
 
     val totalStars by progressRepo.totalStarsFlow.collectAsState(initial = 0)
     val gamesPlayed by progressRepo.gamesPlayedFlow.collectAsState(initial = 0)
@@ -46,12 +49,25 @@ fun StatsScreen(navController: NavHostController) {
     var avatarBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var masteryBadge by remember { mutableStateOf(false) }
     var loaded by remember { mutableStateOf(false) }
+    var masterTotalStars by remember { mutableIntStateOf(0) }
+    var masterTotalGames by remember { mutableIntStateOf(0) }
+    var masterTotalWins by remember { mutableIntStateOf(0) }
+    var masterBestStreak by remember { mutableIntStateOf(0) }
+    var masterChallengesCompleted by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
         levelsThreeStarred = progressRepo.getLevelsThreeStarred()
         challengeCompletions = progressRepo.getChallengeCompletions()
         completedDifficulties = progressRepo.getCompletedDifficulties()
         val profile = profileRepo.loadProfile()
+        if (profile.masteryBadgeEarned) {
+            val mState = masterRepo.loadState()
+            masterTotalStars = mState.totalMasterStars
+            masterBestStreak = mState.bestStreak
+            masterTotalGames = masterRepo.totalMasterGamesFlow.first()
+            masterTotalWins = masterRepo.totalMasterWinsFlow.first()
+            masterChallengesCompleted = masterRepo.getMasterChallengesCompleted()
+        }
         masteryBadge = profile.masteryBadgeEarned
         avatarEmoji = if (profile.hasCustomAvatar) "" else com.squaregarden.ui.components.getAvatar(profile.avatarId).emoji
         if (profile.hasCustomAvatar) {
@@ -144,6 +160,21 @@ fun StatsScreen(navController: NavHostController) {
                 if (shifting > 0) StatsRow(label = "\uD83C\uDF0A Shifting Sands", value = "$shifting")
                 if (memory > 0) StatsRow(label = "\uD83E\uDDE0 Memory Garden", value = "$memory")
                 StatsRow(label = "Total", value = "$totalChallenges")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+
+        // Master Mode stats
+        if (masteryBadge && masterTotalGames > 0) {
+            StatsCard(title = "\uD83D\uDC51 Master Mode") {
+                StatsRow(label = "Master Stars", value = "\u2605 $masterTotalStars")
+                StatsRow(label = "Games Played", value = "$masterTotalGames")
+                StatsRow(label = "Games Won", value = "$masterTotalWins")
+                StatsRow(label = "Best Streak", value = "\uD83D\uDD25 $masterBestStreak")
+                if (masterChallengesCompleted > 0) {
+                    StatsRow(label = "Challenges Completed", value = "$masterChallengesCompleted")
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))

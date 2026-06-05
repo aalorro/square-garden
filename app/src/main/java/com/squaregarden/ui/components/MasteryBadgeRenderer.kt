@@ -125,11 +125,12 @@ object MasteryBadgeRenderer {
                 textSize = 40f
                 textAlign = Paint.Align.CENTER
             }
-            canvas.drawText("$perfectGames Perfect Games", cx, cy + 280f, perfPaint)
+            canvas.drawText("$perfectGames Perfect Games", cx, cy + 340f, perfPaint)
         }
 
         // Decorative divider
-        drawDivider(canvas, cy + 320f, size)
+        val dividerY = if (perfectGames > 0) cy + 380f else cy + 320f
+        drawDivider(canvas, dividerY, size)
 
         // Date
         val datePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -138,7 +139,7 @@ object MasteryBadgeRenderer {
             textSize = 40f
             textAlign = Paint.Align.CENTER
         }
-        canvas.drawText(dateString, cx, cy + 400f, datePaint)
+        canvas.drawText(dateString, cx, dividerY + 80f, datePaint)
 
         return bitmap
     }

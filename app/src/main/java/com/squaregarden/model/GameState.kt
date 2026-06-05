@@ -39,9 +39,12 @@ data class GameState(
     val pendingChallenge: ChallengeType? = null,
     val boardGenerating: Boolean = false,
     val gameCompleted: Boolean = false,
-    val proUpgradePrompt: Boolean = false
+    val proUpgradePrompt: Boolean = false,
+    val masterModeState: MasterModeState? = null,
+    val masterTier: MasterTier? = null
 ) {
     val isChallenge: Boolean get() = challengeState != null
+    val isMasterMode: Boolean get() = masterModeState != null
 }
 
 enum class GameDifficulty(val label: String, val starMultiplier: Float) {

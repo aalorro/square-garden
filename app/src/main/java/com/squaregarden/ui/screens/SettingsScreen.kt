@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.squaregarden.data.MasterModeRepository
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
 import com.squaregarden.data.SettingsRepository
@@ -270,6 +271,7 @@ fun SettingsScreen(navController: NavHostController) {
                         scope.launch {
                             progressRepo.clearAll()
                             profileRepo.clearAll()
+                            MasterModeRepository(context).clearAll()
                             settingsRepo.setShapesExplainerDismissed(false)
                             navController.navigate(Screen.ProfileSetup.route) {
                                 popUpTo(0) { inclusive = true }

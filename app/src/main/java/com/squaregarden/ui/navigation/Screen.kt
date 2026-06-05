@@ -19,4 +19,5 @@ sealed class Screen(val route: String) {
     data object ShapesExplainer : Screen("shapes_explainer")
     data object Stats : Screen("stats")
     data object Leaderboard : Screen("leaderboard")
+    data object MasterMode : Screen("master_mode")
 }

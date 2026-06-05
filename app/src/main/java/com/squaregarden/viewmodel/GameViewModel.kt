@@ -14,11 +14,13 @@ import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.LeaderboardRepository
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
+import com.squaregarden.data.MasterModeRepository
 import com.squaregarden.logic.BoardEngine
 import com.squaregarden.logic.ChallengeGenerator
 import com.squaregarden.logic.GoalSetGenerator
 import com.squaregarden.logic.HintSolver
 import com.squaregarden.logic.LevelLoader
+import com.squaregarden.logic.MasterLevelGenerator
 import com.squaregarden.logic.PatternMatcher
 import com.squaregarden.model.*
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +39,11 @@ class GameViewModel(
     private val context: Context,
     private val levelId: Int
 ) : ViewModel() {
+
+    companion object {
+        const val MASTER_MODE_SIGNAL = -999
+        const val ENDGAME_SIM_SIGNAL = -998
+    }
 
     private lateinit var level: Level
     private lateinit var baseLevel: Level
@@ -64,6 +71,9 @@ class GameViewModel(
     }
     private var usedPowerUpThisGame: Boolean = false
     private var effectiveStartingLevel: Int = 1
+    private var masterModeRepo: MasterModeRepository? = null
+    private var masterModeState: MasterModeState? = null
+    private var masterTier: MasterTier? = null
     private var solverJob: Job? = null
     private var resetJob: Job? = null
     private var blitzTimerJob: Job? = null
@@ -92,6 +102,139 @@ class GameViewModel(
             unfreezeTokens = progressRepo.unfreezeTokensFlow.first()
             redoTokens = progressRepo.redoTokensFlow.first()
             diagonalTokens = progressRepo.diagonalTokensFlow.first()
+
+            if (levelId == ENDGAME_SIM_SIGNAL) {
+                // Dev: simulate a nearly-solved level 126 (1 swap to win, 4 moves left).
+                // Strategy: build a fully solved board, then make ONE swap to break
+                // exactly one goal. All other goals stay completed. Player reverses
+                // that swap to win.
+                val levels = LevelLoader.loadAllLevels(context)
+                baseLevel = levels.first { it.id == 126 }
+                level = baseLevel.copy(tutorialSteps = null)
+
+                _state.value = _state.value.copy(boardGenerating = true)
+                val simBoard = withContext(Dispatchers.Default) {
+                    val deadline = System.currentTimeMillis() + 5000L
+                    var solved: Board? = null
+                    repeat(300) {
+                        if (solved != null || System.currentTimeMillis() >= deadline) return@repeat
+                        solved = buildSolvedBoard(deadline)
+                        // Verify all goals met
+                        if (solved != null && BoardEngine.evaluateGoals(solved!!, level.goals).size != level.goals.size) {
+                            solved = null
+                        }
+                    }
+                    solved
+                }
+
+                if (simBoard != null) {
+                    // Find all goal cell positions on the solved board
+                    val allGoalCells = mutableMapOf<String, Set<CellPos>>()
+                    for (goal in level.goals) {
+                        val cells = PatternMatcher.findGoalPositions(simBoard, goal)
+                        if (cells != null) allGoalCells[goal.id] = cells
+                    }
+                    val occupiedCells = allGoalCells.values.flatten().toSet()
+
+                    // Find a swap that breaks exactly one goal: swap a goal-edge tile
+                    // with an adjacent non-goal tile of a different color.
+                    var breakSwap: Pair<CellPos, CellPos>? = null
+                    var brokenGoalId: String? = null
+                    for ((goalId, cells) in allGoalCells) {
+                        if (breakSwap != null) break
+                        for (cell in cells) {
+                            if (breakSwap != null) break
+                            if (simBoard.tileAt(cell.row, cell.col).frozen) continue
+                            // Check 4 orthogonal neighbors
+                            for ((dr, dc) in listOf(-1 to 0, 1 to 0, 0 to -1, 0 to 1)) {
+                                val nr = cell.row + dr; val nc = cell.col + dc
+                                val neighbor = CellPos(nr, nc)
+                                if (!simBoard.isValidCell(nr, nc)) continue
+                                if (neighbor in occupiedCells) continue // don't swap two goal tiles
+                                if (simBoard.tileAt(nr, nc).frozen) continue
+                                if (simBoard.tileAt(nr, nc).color == simBoard.tileAt(cell.row, cell.col).color) continue
+                                // This swap should break the goal — verify
+                                val testBoard = BoardEngine.executeSwap(simBoard, cell, neighbor)
+                                val stillMet = BoardEngine.evaluateGoals(testBoard, level.goals)
+                                if (goalId !in stillMet && stillMet.size == level.goals.size - 1) {
+                                    breakSwap = cell to neighbor
+                                    brokenGoalId = goalId
+                                    break
+                                }
+                            }
+                        }
+                    }
+
+                    if (breakSwap != null && brokenGoalId != null) {
+                        val brokenBoard = BoardEngine.executeSwap(simBoard, breakSwap.first, breakSwap.second)
+                        val completedIds = allGoalCells.keys - brokenGoalId
+                        val completedCells = allGoalCells.filterKeys { it != brokenGoalId }
+                        val simLevel = level.copy(maxMoves = 4)
+                        _state.value = GameState(
+                            level = simLevel, board = brokenBoard,
+                            movesRemaining = 4, difficulty = difficulty,
+                            gameDifficulty = GameDifficulty.EXTREMELY_HARD,
+                            initialBoard = brokenBoard, hasSolution = true,
+                            completedGoalIds = completedIds,
+                            completedGoalCells = completedCells,
+                            shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens,
+                            unfreezeTokens = unfreezeTokens, redoTokens = redoTokens,
+                            diagonalTokens = diagonalTokens,
+                            phase = GamePhase.PLAYING
+                        )
+                        adjustedMaxMoves = 4
+                    } else {
+                        // Fallback: load level 126 normally
+                        adjustedMaxMoves = max(1, (level.maxMoves * difficulty.moveMultiplier).roundToInt())
+                        initLevel()
+                    }
+                } else {
+                    // Fallback: load level 126 normally
+                    adjustedMaxMoves = max(1, (level.maxMoves * difficulty.moveMultiplier).roundToInt())
+                    initLevel()
+                }
+                return@launch
+            }
+
+            if (levelId == MASTER_MODE_SIGNAL) {
+                // Master Mode: generate level via MasterLevelGenerator
+                val repo = MasterModeRepository(context)
+                masterModeRepo = repo
+                val mState = repo.loadState()
+                masterModeState = mState
+
+                // Check for challenge round
+                val challengeType = MasterLevelGenerator.shouldTriggerChallenge(
+                    mState.gamesPlayed, mState.currentStreak
+                )
+                if (challengeType != null) {
+                    level = ChallengeGenerator.generateLevel(challengeType, difficulty)
+                    adjustedMaxMoves = level.maxMoves
+                    val updatedMState = mState.copy(isChallengeRound = true)
+                    masterModeState = updatedMState
+                    masterTier = null
+                    initLevel(challengeType)
+                    _state.value = _state.value.copy(
+                        masterModeState = updatedMState
+                    )
+                } else {
+                    val (genLevel, tier) = MasterLevelGenerator.generateLevel(
+                        mState.gamesPlayed, mState.currentStreak, difficulty
+                    )
+                    level = genLevel
+                    masterTier = tier
+                    // Tier moveMultiplier is sole factor — no skill stacking
+                    adjustedMaxMoves = level.maxMoves
+                    val updatedMState = mState.copy(currentTier = tier)
+                    masterModeState = updatedMState
+                    initLevel()
+                    _state.value = _state.value.copy(
+                        masterModeState = updatedMState,
+                        masterTier = tier
+                    )
+                }
+                return@launch
+            }
 
             val challengeType = ChallengeType.fromId(levelId)
             if (challengeType != null) {
@@ -325,10 +468,11 @@ class GameViewModel(
             if (BoardEngine.evaluateGoals(scrambled, level.goals).isNotEmpty()) return@repeat
 
             val solution = swaps.reversed()
-            // Verify the reversed swap path actually solves the board under the
-            // current difficulty's rules (blocked swaps through completed goals,
-            // Pro/Pro+ exclusion of completed cells from new goal matching).
-            if (!HintSolver.verifySolution(scrambled, level.goals, solution, difficulty)) {
+            // Casual: swaps through completed goals are allowed, so the reversed
+            // scramble always reaches the solved state — skip expensive verification.
+            // Standard/Pro/Pro+: verify the path respects blocked-swap rules.
+            if (difficulty != Difficulty.EASY &&
+                !HintSolver.verifySolution(scrambled, level.goals, solution, difficulty)) {
                 return@repeat
             }
             return Pair(placeTokenTiles(scrambled), solution)
@@ -427,9 +571,9 @@ class GameViewModel(
         return Board(level.boardWidth, level.boardHeight, tiles, voids)
     }
 
-    /** Place token tiles on random non-frozen, non-void cells (World 4+, ~25% chance each). */
+    /** Place token tiles on random non-frozen, non-void cells (World 4+ or Master Mode, ~25% chance each). */
     private fun placeTokenTiles(board: Board): Board {
-        if (level.world < 4) return board
+        if (level.world < 4 && level.world != MasterLevelGenerator.MASTER_WORLD) return board
         val candidates = mutableListOf<CellPos>()
         for (r in 0 until board.height) {
             for (c in 0 until board.width) {
@@ -445,8 +589,8 @@ class GameViewModel(
         val shufflePos = if ((1..4).random() == 1) candidates.random() else null
         val ptPos = if ((1..4).random() == 1) candidates.random() else null
         val ufPos = if ((1..4).random() == 1) candidates.random() else null
-        // Diagonal token is Pro+ only — spawns on World 11+
-        val diagPos = if (level.world >= 11 && (1..4).random() == 1) candidates.random() else null
+        // Diagonal token: spawns on World 11+ or Master Mode
+        val diagPos = if ((level.world >= 11 || level.world == MasterLevelGenerator.MASTER_WORLD) && (1..4).random() == 1) candidates.random() else null
 
         val newTiles = board.tiles.mapIndexed { r, row ->
             row.mapIndexed { c, tile ->
@@ -576,7 +720,10 @@ class GameViewModel(
             } else {
                 _state.value = _state.value.copy(boardGenerating = true)
                 val result = withContext(Dispatchers.Default) {
-                    val deadline = System.currentTimeMillis() + 3000L
+                    // Master Mode boards (especially Intense/Brutal tiers) need more
+                    // time for reverse-construction on large boards with many goals.
+                    val timeoutMs = if (level.world == -1) 5000L else 3000L
+                    val deadline = System.currentTimeMillis() + timeoutMs
                     var best: Pair<Board, List<Pair<CellPos, CellPos>>?> =
                         generateBoardWithSolution(adjustedMaxMoves, deadline)
                     // Retry reverse-construction a few times if first attempt
@@ -1137,6 +1284,30 @@ class GameViewModel(
                             // Memory: delay WON to show revealed board first
                             if (cs.type == ChallengeType.MEMORY) GamePhase.PLAYING else GamePhase.WON
                         }
+                    } else if (current.isMasterMode) {
+                        // Master Mode win (executeSwap path)
+                        val mState = current.masterModeState!!
+                        val tier = current.masterTier ?: MasterTier.WARMING_UP
+                        val gameDiff = _state.value.gameDifficulty
+                        val newStreak = mState.currentStreak + 1
+                        val newMState = mState.copy(
+                            currentStreak = newStreak,
+                            bestStreak = maxOf(mState.bestStreak, newStreak),
+                            gamesWon = mState.gamesWon + 1,
+                            gamesPlayed = mState.gamesPlayed + 1
+                        )
+                        starsAwarded = (tier.baseStars * gameDiff.starMultiplier * newMState.streakMultiplier * difficulty.starMultiplier).roundToInt().coerceAtLeast(1)
+                        masterModeState = newMState.copy(
+                            sessionStars = mState.sessionStars + starsAwarded,
+                            totalMasterStars = mState.totalMasterStars + starsAwarded
+                        )
+                        MusicManager.startWinMusic(context, perfectGame = false, loop = false)
+                        audioManager.playWinClap(perfectGame = false)
+                        vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 120, 80, 120), -1))
+                        winResultCommitted = false
+                        pendingWinLevelId = current.level.id
+                        pendingWinStars = starsAwarded
+                        GamePhase.WON
                     } else {
                         val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
                         val gameDiff = _state.value.gameDifficulty
@@ -1164,12 +1335,28 @@ class GameViewModel(
                         GamePhase.LOST
                     } else {
                         audioManager.playLose()
-                        if (!isChallenge) progressRepo.loseLife(difficulty.ordinal)
+                        if (!isChallenge && !current.isMasterMode) progressRepo.loseLife(difficulty.ordinal)
                         blitzTimerJob?.cancel()
                         GamePhase.LOST
                     }
                 }
                 else -> GamePhase.PLAYING
+            }
+
+            // Update master mode state on win/loss
+            if (current.isMasterMode) {
+                if (phase == GamePhase.LOST) {
+                    val mState = current.masterModeState!!
+                    masterModeState = mState.copy(
+                        currentStreak = 0,
+                        gamesPlayed = mState.gamesPlayed + 1
+                    )
+                    masterModeRepo?.recordLoss()
+                    progressRepo.loseLife(difficulty.ordinal)
+                }
+                if (phase == GamePhase.WON || phase == GamePhase.LOST) {
+                    _state.value = _state.value.copy(masterModeState = masterModeState)
+                }
             }
 
             // Update challenge state after swap (include Overgrown LOST to track final goals)
@@ -1397,6 +1584,30 @@ class GameViewModel(
                             // Memory: delay WON to show revealed board first
                             if (cs.type == ChallengeType.MEMORY) GamePhase.PLAYING else GamePhase.WON
                         }
+                    } else if (current.isMasterMode) {
+                        // Master Mode win (passthrough path)
+                        val mState = current.masterModeState!!
+                        val tier = current.masterTier ?: MasterTier.WARMING_UP
+                        val gameDiff = _state.value.gameDifficulty
+                        val newStreak = mState.currentStreak + 1
+                        val newMState = mState.copy(
+                            currentStreak = newStreak,
+                            bestStreak = maxOf(mState.bestStreak, newStreak),
+                            gamesWon = mState.gamesWon + 1,
+                            gamesPlayed = mState.gamesPlayed + 1
+                        )
+                        starsAwarded = (tier.baseStars * gameDiff.starMultiplier * newMState.streakMultiplier * difficulty.starMultiplier).roundToInt().coerceAtLeast(1)
+                        masterModeState = newMState.copy(
+                            sessionStars = mState.sessionStars + starsAwarded,
+                            totalMasterStars = mState.totalMasterStars + starsAwarded
+                        )
+                        MusicManager.startWinMusic(context, perfectGame = false, loop = false)
+                        audioManager.playWinClap(perfectGame = false)
+                        vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 120, 80, 120), -1))
+                        winResultCommitted = false
+                        pendingWinLevelId = current.level.id
+                        pendingWinStars = starsAwarded
+                        GamePhase.WON
                     } else {
                         val baseStars = BoardEngine.calculateStars(newMoves, current.level.starThresholds)
                         val gameDiff = _state.value.gameDifficulty
@@ -1423,12 +1634,28 @@ class GameViewModel(
                         GamePhase.LOST
                     } else {
                         audioManager.playLose()
-                        if (!isChallenge) progressRepo.loseLife(difficulty.ordinal)
+                        if (!isChallenge && !current.isMasterMode) progressRepo.loseLife(difficulty.ordinal)
                         blitzTimerJob?.cancel()
                         GamePhase.LOST
                     }
                 }
                 else -> GamePhase.PLAYING
+            }
+
+            // Update master mode state on win/loss (passthrough path)
+            if (current.isMasterMode) {
+                if (phase == GamePhase.LOST) {
+                    val mState = current.masterModeState!!
+                    masterModeState = mState.copy(
+                        currentStreak = 0,
+                        gamesPlayed = mState.gamesPlayed + 1
+                    )
+                    masterModeRepo?.recordLoss()
+                    progressRepo.loseLife(difficulty.ordinal)
+                }
+                if (phase == GamePhase.WON || phase == GamePhase.LOST) {
+                    _state.value = _state.value.copy(masterModeState = masterModeState)
+                }
             }
 
             // Update challenge state after passthrough swap (include Overgrown LOST)
@@ -1802,6 +2029,39 @@ class GameViewModel(
         winResultCommitted = true
         viewModelScope.launch {
             val state = _state.value
+            if (state.isMasterMode) {
+                // Master Mode win: persist to MasterModeRepository
+                val mState = masterModeState ?: return@launch
+                masterModeRepo?.recordWin(pendingWinStars)
+                if (state.isChallenge) {
+                    masterModeRepo?.recordChallengeCompletion()
+                    // Challenge rounds still award bonus tokens
+                    progressRepo.addShuffleToken(); shuffleTokens++
+                    progressRepo.addPassthroughToken(); passthroughTokens++
+                    progressRepo.addUnfreezeToken(); unfreezeTokens++
+                    progressRepo.addRedoToken(); redoTokens++
+                    _state.value = _state.value.copy(
+                        shuffleTokenAwarded = true,
+                        passthroughTokenAwarded = true,
+                        unfreezeTokenAwarded = true,
+                        redoTokenAwarded = true
+                    )
+                }
+                // Submit to Firebase leaderboard
+                val profile = profileRepo.loadProfile()
+                if (profile.leaderboardOptIn) {
+                    try {
+                        val leaderboardRepo = LeaderboardRepository()
+                        val emoji = com.squaregarden.ui.components.getAvatar(profile.avatarId).emoji
+                        leaderboardRepo.submitMasterModeStars(
+                            profile.username, emoji, mState.totalMasterStars, mState.bestStreak
+                        )
+                    } catch (e: Exception) {
+                        android.util.Log.w("GameVM", "Master leaderboard submit failed", e)
+                    }
+                }
+                return@launch
+            }
             if (state.isChallenge) {
                 // Challenge win: bonus stars + 1 of each token, no per-level save
                 progressRepo.saveChallengeStars(pendingWinStars)

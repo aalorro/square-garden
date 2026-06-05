@@ -15,4 +15,12 @@ object DevFlags {
      * through the UI. Keep this `false` on every commit.
      */
     const val CHALLENGE_LAB_ENABLED: Boolean = false
+
+    /**
+     * When true, exposes a "Sim 126" button on HomeScreen that launches a
+     * nearly-solved level 126 game (4 moves remaining, 1 swap to win).
+     * Use this to test the GameCompleteOverlay, mastery badge export,
+     * and the transition into Master Mode. Keep `false` on every commit.
+     */
+    const val ENDGAME_SIM_ENABLED: Boolean = false
 }

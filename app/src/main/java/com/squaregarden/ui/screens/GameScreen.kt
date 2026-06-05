@@ -119,7 +119,7 @@ fun GameScreen(
 
     // Safety net: if cooldown is active, pop back immediately (skip for challenges)
     LaunchedEffect(lives, cooldownUntil) {
-        if (levelId > 0 && lives <= 0 && cooldownUntil > System.currentTimeMillis()) {
+        if ((levelId > 0 || levelId == GameViewModel.MASTER_MODE_SIGNAL) && lives <= 0 && cooldownUntil > System.currentTimeMillis()) {
             navController.popBackStack()
         }
     }
@@ -158,7 +158,18 @@ fun GameScreen(
                     else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                 )
             }
-            if (isCompact) {
+            if (state.isMasterMode) {
+                // Master Mode: show tier label instead of level number
+                val tierLabel = state.masterTier?.label ?: "Master Mode"
+                Text(
+                    text = tierLabel,
+                    fontFamily = com.squaregarden.ui.theme.DisplayFontFamily,
+                    fontSize = if (isCompact) 13.sp else 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFB8860B),
+                    maxLines = 1
+                )
+            } else if (isCompact) {
                 var showNumber by remember(state.level.id) { mutableStateOf(true) }
                 Text(
                     text = if (showNumber) "${state.level.name} (${state.level.id})"
@@ -182,7 +193,7 @@ fun GameScreen(
                     maxLines = 1
                 )
             }
-            if (levelId > 0) {
+            if (levelId > 0 && !state.isMasterMode) {
                 TextButton(
                     onClick = {
                         scope.launch {
@@ -209,7 +220,7 @@ fun GameScreen(
             completedIds = state.completedGoalIds,
             movesRemaining = if (isBlitz) -1 else state.movesRemaining,
             movesMax = if (isBlitz) -1 else state.level.maxMoves,
-            gameDifficulty = if (state.isChallenge) null else state.gameDifficulty,
+            gameDifficulty = if (state.isChallenge && !state.isMasterMode) null else state.gameDifficulty,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -494,6 +505,32 @@ fun GameScreen(
 
     // Win overlay with confetti + balloons + star burst + star trail + dialog
     if (state.phase == GamePhase.WON) {
+        if (state.isMasterMode && !state.isChallenge) {
+            // Master Mode win: use MasterModeSummaryOverlay
+            val mState = state.masterModeState!!
+            val tier = state.masterTier ?: MasterTier.WARMING_UP
+            LaunchedEffect(Unit) { viewModel.commitWinResult() }
+            MasterModeSummaryOverlay(
+                starsEarned = state.starsAwarded,
+                tierBaseStars = tier.baseStars,
+                gameDiffMultiplier = state.gameDifficulty.starMultiplier,
+                streakMultiplier = mState.streakMultiplier,
+                skillMultiplier = state.difficulty.starMultiplier,
+                currentStreak = mState.currentStreak,
+                tier = tier,
+                onNextGame = {
+                    MusicManager.stopWinMusic()
+                    navController.navigate(Screen.Game.create(GameViewModel.MASTER_MODE_SIGNAL)) {
+                        popUpTo(Screen.Game.route) { inclusive = true }
+                    }
+                },
+                onEndRun = {
+                    MusicManager.stopWinMusic()
+                    navController.popBackStack()
+                }
+            )
+            ConfettiOverlay(stars = state.starsAwarded, perfectGame = false)
+        } else {
         val stars = state.starsAwarded
         var challengeCelebrationReady by remember { mutableStateOf(!state.isChallenge) }
 
@@ -551,6 +588,7 @@ fun GameScreen(
             ConfettiOverlay(stars = stars, perfectGame = maxCelebration)
             BalloonOverlay(stars = stars, perfectGame = maxCelebration)
             StarBurstOverlay(stars = stars, perfectGame = maxCelebration)
+        }
         }
     }
 
@@ -763,6 +801,29 @@ fun GameScreen(
                 onRetry = null,
                 onMenu = backToGame,
                 onShowSolution = null
+            )
+        } else if (state.isMasterMode) {
+            // Master Mode loss: streak broken dialog
+            val mState = state.masterModeState
+            AlertDialog(
+                onDismissRequest = {},
+                title = { Text("Streak Broken") },
+                text = {
+                    Text(
+                        "Your streak has been reset.\n" +
+                        "Session stars: ${mState?.sessionStars ?: 0}"
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        navController.navigate(Screen.Game.create(GameViewModel.MASTER_MODE_SIGNAL)) {
+                            popUpTo(Screen.Game.route) { inclusive = true }
+                        }
+                    }) { Text("Retry", fontWeight = FontWeight.Bold) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { navController.popBackStack() }) { Text("End Run") }
+                }
             )
         } else {
             LoseDialog(
