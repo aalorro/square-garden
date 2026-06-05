@@ -571,7 +571,8 @@ class GameViewModel(
         return Board(level.boardWidth, level.boardHeight, tiles, voids)
     }
 
-    /** Place token tiles on random non-frozen, non-void cells (World 4+ or Master Mode, ~25% chance each). */
+    /** Place token tiles on random non-frozen, non-void cells (World 4+ or Master Mode).
+     *  Worlds 11-12: 1-4 tokens. World 13: 2-5. World 14: 3-6. Worlds 4-10: ~25% roll each. */
     private fun placeTokenTiles(board: Board): Board {
         if (level.world < 4 && level.world != MasterLevelGenerator.MASTER_WORLD) return board
         val candidates = mutableListOf<CellPos>()
@@ -584,7 +585,35 @@ class GameViewModel(
         }
         if (candidates.isEmpty()) return board
 
-        // Each token type rolls independently (~25% chance each)
+        // Worlds 11+: guaranteed minimum token count with random types
+        if (level.world >= 11) {
+            val (minTokens, maxTokens) = when {
+                level.world >= 14 -> 3 to 6
+                level.world >= 13 -> 2 to 5
+                else -> 1 to 4 // Worlds 11-12
+            }
+            val count = (minTokens..maxTokens).random().coerceAtMost(candidates.size)
+            val chosen = candidates.shuffled().take(count)
+            // All 5 token types available on worlds 13-14
+            val tokenTypes = listOf("redo", "shuffle", "passthrough", "unfreeze", "diagonal")
+            val assignments = chosen.map { it to tokenTypes.random() }
+            val assignMap = assignments.toMap()
+            val newTiles = board.tiles.mapIndexed { r, row ->
+                row.mapIndexed { c, tile ->
+                    val type = assignMap[CellPos(r, c)]
+                    if (type != null) tile.copy(
+                        redo = tile.redo || type == "redo",
+                        shuffleToken = tile.shuffleToken || type == "shuffle",
+                        passthroughToken = tile.passthroughToken || type == "passthrough",
+                        unfreezeToken = tile.unfreezeToken || type == "unfreeze",
+                        diagonalToken = tile.diagonalToken || type == "diagonal"
+                    ) else tile
+                }
+            }
+            return board.copy(tiles = newTiles)
+        }
+
+        // Worlds 4-10: each token type rolls independently (~25% chance each)
         val redoPos = if ((1..4).random() == 1) candidates.random() else null
         val shufflePos = if ((1..4).random() == 1) candidates.random() else null
         val ptPos = if ((1..4).random() == 1) candidates.random() else null

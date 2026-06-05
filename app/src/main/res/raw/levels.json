@@ -17629,10 +17629,6 @@
         "type": "line",
         "color": "BLUE",
         "length": 7
-      },
-      {
-        "type": "square",
-        "color": "YELLOW"
       }
     ],
     "stars": {
@@ -17820,10 +17816,6 @@
         "type": "line",
         "color": "GREEN",
         "length": 8
-      },
-      {
-        "type": "square",
-        "color": "ORANGE"
       }
     ],
     "stars": {
@@ -18024,10 +18016,6 @@
         "type": "line",
         "color": "BLUE",
         "length": 7
-      },
-      {
-        "type": "square",
-        "color": "VIOLET"
       }
     ],
     "stars": {
