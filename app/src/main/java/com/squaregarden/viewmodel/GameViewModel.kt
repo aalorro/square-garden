@@ -71,6 +71,7 @@ class GameViewModel(
     }
     private var usedPowerUpThisGame: Boolean = false
     private var effectiveStartingLevel: Int = 1
+    private val leaderboardRepo by lazy { LeaderboardRepository() }
     private var masterModeRepo: MasterModeRepository? = null
     private var masterModeState: MasterModeState? = null
     private var masterTier: MasterTier? = null
@@ -751,7 +752,7 @@ class GameViewModel(
                 val result = withContext(Dispatchers.Default) {
                     // Master Mode boards (especially Intense/Brutal tiers) need more
                     // time for reverse-construction on large boards with many goals.
-                    val timeoutMs = if (level.world == -1) 5000L else 3000L
+                    val timeoutMs = if (level.world == MasterLevelGenerator.MASTER_WORLD) 5000L else 3000L
                     val deadline = System.currentTimeMillis() + timeoutMs
                     var best: Pair<Board, List<Pair<CellPos, CellPos>>?> =
                         generateBoardWithSolution(adjustedMaxMoves, deadline)
@@ -2080,7 +2081,6 @@ class GameViewModel(
                 val profile = profileRepo.loadProfile()
                 if (profile.leaderboardOptIn) {
                     try {
-                        val leaderboardRepo = LeaderboardRepository()
                         val emoji = com.squaregarden.ui.components.getAvatar(profile.avatarId).emoji
                         leaderboardRepo.submitMasterModeStars(
                             profile.username, emoji, mState.totalMasterStars, mState.bestStreak
@@ -2176,7 +2176,6 @@ class GameViewModel(
             val profile = profileRepo.loadProfile()
             if (profile.leaderboardOptIn) {
                 try {
-                    val leaderboardRepo = LeaderboardRepository()
                     val totalStars = progressRepo.totalStarsFlow.first()
                     val progress = progressRepo.loadProgress()
                     val highestLevel = progress.highestUnlockedLevel(effectiveStartingLevel)

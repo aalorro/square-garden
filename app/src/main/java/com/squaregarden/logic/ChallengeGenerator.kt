@@ -267,19 +267,7 @@ object ChallengeGenerator {
                     else -> Goal.Shape(color, hardShapes.random())
                 }
             }
-            // Skip duplicate goals (same color + same type/shape)
-            val isDuplicate = picked.any { existing ->
-                when {
-                    existing is Goal.Line && candidate is Goal.Line ->
-                        existing.color == candidate.color && existing.length == candidate.length
-                    existing is Goal.Square && candidate is Goal.Square ->
-                        existing.color == candidate.color
-                    existing is Goal.Shape && candidate is Goal.Shape ->
-                        existing.color == candidate.color && existing.shapeType == candidate.shapeType
-                    else -> false
-                }
-            }
-            if (!isDuplicate) {
+            if (candidate !in picked) {
                 picked.add(candidate)
             } else {
                 retries++

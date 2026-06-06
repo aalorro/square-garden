@@ -23,9 +23,8 @@ import com.squaregarden.data.ProgressRepository
 import com.squaregarden.model.MasterModeState
 import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.ui.theme.DisplayFontFamily
+import com.squaregarden.viewmodel.GameViewModel
 import kotlinx.coroutines.launch
-
-private const val MASTER_MODE_SIGNAL = -999
 
 @Composable
 fun MasterModeScreen(navController: NavHostController) {
@@ -194,7 +193,7 @@ fun MasterModeScreen(navController: NavHostController) {
             Button(
                 onClick = {
                     scope.launch { masterRepo.startNewSession() }
-                    navController.navigate(Screen.Game.create(MASTER_MODE_SIGNAL))
+                    navController.navigate(Screen.Game.create(GameViewModel.MASTER_MODE_SIGNAL))
                 },
                 modifier = Modifier
                     .fillMaxWidth()

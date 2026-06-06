@@ -19,7 +19,7 @@ import com.squaregarden.ui.theme.DisplayFontFamily
 import kotlinx.coroutines.delay
 
 private val GoldColor = Color(0xFFB8860B)
-private val TileYellow = Color(0xFFFFD54F)
+private val StarYellow = Color(0xFFFFD54F)
 
 @Composable
 fun MasterModeSummaryOverlay(
@@ -85,7 +85,7 @@ fun MasterModeSummaryOverlay(
                     text = "\u2B50 +$countValue",
                     fontSize = 56.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = TileYellow,
+                    color = StarYellow,
                     modifier = Modifier.scale(countScale.value)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -130,7 +130,7 @@ fun MasterModeSummaryOverlay(
                         fontFamily = DisplayFontFamily,
                         fontSize = 44.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = TileYellow,
+                        color = StarYellow,
                         modifier = Modifier.scale(starScale)
                     )
 
