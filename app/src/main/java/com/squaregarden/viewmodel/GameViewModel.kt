@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.withTimeout
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -534,8 +536,8 @@ class GameViewModel(
         val frozenPositions = level.frozenCells
         val playableCells = level.boardWidth * level.boardHeight - voids.size
 
-        repeat(200) {
-            if (Thread.currentThread().isInterrupted) return@repeat
+        for (attempt in 0 until 200) {
+            if (Thread.currentThread().isInterrupted) break
             val tileList = mutableListOf<Tile>()
             for ((color, count) in minRequired) repeat(count) { tileList.add(Tile(color)) }
             while (tileList.size < playableCells) tileList.add(Tile(colors.random()))
@@ -651,7 +653,7 @@ class GameViewModel(
             val quickBeam = if (cells >= 64) 200 else 500
             val fullBeam = if (cells >= 64) 80 else 200
             val solution = try {
-                kotlinx.coroutines.withTimeout(10_000) {
+                withTimeout(10_000) {
                     runInterruptible(Dispatchers.Default) {
                         // Quick probe: try short solutions with wider beam
                         val quickLimit = goals.size + 3
@@ -660,7 +662,7 @@ class GameViewModel(
                         quick ?: HintSolver.findSolution(board, goals, maxMoves, difficulty, beamWidth = fullBeam)
                     }
                 }
-            } catch (_: kotlinx.coroutines.TimeoutCancellationException) {
+            } catch (_: TimeoutCancellationException) {
                 null // Solver timed out — keep heuristic difficulty
             }
             val current = _state.value
@@ -2057,8 +2059,16 @@ class GameViewModel(
         val diff = difficulty
         _state.value = _state.value.copy(boardGenerating = true)
         viewModelScope.launch {
-            val solution = runInterruptible(Dispatchers.Default) {
-                HintSolver.findSolution(initialBoard, goals, moves, diff, beamWidth = 200)
+            val cells = initialBoard.width * initialBoard.height
+            val beam = if (cells >= 64) 80 else 200
+            val solution = try {
+                withTimeout(10_000) {
+                    runInterruptible(Dispatchers.Default) {
+                        HintSolver.findSolution(initialBoard, goals, moves, diff, beamWidth = beam)
+                    }
+                }
+            } catch (_: TimeoutCancellationException) {
+                null
             }
             if (solution != null) {
                 precomputedSolution = solution
