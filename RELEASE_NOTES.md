@@ -29,6 +29,7 @@ Choose your skill level:
 - Standard — Balanced challenge, start at World 2
 - Pro — Fewer moves, start at World 3, for puzzle veterans
 - Pro+ — Tightest move budget, starts at World 11 (level 91); unlocks four exclusive endgame worlds and Diagonal Movement
+- Master Mode — Beat all 126 levels to unlock infinite procedural puzzles with five difficulty tiers, streak multipliers, and a dedicated leaderboard
 
 No grinding through easy content if you're experienced — jump right in at your level.
 
