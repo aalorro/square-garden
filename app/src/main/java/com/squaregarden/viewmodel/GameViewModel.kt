@@ -389,7 +389,7 @@ class GameViewModel(
         deadline: Long = Long.MAX_VALUE
     ): Boolean {
         if (index == goals.size) return true
-        if (System.currentTimeMillis() >= deadline) return false
+        if (Thread.currentThread().isInterrupted || System.currentTimeMillis() >= deadline) return false
         val goal = goals[index]
         // Shuffle for variety but cap attempts to avoid exponential blowup
         val candidates = findGoalCandidates(grid, w, h, goal, voids).shuffled().take(20)
@@ -457,7 +457,7 @@ class GameViewModel(
         // More attempts for complex levels (many goals or large boards)
         val maxAttempts = if (level.goals.size >= 5 || level.boardWidth >= 8) 300 else 100
         repeat(maxAttempts) {
-            if (Thread.interrupted() || System.currentTimeMillis() >= deadline) return Pair(placeTokenTiles(generateValidBoard()), null)
+            if (Thread.currentThread().isInterrupted || System.currentTimeMillis() >= deadline) return Pair(placeTokenTiles(generateValidBoard()), null)
             val solved = buildSolvedBoard(deadline) ?: return@repeat
             // Verify all goals actually met
             if (BoardEngine.evaluateGoals(solved, level.goals).size != level.goals.size) return@repeat

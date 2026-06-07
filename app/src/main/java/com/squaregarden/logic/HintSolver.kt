@@ -68,7 +68,7 @@ object HintSolver {
         // Iterative deepening: try shortest solutions first
         val minMoves = goals.size
         for (limit in minMoves..maxMoves) {
-            if (Thread.interrupted()) return null
+            if (Thread.currentThread().isInterrupted) return null
             val result = solveWithLimit(board, goals, limit, difficulty, beamWidth)
             if (result != null) return result
         }
@@ -98,11 +98,11 @@ object HintSolver {
         var beam = listOf(State(board, emptySet(), emptySet(), emptyList()))
 
         for (move in 0 until maxMoves) {
-            if (Thread.interrupted()) return null
+            if (Thread.currentThread().isInterrupted) return null
             val candidates = mutableListOf<State>()
 
             for (state in beam) {
-                if (Thread.interrupted()) return null
+                if (Thread.currentThread().isInterrupted) return null
 
                 // Already solved
                 if (state.completedIds.size == goals.size)
