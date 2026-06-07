@@ -36,6 +36,8 @@ fun PlayerBadge(
     perfectGames: Int = 0,
     masteryBadge: Boolean = false,
     masterMode: Boolean = false,
+    onHomeClick: () -> Unit,
+    onMasterModeClick: (() -> Unit)? = null,
     onSettingsClick: () -> Unit,
     onExitClick: () -> Unit,
     onStarPositioned: ((Offset) -> Unit)? = null,
@@ -162,6 +164,22 @@ fun PlayerBadge(
             expanded = showMenu,
             onDismissRequest = { showMenu = false }
         ) {
+            DropdownMenuItem(
+                text = { Text("Home") },
+                onClick = {
+                    showMenu = false
+                    onHomeClick()
+                }
+            )
+            if (onMasterModeClick != null) {
+                DropdownMenuItem(
+                    text = { Text("Master Mode") },
+                    onClick = {
+                        showMenu = false
+                        onMasterModeClick()
+                    }
+                )
+            }
             DropdownMenuItem(
                 text = { Text("Settings") },
                 onClick = {

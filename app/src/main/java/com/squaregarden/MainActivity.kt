@@ -118,6 +118,14 @@ class MainActivity : ComponentActivity() {
                             perfectGames = perfectGames,
                             masteryBadge = profile.masteryBadgeEarned,
                             masterMode = inMasterMode,
+                            onHomeClick = {
+                                navController.navigate(Screen.Home.route) {
+                                    popUpTo(Screen.Home.route) { inclusive = true }
+                                }
+                            },
+                            onMasterModeClick = if (profile.masteryBadgeEarned) {
+                                { navController.navigate(Screen.MasterMode.route) }
+                            } else null,
                             onSettingsClick = {
                                 navController.navigate(Screen.Settings.route)
                             },
