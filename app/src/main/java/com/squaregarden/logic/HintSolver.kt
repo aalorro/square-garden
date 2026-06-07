@@ -192,9 +192,10 @@ object HintSolver {
 
         // Pass 1: remove single moves
         var improved = true
-        while (improved) {
+        while (improved && !Thread.currentThread().isInterrupted) {
             improved = false
             for (i in best.indices) {
+                if (Thread.currentThread().isInterrupted) break
                 val candidate = best.toMutableList().apply { removeAt(i) }
                 if (verifySolution(board, goals, candidate, difficulty)) {
                     best = candidate
@@ -206,9 +207,10 @@ object HintSolver {
 
         // Pass 2: remove pairs of moves (catches swap-and-swap-back patterns)
         improved = true
-        while (improved) {
+        while (improved && !Thread.currentThread().isInterrupted) {
             improved = false
             outer@ for (i in best.indices) {
+                if (Thread.currentThread().isInterrupted) break
                 for (j in i + 1 until best.size) {
                     val candidate = best.filterIndexed { idx, _ -> idx != i && idx != j }
                     if (verifySolution(board, goals, candidate, difficulty)) {
@@ -222,9 +224,10 @@ object HintSolver {
 
         // Pass 3: final single-move pass (pair removal may expose new singles)
         improved = true
-        while (improved) {
+        while (improved && !Thread.currentThread().isInterrupted) {
             improved = false
             for (i in best.indices) {
+                if (Thread.currentThread().isInterrupted) break
                 val candidate = best.toMutableList().apply { removeAt(i) }
                 if (verifySolution(board, goals, candidate, difficulty)) {
                     best = candidate

@@ -535,6 +535,7 @@ class GameViewModel(
         val playableCells = level.boardWidth * level.boardHeight - voids.size
 
         repeat(200) {
+            if (Thread.currentThread().isInterrupted) return@repeat
             val tileList = mutableListOf<Tile>()
             for ((color, count) in minRequired) repeat(count) { tileList.add(Tile(color)) }
             while (tileList.size < playableCells) tileList.add(Tile(colors.random()))
@@ -771,7 +772,7 @@ class GameViewModel(
                     // didn't find a guaranteed solution. Don't call the expensive
                     // beam-search solver here — it runs async after board is shown.
                     var i = 1
-                    while (i < 8 && best.second == null && System.currentTimeMillis() < deadline) {
+                    while (i < 8 && best.second == null && !Thread.currentThread().isInterrupted && System.currentTimeMillis() < deadline) {
                         val attempt = generateBoardWithSolution(adjustedMaxMoves, deadline)
                         best = attempt
                         i++
