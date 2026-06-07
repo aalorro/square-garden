@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runInterruptible
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -114,7 +114,7 @@ class GameViewModel(
                 level = baseLevel.copy(tutorialSteps = null)
 
                 _state.value = _state.value.copy(boardGenerating = true)
-                val simBoard = withContext(Dispatchers.Default) {
+                val simBoard = runInterruptible(Dispatchers.Default) {
                     val deadline = System.currentTimeMillis() + 5000L
                     var solved: Board? = null
                     repeat(300) {
@@ -644,12 +644,23 @@ class GameViewModel(
         solverJob = viewModelScope.launch {
             val goals = level.goals
             val maxMoves = adjustedMaxMoves
-            val solution = withContext(Dispatchers.Default) {
-                // Quick probe: try short solutions with wider beam (catches easy/medium boards fast)
-                val quickLimit = goals.size + 3
-                val quick = HintSolver.findSolution(board, goals, quickLimit, difficulty, beamWidth = 500)
-                // If quick probe fails, do full solve with standard beam
-                quick ?: HintSolver.findSolution(board, goals, maxMoves, difficulty, beamWidth = 200)
+            // Scale beam width down for large boards to keep solver responsive.
+            // 9x9 boards have ~150 valid swaps per state; beam 500 is overkill.
+            val cells = board.width * board.height
+            val quickBeam = if (cells >= 64) 200 else 500
+            val fullBeam = if (cells >= 64) 80 else 200
+            val solution = try {
+                kotlinx.coroutines.withTimeout(10_000) {
+                    runInterruptible(Dispatchers.Default) {
+                        // Quick probe: try short solutions with wider beam
+                        val quickLimit = goals.size + 3
+                        val quick = HintSolver.findSolution(board, goals, quickLimit, difficulty, beamWidth = quickBeam)
+                        // If quick probe fails, do full solve with standard beam
+                        quick ?: HintSolver.findSolution(board, goals, maxMoves, difficulty, beamWidth = fullBeam)
+                    }
+                }
+            } catch (_: kotlinx.coroutines.TimeoutCancellationException) {
+                null // Solver timed out — keep heuristic difficulty
             }
             val current = _state.value
             if (current.initialBoard != board) return@launch
@@ -664,7 +675,7 @@ class GameViewModel(
                     gameDifficulty = solverDifficulty
                 )
             }
-            // If solver fails entirely, keep heuristic difficulty as-is
+            // If solver fails or times out, keep heuristic difficulty as-is
         }
     }
 
@@ -728,7 +739,7 @@ class GameViewModel(
             } else if (challengeType == ChallengeType.OVERGROWN) {
                 // Show loading indicator while generating solvable board
                 _state.value = _state.value.copy(boardGenerating = true)
-                val genResult = withContext(Dispatchers.Default) {
+                val genResult = runInterruptible(Dispatchers.Default) {
                     val deadline = System.currentTimeMillis() + 3000L
                     var curLevel = level
                     var result: Pair<Board, List<Pair<CellPos, CellPos>>?>
@@ -749,7 +760,7 @@ class GameViewModel(
                 solution = genResult.third
             } else {
                 _state.value = _state.value.copy(boardGenerating = true)
-                val result = withContext(Dispatchers.Default) {
+                val result = runInterruptible(Dispatchers.Default) {
                     // Master Mode boards (especially Intense/Brutal tiers) need more
                     // time for reverse-construction on large boards with many goals.
                     val timeoutMs = if (level.world == MasterLevelGenerator.MASTER_WORLD) 5000L else 3000L
@@ -954,7 +965,7 @@ class GameViewModel(
             val capturedRedoFullReset = redoFullReset
             _state.value = current.copy(boardGenerating = true)
             resetJob = viewModelScope.launch {
-                val result = withContext(Dispatchers.Default) {
+                val result = runInterruptible(Dispatchers.Default) {
                     generateBoardWithSolution(genMoves, System.currentTimeMillis() + 3000L)
                 }
                 val board = result.first
@@ -1373,6 +1384,11 @@ class GameViewModel(
                 else -> GamePhase.PLAYING
             }
 
+            // Free up Dispatchers.Default threads once the game is over
+            if (phase == GamePhase.WON || phase == GamePhase.LOST) {
+                solverJob?.cancel()
+            }
+
             // Update master mode state on win/loss
             if (current.isMasterMode) {
                 if (phase == GamePhase.LOST) {
@@ -1670,6 +1686,11 @@ class GameViewModel(
                     }
                 }
                 else -> GamePhase.PLAYING
+            }
+
+            // Free up Dispatchers.Default threads once the game is over
+            if (phase == GamePhase.WON || phase == GamePhase.LOST) {
+                solverJob?.cancel()
             }
 
             // Update master mode state on win/loss (passthrough path)
@@ -2035,7 +2056,7 @@ class GameViewModel(
         val diff = difficulty
         _state.value = _state.value.copy(boardGenerating = true)
         viewModelScope.launch {
-            val solution = withContext(Dispatchers.Default) {
+            val solution = runInterruptible(Dispatchers.Default) {
                 HintSolver.findSolution(initialBoard, goals, moves, diff, beamWidth = 200)
             }
             if (solution != null) {
@@ -2279,7 +2300,7 @@ class GameViewModel(
         val nextMultiplier = (prevChalState?.overgrownTryMultiplier ?: 1) + 1
 
         // Generate solvable board off main thread
-        val genResult = withContext(Dispatchers.Default) {
+        val genResult = runInterruptible(Dispatchers.Default) {
             val deadline = System.currentTimeMillis() + 3000L
             var curLevel = level
             var curMoves = adjustedMaxMoves

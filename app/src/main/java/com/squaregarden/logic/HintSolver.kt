@@ -102,6 +102,8 @@ object HintSolver {
             val candidates = mutableListOf<State>()
 
             for (state in beam) {
+                if (Thread.interrupted()) return null
+
                 // Already solved
                 if (state.completedIds.size == goals.size)
                     return compressSolution(board, goals, state.steps, difficulty)
