@@ -35,6 +35,7 @@ fun PlayerBadge(
     lives: Int,
     perfectGames: Int = 0,
     masteryBadge: Boolean = false,
+    masterMode: Boolean = false,
     onSettingsClick: () -> Unit,
     onExitClick: () -> Unit,
     onStarPositioned: ((Offset) -> Unit)? = null,
@@ -122,12 +123,12 @@ fun PlayerBadge(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    // Stars (with position tracking)
+                    // Stars (with position tracking) — crown icon in Master Mode
                     Text(
-                        text = "$displayedStars\u2605",
+                        text = if (masterMode) "\uD83D\uDC51$displayedStars" else "$displayedStars\u2605",
                         fontSize = starFontSize,
                         fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFFD4A017),
+                        color = if (masterMode) Color(0xFFB8860B) else Color(0xFFD4A017),
                         modifier = Modifier.onGloballyPositioned { coords ->
                             val pos = coords.positionInWindow()
                             val size = coords.size

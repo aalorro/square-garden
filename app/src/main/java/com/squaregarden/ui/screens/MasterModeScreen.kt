@@ -192,7 +192,6 @@ fun MasterModeScreen(navController: NavHostController) {
             // Enter the Garden button
             Button(
                 onClick = {
-                    scope.launch { masterRepo.startNewSession() }
                     navController.navigate(Screen.Game.create(GameViewModel.MASTER_MODE_SIGNAL))
                 },
                 modifier = Modifier

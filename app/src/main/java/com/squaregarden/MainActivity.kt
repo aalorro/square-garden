@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.squaregarden.data.AvatarStorage
 import com.squaregarden.data.ProfileRepository
@@ -33,8 +34,10 @@ import androidx.compose.ui.graphics.asImageBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.squaregarden.audio.MusicManager
+import com.squaregarden.data.MasterModeRepository
 import com.squaregarden.ui.navigation.SquareGardenNavGraph
 import com.squaregarden.ui.navigation.Screen
+import com.squaregarden.viewmodel.GameViewModel
 import com.squaregarden.ui.theme.SquareGardenTheme
 import kotlinx.coroutines.delay
 
@@ -54,6 +57,8 @@ class MainActivity : ComponentActivity() {
             val lives by progressRepo.livesFlow.collectAsState(initial = 3)
             val perfectGames by progressRepo.perfectGamesFlow.collectAsState(initial = 0)
             val cooldownUntil by progressRepo.cooldownUntilFlow.collectAsState(initial = 0L)
+            val masterModeRepo = remember { MasterModeRepository(context) }
+            val masterStars by masterModeRepo.totalMasterStarsFlow.collectAsState(initial = 0)
             val scope = rememberCoroutineScope()
 
             // One-time migration + restore lives on launch
@@ -90,6 +95,16 @@ class MainActivity : ComponentActivity() {
                         } else null
                     }
 
+                    // Detect Master Mode from current nav route
+                    val navEntry by navController.currentBackStackEntryAsState()
+                    val inMasterMode = remember(navEntry) {
+                        val route = navEntry?.destination?.route ?: ""
+                        if (route == Screen.Game.route) {
+                            val levelId = navEntry?.arguments?.getInt("levelId") ?: 0
+                            levelId == GameViewModel.MASTER_MODE_SIGNAL
+                        } else route == Screen.MasterMode.route
+                    }
+
                     // Player badge in top-right corner
                     if (profile.isSetUp) {
                         val avatar = getAvatar(profile.avatarId)
@@ -97,11 +112,12 @@ class MainActivity : ComponentActivity() {
                             avatarEmoji = avatar.emoji,
                             avatarImageBitmap = customAvatarBitmap,
                             playerLevel = profile.playerLevel,
-                            totalStars = totalStars,
+                            totalStars = if (inMasterMode) masterStars else totalStars,
                             gamesPlayed = gamesPlayed,
                             lives = lives,
                             perfectGames = perfectGames,
                             masteryBadge = profile.masteryBadgeEarned,
+                            masterMode = inMasterMode,
                             onSettingsClick = {
                                 navController.navigate(Screen.Settings.route)
                             },

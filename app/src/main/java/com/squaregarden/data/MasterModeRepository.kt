@@ -37,8 +37,8 @@ class MasterModeRepository(private val context: Context) {
     suspend fun loadState(): MasterModeState {
         val prefs = context.masterDataStore.data.first()
         return MasterModeState(
-            gamesPlayed = prefs[SESSION_GAMES_PLAYED] ?: 0,
-            gamesWon = prefs[SESSION_GAMES_WON] ?: 0,
+            gamesPlayed = prefs[TOTAL_MASTER_GAMES] ?: 0,
+            gamesWon = prefs[TOTAL_MASTER_WINS] ?: 0,
             currentStreak = prefs[CURRENT_STREAK] ?: 0,
             bestStreak = prefs[BEST_STREAK] ?: 0,
             totalMasterStars = prefs[TOTAL_MASTER_STARS] ?: 0,

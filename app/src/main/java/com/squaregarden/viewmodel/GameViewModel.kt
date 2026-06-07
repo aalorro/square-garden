@@ -589,9 +589,10 @@ class GameViewModel(
         }
         if (candidates.isEmpty()) return board
 
-        // Worlds 11+: guaranteed minimum token count with random types
-        if (level.world >= 11) {
+        // Worlds 11+ or Master Mode: guaranteed minimum token count with random types
+        if (level.world >= 11 || level.world == MasterLevelGenerator.MASTER_WORLD) {
             val (minTokens, maxTokens) = when {
+                level.world == MasterLevelGenerator.MASTER_WORLD -> 2 to 5 // Master Mode
                 level.world >= 14 -> 3 to 6
                 level.world >= 13 -> 2 to 5
                 else -> 1 to 4 // Worlds 11-12

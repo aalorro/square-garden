@@ -179,7 +179,8 @@ fun GameScreen(
             } else if (isCompact) {
                 var showNumber by remember(state.level.id) { mutableStateOf(true) }
                 Text(
-                    text = if (showNumber) "${state.level.name} (${state.level.id})"
+                    text = if (state.level.id < 0) state.level.name
+                           else if (showNumber) "${state.level.name} (${state.level.id})"
                            else state.level.name,
                     fontFamily = com.squaregarden.ui.theme.DisplayFontFamily,
                     fontSize = 13.sp,
@@ -192,7 +193,7 @@ fun GameScreen(
                 )
             } else {
                 Text(
-                    text = "${state.level.name} (${state.level.id})",
+                    text = if (state.level.id < 0) state.level.name else "${state.level.name} (${state.level.id})",
                     fontFamily = com.squaregarden.ui.theme.DisplayFontFamily,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -415,8 +416,8 @@ fun GameScreen(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 )
-                // Diagonal swap power-up: Pro+ only (World 11+)
-                if (state.level.world >= 11) {
+                // Diagonal swap power-up: Pro+ only (World 11+ or Master Mode)
+                if (state.level.world >= 11 || state.isMasterMode) {
                     ActionCircle(
                         icon = "\u2197\uFE0F",
                         label = if (state.diagonalMode) "On" else "\u00D7${state.diagonalTokens}",
@@ -435,7 +436,7 @@ fun GameScreen(
     // Token captured celebrations (mid-game) — splash icon then cascading trail
     if (state.phase == GamePhase.PLAYING) {
         // Compute target X fractions based on button count (SpaceEvenly positions)
-        val hasDiagonal = state.level.world >= 11
+        val hasDiagonal = state.level.world >= 11 || state.isMasterMode
         val buttonCount = if (hasDiagonal) 6 else 5
         fun buttonX(index: Int) = (2f * index + 1f) / (2f * buttonCount)
         // Button order: Hint(0), Shuffle(1), Passthrough(2), Unfreeze(3), Redo(4), Diagonal(5)
@@ -544,7 +545,7 @@ fun GameScreen(
         // Fullscreen overlay card (renders first = behind celebration particles)
         WinOverlay(
             stars = stars,
-            levelName = "${state.level.name} (${state.level.id})",
+            levelName = if (state.level.id < 0) state.level.name else "${state.level.name} (${state.level.id})",
             unlockedWorldName = state.unlockedWorldName,
             shuffleTokenAwarded = state.shuffleTokenAwarded,
             passthroughTokenAwarded = state.passthroughTokenAwarded,
