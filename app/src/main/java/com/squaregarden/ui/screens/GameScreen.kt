@@ -69,6 +69,12 @@ fun GameScreen(
     // the challenge.
     val profileRepo = remember { ProfileRepository(context) }
     val backToGame: () -> Unit = {
+        if (state.isMasterMode) {
+            // Master Mode challenge: return to Master Mode for the next game
+            navController.navigate(Screen.Game.create(GameViewModel.MASTER_MODE_SIGNAL)) {
+                popUpTo(Screen.Game.route) { inclusive = true }
+            }
+        } else {
         scope.launch {
             val progress = progressRepo.loadProgress()
             val profile = profileRepo.profileFlow.first()
@@ -90,6 +96,7 @@ fun GameScreen(
                 navController.popBackStack()
             }
             navController.navigate(Screen.Game.create(nextLevel))
+        }
         }
     }
 
