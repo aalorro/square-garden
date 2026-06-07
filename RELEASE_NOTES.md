@@ -45,6 +45,18 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.8.3 (What's New)
+
+What's new in 1.8.3:
+
+- Master Mode! Beat all 126 levels to unlock an infinite roguelike puzzle mode with five difficulty tiers, streak multipliers up to 5x, and a dedicated leaderboard. How far can you go?
+- Guaranteed power-up token spawns on Worlds 11–14 — no more token-free boards in the endgame.
+- Fewer goals on levels 124–126 for a tough but fair finale.
+- Fixed a major performance issue where consecutive games on large boards could freeze the app.
+- Show Solution no longer hangs on complex boards — now times out gracefully.
+
+Happy gardening!
+
 ## Release Notes — Version 1.8.2 (What's New)
 
 What's new in 1.8.2:

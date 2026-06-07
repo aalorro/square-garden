@@ -105,6 +105,7 @@ Special reward events triggered by exceptional play. Challenges cost no lives an
 - Win streak tracking
 - Pro+ upgrade celebration after completing all 90 Pro levels
 - Global leaderboards via Firebase (opt-in)
+- Master Mode — infinite roguelike puzzles unlocked after beating all 126 levels, with 5 difficulty tiers and streak multipliers
 
 ## Tech Stack
 
@@ -129,14 +130,14 @@ Requires Android Studio with JBR (JetBrains Runtime) and Android SDK installed.
 
 ```
 com.squaregarden/
-  model/       - Tile, Board, Goal, Level, GameState, PlayerProgress, ChallengeMode
-  logic/       - BoardEngine, PatternMatcher, HintSolver, LevelLoader, ChallengeGenerator
+  model/       - Tile, Board, Goal, Level, GameState, PlayerProgress, ChallengeMode, MasterModeState
+  logic/       - BoardEngine, PatternMatcher, HintSolver, LevelLoader, ChallengeGenerator, MasterLevelGenerator
   viewmodel/   - GameViewModel
   ui/
     theme/     - 6 themes with Material3 ColorScheme
     navigation/- Screen routes
-    screens/   - Splash, Home, WorldSelect, LevelSelect, Game, Settings, Profile
-    components/- GameBoardCanvas, GoalPanel, MoveCounter, StarDisplay, etc.
-  data/        - ProgressRepository, SettingsRepository, ProfileRepository, LeaderboardRepository
+    screens/   - Splash, Home, WorldSelect, LevelSelect, Game, Settings, Profile, Stats, Leaderboard, MasterMode
+    components/- GameBoardCanvas, GoalPanel, PlayerBadge, GameCompleteOverlay, MasterModeSummaryOverlay, etc.
+  data/        - ProgressRepository, SettingsRepository, ProfileRepository, LeaderboardRepository, MasterModeRepository
   audio/       - AudioManager, SoundGenerator, MusicManager
 ```

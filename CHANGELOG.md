@@ -2,6 +2,20 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.8.3] - 2026-06-07 (Build 21)
+
+### New Features
+- **Master Mode** — Infinite roguelike puzzle mode unlocked after beating all 126 levels. Five difficulty tiers (Warming Up to Brutal) with streak multipliers up to 5x. Separate leaderboard and persistent stats.
+
+### Improvements
+- **Guaranteed token spawns** — Worlds 11–14 now always spawn at least one of each power-up token type on the board.
+- **Reduced goals on levels 124–126** — Endgame levels are challenging but no longer overwhelming.
+
+### Fixes
+- **Board generation stalling** — Fixed consecutive games (especially on 9×9 boards in Worlds 9–10) causing the app to hang. The solver and board generator now properly cancel when navigating away, preventing thread pool exhaustion.
+- **Show Solution timeout** — The "Show Solution" feature now has a 10-second timeout and adaptive beam width, preventing indefinite hangs on complex boards.
+- **Badge overlap** — Fixed mastery badge overlapping avatar on certain screen sizes.
+
 ## [1.8.2] - 2026-06-04 (Build 20)
 
 ### Improvements

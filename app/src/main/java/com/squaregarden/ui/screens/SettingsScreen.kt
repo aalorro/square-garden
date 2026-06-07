@@ -246,7 +246,7 @@ fun SettingsScreen(navController: NavHostController) {
 
         // Footer
         Text(
-            text = "Square Garden v1.8.2 \u00B7 Made with \uD83C\uDF31",
+            text = "Square Garden v1.8.3 \u00B7 Made with \uD83C\uDF31",
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.CenterHorizontally)
