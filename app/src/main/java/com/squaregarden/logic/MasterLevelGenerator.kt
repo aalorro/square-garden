@@ -88,9 +88,9 @@ object MasterLevelGenerator {
     private fun pickTier(gamesPlayed: Int): MasterTier {
         val weights = when {
             gamesPlayed < 3 -> floatArrayOf(0.60f, 0.30f, 0.10f, 0.00f, 0.00f)
-            gamesPlayed < 8 -> floatArrayOf(0.25f, 0.35f, 0.25f, 0.10f, 0.05f)
-            gamesPlayed < 15 -> floatArrayOf(0.10f, 0.20f, 0.30f, 0.25f, 0.15f)
-            else -> floatArrayOf(0.05f, 0.15f, 0.25f, 0.30f, 0.25f)
+            gamesPlayed < 8 -> floatArrayOf(0.15f, 0.40f, 0.30f, 0.10f, 0.05f)
+            gamesPlayed < 15 -> floatArrayOf(0.05f, 0.20f, 0.35f, 0.25f, 0.15f)
+            else -> floatArrayOf(0.00f, 0.15f, 0.30f, 0.30f, 0.25f)
         }
         val roll = Math.random().toFloat()
         var cumulative = 0f
