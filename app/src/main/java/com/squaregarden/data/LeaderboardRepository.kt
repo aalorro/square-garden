@@ -131,7 +131,7 @@ class LeaderboardRepository {
                 "streak" to bestStreak,
                 "ts" to ServerValue.TIMESTAMP
             )
-            db.child("leaderboards/master_mode/$uid")
+            db.child("leaderboards/total_stars/master_mode/$uid")
                 .setValue(entry)
                 .await()
             lastSubmittedMasterScore = totalStars
@@ -150,7 +150,7 @@ class LeaderboardRepository {
         }
 
         try {
-            val snapshot = db.child("leaderboards/master_mode")
+            val snapshot = db.child("leaderboards/total_stars/master_mode")
                 .orderByChild("score")
                 .limitToLast(limit)
                 .get()
