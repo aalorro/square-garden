@@ -2098,7 +2098,7 @@ class GameViewModel(
             val state = _state.value
             if (state.isMasterMode) {
                 // Master Mode win: persist to MasterModeRepository
-                val mState = masterModeState ?: return@launch
+                val mState = masterModeState ?: return@withContext
                 masterModeRepo?.recordWin(pendingWinStars)
                 if (state.isChallenge) {
                     masterModeRepo?.recordChallengeCompletion()
@@ -2126,7 +2126,7 @@ class GameViewModel(
                         android.util.Log.w("GameVM", "Master leaderboard submit failed", e)
                     }
                 }
-                return@launch
+                return@withContext
             }
             if (state.isChallenge) {
                 // Challenge win: bonus stars + 1 of each token, no per-level save
@@ -2142,7 +2142,7 @@ class GameViewModel(
                     unfreezeTokenAwarded = true,
                     redoTokenAwarded = true
                 )
-                return@launch
+                return@withContext
             }
 
             // Check if world was already complete BEFORE saving this win
