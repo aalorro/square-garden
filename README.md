@@ -9,7 +9,7 @@ Slide tiles to swap them with adjacent neighbors and form color patterns to comp
 ### Goal Types
 - **Line** - Form a row/column of N same-colored tiles
 - **Square** - Form a 2x2 block of same-colored tiles
-- **Shape** - Form an L, T, or Cross shape of same-colored tiles
+- **Shape** - Form an L, T, Cross, Z, U, X, or Y shape of same-colored tiles
 
 ### Worlds
 
@@ -106,6 +106,7 @@ Special reward events triggered by exceptional play. Challenges cost no lives an
 - Pro+ upgrade celebration after completing all 90 Pro levels
 - Global leaderboards via Firebase (opt-in)
 - Master Mode — infinite roguelike puzzles unlocked after beating all 126 levels, with 5 difficulty tiers and streak multipliers
+- Save & restore — game state persisted after every move; quit and resume exactly where you left off
 
 ## Tech Stack
 
@@ -138,6 +139,6 @@ com.squaregarden/
     navigation/- Screen routes
     screens/   - Splash, Home, WorldSelect, LevelSelect, Game, Settings, Profile, Stats, Leaderboard, MasterMode
     components/- GameBoardCanvas, GoalPanel, PlayerBadge, GameCompleteOverlay, MasterModeSummaryOverlay, etc.
-  data/        - ProgressRepository, SettingsRepository, ProfileRepository, LeaderboardRepository, MasterModeRepository
+  data/        - ProgressRepository, SettingsRepository, ProfileRepository, LeaderboardRepository, MasterModeRepository, SavedGameRepository, GameStateSerializer
   audio/       - AudioManager, SoundGenerator, MusicManager
 ```

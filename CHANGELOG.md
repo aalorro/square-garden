@@ -2,6 +2,25 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.8.4] - 2026-06-08 (Build 22)
+
+### New Features
+- **Save & restore game state** — Game progress is now saved after every swap. Quitting mid-game (force-close, task switch, or "Clear All") resumes the exact same board on relaunch — no more restarting fresh to dodge a life loss.
+
+### Improvements
+- **Diagonal swap detection** — Fixed unreliable diagonal swipes where cardinal moves fired instead. An angle-based intent guard now waits for clear diagonal input before committing.
+- **X and Y shapes in Master Mode** — Master Mode goal generation now includes X_SHAPE and Y_SHAPE patterns alongside the existing hard shapes.
+- **Master Mode tier progression** — After 25+ games, Warming Up and Steady tiers are removed; the easiest tier becomes Heating Up.
+- **Menu button on win/loss overlays** — Both regular world and Master Mode win cards now show a Menu button alongside Next Game. Loss dialogs also have a working Menu button.
+- **Tablet font tuning** — Level select tile fonts on 10"+ tablets reduced for better readability.
+
+### Fixes
+- **End Run button in Master Mode** — Fixed "End Run" not working after a win or loss (back stack was empty after saved game restore).
+- **Menu button navigation** — Fixed Menu button on win card navigating to the next level instead of the Home screen.
+- **Loss dialog Menu button** — Fixed Menu button on out-of-moves and challenge loss dialogs not navigating anywhere.
+- **Master Mode leaderboard** — Fixed leaderboard submission path and cancellation handling.
+- **PlayerBadge dropdown** — Home and Master Mode menu items now accessible during active gameplay.
+
 ## [1.8.3] - 2026-06-07 (Build 21)
 
 ### New Features

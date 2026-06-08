@@ -46,6 +46,18 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.8.4 (What's New)
+
+What's new in 1.8.4:
+
+- Game state now saves after every move — quit or get interrupted and pick up exactly where you left off. No more losing progress (or dodging a life loss) by closing the app.
+- Diagonal swipes are much more reliable — an improved gesture detector distinguishes diagonal intent from cardinal swipes so your Diagonal Movement power-up works as expected.
+- Master Mode now features X and Y shape goals, and drops the easiest tiers after 25+ games for a tougher endgame.
+- Menu button added to win and loss screens — easily return home without navigating through levels.
+- Multiple navigation fixes: End Run, Menu, and PlayerBadge dropdown all work correctly now.
+
+Happy gardening!
+
 ## Release Notes — Version 1.8.3 (What's New)
 
 What's new in 1.8.3:
