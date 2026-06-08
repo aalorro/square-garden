@@ -33,6 +33,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -2091,6 +2093,8 @@ class GameViewModel(
         if (winResultCommitted) return
         winResultCommitted = true
         viewModelScope.launch {
+            // NonCancellable: ensure persistence completes even if user navigates away
+            withContext(NonCancellable) {
             val state = _state.value
             if (state.isMasterMode) {
                 // Master Mode win: persist to MasterModeRepository
@@ -2247,6 +2251,7 @@ class GameViewModel(
             // Reset no-powerup streak if a power-up was used
             if (usedPowerUpThisGame) progressRepo.resetNoPowerupStreak()
 
+            } // withContext(NonCancellable)
         }
     }
 
