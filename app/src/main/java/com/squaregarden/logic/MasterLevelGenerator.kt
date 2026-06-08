@@ -90,7 +90,8 @@ object MasterLevelGenerator {
             gamesPlayed < 3 -> floatArrayOf(0.60f, 0.30f, 0.10f, 0.00f, 0.00f)
             gamesPlayed < 8 -> floatArrayOf(0.15f, 0.40f, 0.30f, 0.10f, 0.05f)
             gamesPlayed < 15 -> floatArrayOf(0.05f, 0.20f, 0.35f, 0.25f, 0.15f)
-            else -> floatArrayOf(0.00f, 0.15f, 0.30f, 0.30f, 0.25f)
+            gamesPlayed < 25 -> floatArrayOf(0.00f, 0.15f, 0.30f, 0.30f, 0.25f)
+            else -> floatArrayOf(0.00f, 0.00f, 0.30f, 0.35f, 0.35f)
         }
         val roll = Math.random().toFloat()
         var cumulative = 0f
@@ -105,7 +106,7 @@ object MasterLevelGenerator {
 
     private fun pickMixedGoals(colors: List<TileColor>, count: Int): List<Goal> {
         val simpleShapes = listOf(ShapeType.L_SHAPE, ShapeType.T_SHAPE)
-        val hardShapes = listOf(ShapeType.CROSS, ShapeType.Z_SHAPE, ShapeType.U_SHAPE)
+        val hardShapes = listOf(ShapeType.CROSS, ShapeType.Z_SHAPE, ShapeType.U_SHAPE, ShapeType.X_SHAPE, ShapeType.Y_SHAPE)
         val picked = mutableListOf<Goal>()
         var colorIdx = 0
         var retries = 0

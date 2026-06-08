@@ -91,6 +91,11 @@ fun GameBoardCanvas(
                             val tRow = startRow + dRow
                             if (tCol in 0 until b.width && tRow in 0 until b.height)
                                 CellPos(tRow, tCol) else null
+                        } else if (currentDiagonalMode && (ax > threshold || ay > threshold)
+                            && minOf(ax, ay) > maxOf(ax, ay) * 0.4f) {
+                            // One axis crossed threshold but minor axis shows diagonal
+                            // intent (>22° from cardinal) — wait for both to cross
+                            null
                         } else when {
                             totalDrag.x > threshold && startCol < b.width - 1 ->
                                 CellPos(startRow, startCol + 1)

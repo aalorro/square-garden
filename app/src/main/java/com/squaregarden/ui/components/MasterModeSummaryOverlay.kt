@@ -31,6 +31,7 @@ fun MasterModeSummaryOverlay(
     currentStreak: Int,
     tier: MasterTier,
     onNextGame: () -> Unit,
+    onMenu: () -> Unit,
     onEndRun: () -> Unit
 ) {
     // Count-up animation
@@ -180,18 +181,30 @@ fun MasterModeSummaryOverlay(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // Buttons
-                    Button(
-                        onClick = onNextGame,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        shape = RoundedCornerShape(50),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = GoldColor,
-                            contentColor = Color.White
-                        )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Next Game", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        OutlinedButton(
+                            onClick = onMenu,
+                            modifier = Modifier.height(48.dp),
+                            shape = RoundedCornerShape(50)
+                        ) {
+                            Text("Menu", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Button(
+                            onClick = onNextGame,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(48.dp),
+                            shape = RoundedCornerShape(50),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = GoldColor,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("Next Game", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))

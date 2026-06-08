@@ -18,6 +18,7 @@ import androidx.navigation.NavHostController
 import com.squaregarden.data.MasterModeRepository
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
+import com.squaregarden.data.SavedGameRepository
 import com.squaregarden.data.SettingsRepository
 import com.squaregarden.model.Difficulty
 import com.squaregarden.model.PlayerProgress
@@ -272,6 +273,7 @@ fun SettingsScreen(navController: NavHostController) {
                             progressRepo.clearAll()
                             profileRepo.clearAll()
                             MasterModeRepository(context).clearAll()
+                            SavedGameRepository(context).clearSavedGame()
                             settingsRepo.setShapesExplainerDismissed(false)
                             navController.navigate(Screen.ProfileSetup.route) {
                                 popUpTo(0) { inclusive = true }

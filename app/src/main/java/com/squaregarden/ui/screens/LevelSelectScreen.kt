@@ -379,10 +379,10 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 if (!unlocked) {
-                                    Text("\uD83D\uDD12", fontSize = when { isCompact -> 22.sp; isLargeTablet -> 24.sp; else -> 48.sp }, color = theme.textColor.copy(alpha = 0.6f))
+                                    Text("\uD83D\uDD12", fontSize = when { isCompact -> 22.sp; isLargeTablet -> 10.sp; else -> 48.sp }, color = theme.textColor.copy(alpha = 0.6f))
                                     Text(
                                         text = level.name,
-                                        fontSize = when { isCompact -> 8.sp; isLargeTablet -> 14.sp; else -> 28.sp },
+                                        fontSize = when { isCompact -> 8.sp; isLargeTablet -> 6.sp; else -> 28.sp },
                                         fontWeight = FontWeight.Bold,
                                         color = theme.textColor.copy(alpha = 0.5f),
                                         textAlign = TextAlign.Center,
@@ -393,15 +393,15 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                     Text(
                                         text = "${level.id}",
                                         fontFamily = DisplayFontFamily,
-                                        fontSize = when { isCompact -> 26.sp; isLargeTablet -> 32.sp; else -> 64.sp },
+                                        fontSize = when { isCompact -> 26.sp; isLargeTablet -> 13.sp; else -> 64.sp },
                                         fontWeight = FontWeight.ExtraBold,
                                         color = theme.textColor
                                     )
-                                    Row(horizontalArrangement = Arrangement.spacedBy(when { isCompact -> 2.dp; isLargeTablet -> 3.dp; else -> 6.dp })) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(when { isCompact -> 2.dp; isLargeTablet -> 1.dp; else -> 6.dp })) {
                                         repeat(3) { i ->
                                             Text(
                                                 text = "\u2605",
-                                                fontSize = when { isCompact -> 12.sp; isLargeTablet -> 14.sp; else -> 28.sp },
+                                                fontSize = when { isCompact -> 12.sp; isLargeTablet -> 6.sp; else -> 28.sp },
                                                 color = if (i < stars) theme.starColor
                                                 else theme.textColor.copy(alpha = 0.25f)
                                             )
@@ -409,7 +409,7 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                     }
                                     Text(
                                         text = level.name,
-                                        fontSize = when { isCompact -> 8.sp; isLargeTablet -> 14.sp; else -> 28.sp },
+                                        fontSize = when { isCompact -> 8.sp; isLargeTablet -> 6.sp; else -> 28.sp },
                                         fontWeight = FontWeight.Bold,
                                         color = theme.textColor.copy(alpha = 0.7f),
                                         textAlign = TextAlign.Center,
@@ -419,7 +419,7 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                     if (isUpNext) {
                                         Text(
                                             text = "Up Next",
-                                            fontSize = when { isCompact -> 8.sp; isLargeTablet -> 28.sp; else -> 56.sp },
+                                            fontSize = when { isCompact -> 8.sp; isLargeTablet -> 11.sp; else -> 56.sp },
                                             fontWeight = FontWeight.ExtraBold,
                                             color = MaterialTheme.colorScheme.primary
                                         )

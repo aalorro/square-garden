@@ -35,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.MasterModeRepository
+import com.squaregarden.data.SavedGameRepository
 import com.squaregarden.ui.navigation.SquareGardenNavGraph
 import com.squaregarden.ui.navigation.Screen
 import com.squaregarden.viewmodel.GameViewModel
@@ -59,6 +60,8 @@ class MainActivity : ComponentActivity() {
             val cooldownUntil by progressRepo.cooldownUntilFlow.collectAsState(initial = 0L)
             val masterModeRepo = remember { MasterModeRepository(context) }
             val masterStars by masterModeRepo.totalMasterStarsFlow.collectAsState(initial = 0)
+            val savedGameRepo = remember { SavedGameRepository(context) }
+            val hasSavedGame by savedGameRepo.hasSavedGameFlow.collectAsState(initial = false)
             val scope = rememberCoroutineScope()
 
             // One-time migration + restore lives on launch

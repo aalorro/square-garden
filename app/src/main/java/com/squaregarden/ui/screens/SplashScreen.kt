@@ -16,7 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.squaregarden.data.GameStateSerializer
 import com.squaregarden.data.ProfileRepository
+import com.squaregarden.data.SavedGameRepository
 import com.squaregarden.data.SettingsRepository
 import com.squaregarden.ui.components.LogoMark
 import com.squaregarden.ui.navigation.Screen
@@ -29,6 +31,7 @@ fun SplashScreen(navController: NavHostController) {
     val context = LocalContext.current
     val profileRepo = remember { ProfileRepository(context) }
     val settingsRepo = remember { SettingsRepository(context) }
+    val savedGameRepo = remember { SavedGameRepository(context) }
     val alpha = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
@@ -39,7 +42,21 @@ fun SplashScreen(navController: NavHostController) {
         val destination = when {
             !profile.isSetUp -> Screen.ProfileSetup.route
             !settingsRepo.shapesExplainerDismissed.first() -> Screen.ShapesExplainer.route
-            else -> Screen.Home.route
+            else -> {
+                // Redirect to saved in-progress game if one exists
+                val savedJson = savedGameRepo.loadGame()
+                if (savedJson != null) {
+                    try {
+                        val savedLevelId = GameStateSerializer.extractLevelId(savedJson)
+                        Screen.Game.create(savedLevelId)
+                    } catch (_: Exception) {
+                        savedGameRepo.clearSavedGame()
+                        Screen.Home.route
+                    }
+                } else {
+                    Screen.Home.route
+                }
+            }
         }
 
         navController.navigate(destination) {

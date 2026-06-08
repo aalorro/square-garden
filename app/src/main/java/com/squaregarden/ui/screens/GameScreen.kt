@@ -28,6 +28,9 @@ import androidx.compose.ui.geometry.Offset
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.squaregarden.audio.MusicManager
@@ -105,6 +108,18 @@ fun GameScreen(
 
     // Stop any music when GameScreen exits
     DisposableEffect(Unit) { onDispose { MusicManager.stopAll() } }
+
+    // Save game state when app is backgrounded (ON_STOP)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                viewModel.saveGameState()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     // Redo confirmation dialog
     if (showRedoConfirm) {
@@ -532,9 +547,17 @@ fun GameScreen(
                         popUpTo(Screen.Game.route) { inclusive = true }
                     }
                 },
+                onMenu = {
+                    MusicManager.stopWinMusic()
+                    navController.navigate(Screen.MasterMode.route) {
+                        popUpTo(Screen.Home.route) { inclusive = false }
+                    }
+                },
                 onEndRun = {
                     MusicManager.stopWinMusic()
-                    navController.popBackStack()
+                    navController.navigate(Screen.MasterMode.route) {
+                        popUpTo(Screen.Home.route) { inclusive = false }
+                    }
                 }
             )
             ConfettiOverlay(stars = state.starsAwarded, perfectGame = false)
@@ -586,7 +609,9 @@ fun GameScreen(
             onMenu = {
                 MusicManager.stopWinMusic()
                 viewModel.commitWinResult()
-                backToGame()
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Home.route) { inclusive = true }
+                }
             }
         )
 
@@ -807,7 +832,11 @@ fun GameScreen(
         } else if (state.isChallenge) {
             LoseDialog(
                 onRetry = null,
-                onMenu = backToGame,
+                onMenu = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
                 onShowSolution = null
             )
         } else if (state.isMasterMode) {
@@ -830,13 +859,21 @@ fun GameScreen(
                     }) { Text("Retry", fontWeight = FontWeight.Bold) }
                 },
                 dismissButton = {
-                    TextButton(onClick = { navController.popBackStack() }) { Text("End Run") }
+                    TextButton(onClick = {
+                        navController.navigate(Screen.MasterMode.route) {
+                            popUpTo(Screen.Home.route) { inclusive = false }
+                        }
+                    }) { Text("End Run") }
                 }
             )
         } else {
             LoseDialog(
                 onRetry = { viewModel.resetLevel() },
-                onMenu = { navController.popBackStack() },
+                onMenu = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
                 onShowSolution = if (state.hasSolution) {{ viewModel.showSolution() }} else null
             )
         }
@@ -1338,13 +1375,14 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (onNext != null) {
-                    Button(onClick = onNext, shape = RoundedCornerShape(20.dp)) {
-                        Text("Next Game")
-                    }
-                } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = onMenu, shape = RoundedCornerShape(20.dp)) {
-                        Text("Back to Game")
+                        Text("Menu", fontSize = 13.sp)
+                    }
+                    if (onNext != null) {
+                        Button(onClick = onNext, shape = RoundedCornerShape(20.dp)) {
+                            Text("Next Game", fontSize = 13.sp)
+                        }
                     }
                 }
             }

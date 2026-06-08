@@ -14,7 +14,10 @@ import com.squaregarden.audio.MusicManager
 import com.squaregarden.data.LeaderboardRepository
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
+import com.squaregarden.data.GameStateSerializer
 import com.squaregarden.data.MasterModeRepository
+import com.squaregarden.data.SavedGameData
+import com.squaregarden.data.SavedGameRepository
 import com.squaregarden.logic.BoardEngine
 import com.squaregarden.logic.ChallengeGenerator
 import com.squaregarden.logic.GoalSetGenerator
@@ -76,6 +79,7 @@ class GameViewModel(
     private var usedPowerUpThisGame: Boolean = false
     private var effectiveStartingLevel: Int = 1
     private val leaderboardRepo by lazy { LeaderboardRepository() }
+    private val savedGameRepo = SavedGameRepository(context)
     private var masterModeRepo: MasterModeRepository? = null
     private var masterModeState: MasterModeState? = null
     private var masterTier: MasterTier? = null
@@ -107,6 +111,21 @@ class GameViewModel(
             unfreezeTokens = progressRepo.unfreezeTokensFlow.first()
             redoTokens = progressRepo.redoTokensFlow.first()
             diagonalTokens = progressRepo.diagonalTokensFlow.first()
+
+            // Check for saved in-progress game to restore
+            val savedJson = savedGameRepo.loadGame()
+            if (savedJson != null) {
+                try {
+                    val saved = GameStateSerializer.deserialize(savedJson)
+                    if (saved.levelId == levelId) {
+                        restoreFromSave(saved)
+                        return@launch
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.w("GameVM", "Corrupted save, clearing", e)
+                }
+                savedGameRepo.clearSavedGame()
+            }
 
             if (levelId == ENDGAME_SIM_SIGNAL) {
                 // Dev: simulate a nearly-solved level 126 (1 swap to win, 4 moves left).
@@ -266,6 +285,102 @@ class GameViewModel(
                 adjustedMaxMoves = max(1, (level.maxMoves * difficulty.moveMultiplier).roundToInt())
                 initLevel()
             }
+        }
+    }
+
+    // ── Save/restore in-progress game ──
+
+    private suspend fun restoreFromSave(saved: SavedGameData) {
+        level = saved.level
+        adjustedMaxMoves = saved.adjustedMaxMoves
+        hasMovedSinceReset = saved.hasMovedSinceReset
+        usedPowerUpThisGame = saved.usedPowerUpThisGame
+        shuffleTokens = saved.shuffleTokens
+        passthroughTokens = saved.passthroughTokens
+        unfreezeTokens = saved.unfreezeTokens
+        redoTokens = saved.redoTokens
+        diagonalTokens = saved.diagonalTokens
+
+        if (saved.masterModeState != null) {
+            val repo = MasterModeRepository(context)
+            masterModeRepo = repo
+            masterModeState = saved.masterModeState
+            masterTier = saved.masterTier
+        }
+
+        _state.value = GameState(
+            level = saved.level,
+            board = saved.board,
+            movesRemaining = saved.movesRemaining,
+            difficulty = saved.difficulty,
+            gameDifficulty = saved.gameDifficulty,
+            initialBoard = saved.board,
+            completedGoalIds = saved.completedGoalIds,
+            completedGoalCells = saved.completedGoalCells,
+            shuffleTokens = saved.shuffleTokens,
+            passthroughTokens = saved.passthroughTokens,
+            unfreezeTokens = saved.unfreezeTokens,
+            redoTokens = saved.redoTokens,
+            diagonalTokens = saved.diagonalTokens,
+            passthroughActive = saved.passthroughActive,
+            unfreezeMode = saved.unfreezeMode,
+            diagonalMode = saved.diagonalMode,
+            challengeState = saved.challengeState,
+            masterModeState = saved.masterModeState,
+            masterTier = saved.masterTier,
+            phase = GamePhase.PLAYING
+        )
+
+        computeSolutionAsync(saved.board)
+
+        // Resume Blitz timer if applicable
+        if (saved.challengeState?.type == ChallengeType.BLITZ) {
+            blitzTimerStarted = true
+            startBlitzTimer()
+        }
+        // Re-trigger Memory reveal if it wasn't completed
+        if (saved.challengeState?.type == ChallengeType.MEMORY && !saved.challengeState.initialRevealDone) {
+            startMemoryReveal()
+        }
+    }
+
+    private suspend fun autoSaveGame() {
+        val s = _state.value
+        if (levelId in 1..3) return
+        if (s.phase != GamePhase.PLAYING) return
+        if (s.boardGenerating) return
+        try {
+            val json = GameStateSerializer.serialize(
+                levelId = levelId,
+                level = s.level,
+                board = s.board,
+                movesRemaining = s.movesRemaining,
+                adjustedMaxMoves = adjustedMaxMoves,
+                completedGoalIds = s.completedGoalIds,
+                completedGoalCells = s.completedGoalCells,
+                difficulty = difficulty,
+                gameDifficulty = s.gameDifficulty,
+                shuffleTokens = shuffleTokens,
+                passthroughTokens = passthroughTokens,
+                unfreezeTokens = unfreezeTokens,
+                redoTokens = redoTokens,
+                diagonalTokens = diagonalTokens,
+                passthroughActive = s.passthroughActive,
+                unfreezeMode = s.unfreezeMode,
+                diagonalMode = s.diagonalMode,
+                challengeState = s.challengeState,
+                masterModeState = masterModeState,
+                masterTier = masterTier,
+                usedPowerUpThisGame = usedPowerUpThisGame,
+                hasMovedSinceReset = hasMovedSinceReset
+            )
+            savedGameRepo.saveGame(json)
+        } catch (_: Exception) { }
+    }
+
+    fun saveGameState() {
+        if (_state.value.phase == GamePhase.PLAYING) {
+            viewModelScope.launch { autoSaveGame() }
         }
     }
 
@@ -866,6 +981,9 @@ class GameViewModel(
                 challengeState = updatedChal
             )
         }
+
+        // Save initial board state so force-close is covered
+        autoSaveGame()
     }
 
     /** Find positions where displayBoard differs from finalBoard. */
@@ -1490,6 +1608,13 @@ class GameViewModel(
                 }
             }
 
+            // Persist or clear saved game
+            when (_state.value.phase) {
+                GamePhase.PLAYING -> autoSaveGame()
+                GamePhase.WON, GamePhase.LOST -> savedGameRepo.clearSavedGame()
+                else -> {}
+            }
+
         }
     }
 
@@ -1792,6 +1917,13 @@ class GameViewModel(
                 }
             }
 
+            // Persist or clear saved game
+            when (_state.value.phase) {
+                GamePhase.PLAYING -> autoSaveGame()
+                GamePhase.WON, GamePhase.LOST -> savedGameRepo.clearSavedGame()
+                else -> {}
+            }
+
         }
     }
 
@@ -1959,6 +2091,7 @@ class GameViewModel(
         viewModelScope.launch {
             val success = progressRepo.useRedoToken()
             if (!success) return@launch
+            savedGameRepo.clearSavedGame()
             progressRepo.recordTokenUsed()
             redoTokens--
             usedPowerUpThisGame = true
@@ -2087,12 +2220,14 @@ class GameViewModel(
 
     fun dismissSolution() {
         _state.value = _state.value.copy(phase = GamePhase.LOST, solutionSteps = null)
+        viewModelScope.launch { savedGameRepo.clearSavedGame() }
     }
 
     fun commitWinResult() {
         if (winResultCommitted) return
         winResultCommitted = true
         viewModelScope.launch {
+            savedGameRepo.clearSavedGame()
             // NonCancellable: ensure persistence completes even if user navigates away
             withContext(NonCancellable) {
             val state = _state.value
@@ -2384,6 +2519,7 @@ class GameViewModel(
                         phase = GamePhase.WON,
                         starsAwarded = pendingWinStars
                     )
+                    savedGameRepo.clearSavedGame()
                     break
                 }
                 _state.value = s.copy(

@@ -21,8 +21,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import com.squaregarden.audio.MusicManager
 import com.squaregarden.ui.navigation.Screen
+import com.squaregarden.data.GameStateSerializer
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.data.ProgressRepository
+import com.squaregarden.data.SavedGameRepository
 import com.squaregarden.data.SettingsRepository
 import com.squaregarden.model.Difficulty
 import com.squaregarden.model.PlayerProgress
@@ -55,10 +57,25 @@ fun HomeScreen(navController: NavHostController) {
     var progress by remember { mutableStateOf(PlayerProgress()) }
 
     val settingsRepo = remember { SettingsRepository(context) }
+    val savedGameRepo = remember { SavedGameRepository(context) }
     val musicEnabled by settingsRepo.musicEnabled.collectAsState(initial = true)
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
+        // Redirect to saved in-progress game if one exists
+        val savedJson = savedGameRepo.loadGame()
+        if (savedJson != null) {
+            try {
+                val savedLevelId = GameStateSerializer.extractLevelId(savedJson)
+                navController.navigate(Screen.Game.create(savedLevelId)) {
+                    popUpTo(Screen.Home.route) { inclusive = true }
+                }
+                return@LaunchedEffect
+            } catch (_: Exception) {
+                savedGameRepo.clearSavedGame()
+            }
+        }
+
         profile = profileRepo.loadProfile()
         progress = progressRepo.loadProgress()
         val difficulty = Difficulty.fromId(profile.difficulty)
