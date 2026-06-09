@@ -31,7 +31,6 @@ fun MasterModeSummaryOverlay(
     currentStreak: Int,
     tier: MasterTier,
     onNextGame: () -> Unit,
-    onMenu: () -> Unit,
     onEndRun: () -> Unit
 ) {
     // Count-up animation
@@ -186,11 +185,11 @@ fun MasterModeSummaryOverlay(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         OutlinedButton(
-                            onClick = onMenu,
+                            onClick = onEndRun,
                             modifier = Modifier.height(48.dp),
                             shape = RoundedCornerShape(50)
                         ) {
-                            Text("Menu", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            Text("End Run", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                         }
                         Button(
                             onClick = onNextGame,
@@ -205,18 +204,6 @@ fun MasterModeSummaryOverlay(
                         ) {
                             Text("Next Game", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedButton(
-                        onClick = onEndRun,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        shape = RoundedCornerShape(50)
-                    ) {
-                        Text("End Run", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

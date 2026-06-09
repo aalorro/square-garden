@@ -547,12 +547,6 @@ fun GameScreen(
                         popUpTo(Screen.Game.route) { inclusive = true }
                     }
                 },
-                onMenu = {
-                    MusicManager.stopWinMusic()
-                    navController.navigate(Screen.MasterMode.route) {
-                        popUpTo(Screen.Home.route) { inclusive = false }
-                    }
-                },
                 onEndRun = {
                     MusicManager.stopWinMusic()
                     navController.navigate(Screen.MasterMode.route) {
