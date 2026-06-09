@@ -159,6 +159,14 @@ fun StatsScreen(navController: NavHostController) {
                 if (overgrown > 0) StatsRow(label = "\uD83C\uDF3F Overgrown Garden", value = "$overgrown")
                 if (shifting > 0) StatsRow(label = "\uD83C\uDF0A Shifting Sands", value = "$shifting")
                 if (memory > 0) StatsRow(label = "\uD83E\uDDE0 Memory Garden", value = "$memory")
+                val frozenWave = challengeCompletions["frozen_wave"] ?: 0
+                val rotation = challengeCompletions["rotation"] ?: 0
+                val mirror = challengeCompletions["mirror"] ?: 0
+                val decay = challengeCompletions["decay"] ?: 0
+                if (frozenWave > 0) StatsRow(label = "\u2744\uFE0F Frozen Wave", value = "$frozenWave")
+                if (rotation > 0) StatsRow(label = "\uD83D\uDD04 Rotation Garden", value = "$rotation")
+                if (mirror > 0) StatsRow(label = "\uD83E\uDE9E Mirror Garden", value = "$mirror")
+                if (decay > 0) StatsRow(label = "\u23F3 Decay Garden", value = "$decay")
                 StatsRow(label = "Total", value = "$totalChallenges")
             }
 

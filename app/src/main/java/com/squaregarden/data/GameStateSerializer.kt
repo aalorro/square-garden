@@ -271,6 +271,12 @@ object GameStateSerializer {
         json.put("movesSinceLastScramble", cs.movesSinceLastScramble)
         json.put("revealedCells", serializeCellPosSet(cs.revealedCells))
         json.put("initialRevealDone", cs.initialRevealDone)
+        json.put("freezeMoveCounter", cs.freezeMoveCounter)
+        json.put("rotationMoveCounter", cs.rotationMoveCounter)
+        json.put("decayMoveCounter", cs.decayMoveCounter)
+        val gcm = JSONObject()
+        for ((goalId, moveNum) in cs.goalCompletionMoves) gcm.put(goalId, moveNum)
+        json.put("goalCompletionMoves", gcm)
         return json
     }
 
@@ -287,7 +293,16 @@ object GameStateSerializer {
             overgrownTryMultiplier = json.optInt("overgrownTryMultiplier", 1),
             movesSinceLastScramble = json.optInt("movesSinceLastScramble", 0),
             revealedCells = if (json.has("revealedCells")) deserializeCellPosSet(json.getJSONArray("revealedCells")) else emptySet(),
-            initialRevealDone = json.optBoolean("initialRevealDone", false)
+            initialRevealDone = json.optBoolean("initialRevealDone", false),
+            freezeMoveCounter = json.optInt("freezeMoveCounter", 0),
+            rotationMoveCounter = json.optInt("rotationMoveCounter", 0),
+            decayMoveCounter = json.optInt("decayMoveCounter", 0),
+            goalCompletionMoves = if (json.has("goalCompletionMoves")) {
+                val gcm = json.getJSONObject("goalCompletionMoves")
+                val map = mutableMapOf<String, Int>()
+                for (key in gcm.keys()) map[key] = gcm.getInt(key)
+                map
+            } else emptyMap()
         )
     }
 

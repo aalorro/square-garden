@@ -10,6 +10,10 @@ object ChallengeGenerator {
             ChallengeType.OVERGROWN -> generateOvergrown(skill)
             ChallengeType.SHIFTING -> generateShifting(skill)
             ChallengeType.MEMORY -> generateMemory(skill)
+            ChallengeType.FROZEN_WAVE -> generateFrozenWave(skill)
+            ChallengeType.ROTATION -> generateRotation(skill)
+            ChallengeType.MIRROR -> generateMirror(skill)
+            ChallengeType.DECAY -> generateDecay(skill)
         }
     }
 
@@ -221,6 +225,137 @@ object ChallengeGenerator {
         )
     }
 
+    // ── Frozen Wave: 6×6, no initial frozen, 14 moves ──
+
+    private fun generateFrozenWave(skill: Difficulty): Level {
+        val w = 6; val h = 6
+        val numColors = when (skill) {
+            Difficulty.EASY -> 4
+            Difficulty.MEDIUM -> 4
+            Difficulty.HARD -> 5
+            Difficulty.PRO_PLUS -> 5
+        }
+        val colors = TileColor.entries.toList().shuffled().take(numColors)
+        val goalCount = when (skill) {
+            Difficulty.EASY -> 4
+            Difficulty.MEDIUM -> 4
+            Difficulty.HARD -> 5
+            Difficulty.PRO_PLUS -> 5
+        }
+        val goals = pickMixedGoals(colors, goalCount, skill)
+        val tiles = generateRandomTiles(w, h, colors)
+        return Level(
+            id = ChallengeType.FROZEN_WAVE.id,
+            world = 0,
+            name = ChallengeType.FROZEN_WAVE.title,
+            boardWidth = w,
+            boardHeight = h,
+            maxMoves = 14,
+            initialTiles = tiles,
+            goals = goals,
+            starThresholds = StarThresholds(twoStar = 4, threeStar = 8)
+        )
+    }
+
+    // ── Rotation Garden: 6×6 square, 14 moves ──
+
+    private fun generateRotation(skill: Difficulty): Level {
+        val w = 6; val h = 6
+        val numColors = when (skill) {
+            Difficulty.EASY -> 4
+            Difficulty.MEDIUM -> 4
+            Difficulty.HARD -> 5
+            Difficulty.PRO_PLUS -> 5
+        }
+        val colors = TileColor.entries.toList().shuffled().take(numColors)
+        val goalCount = when (skill) {
+            Difficulty.EASY -> 4
+            Difficulty.MEDIUM -> 4
+            Difficulty.HARD -> 5
+            Difficulty.PRO_PLUS -> 5
+        }
+        val goals = pickMixedGoals(colors, goalCount, skill)
+        val tiles = generateRandomTiles(w, h, colors)
+        val frozenCount = when (skill) {
+            Difficulty.EASY -> 0
+            Difficulty.MEDIUM -> 1
+            Difficulty.HARD -> 2
+            Difficulty.PRO_PLUS -> 2
+        }
+        val frozen = if (frozenCount > 0) pickFrozenCells(w, h, frozenCount) else emptySet()
+        return Level(
+            id = ChallengeType.ROTATION.id,
+            world = 0,
+            name = ChallengeType.ROTATION.title,
+            boardWidth = w,
+            boardHeight = h,
+            maxMoves = 14,
+            initialTiles = tiles,
+            goals = goals,
+            starThresholds = StarThresholds(twoStar = 4, threeStar = 8),
+            frozenCells = frozen
+        )
+    }
+
+    // ── Mirror Garden: 6×6 even-width, 10 moves ──
+
+    private fun generateMirror(skill: Difficulty): Level {
+        val w = 6; val h = 6
+        val numColors = when (skill) {
+            Difficulty.EASY -> 4
+            Difficulty.MEDIUM -> 4
+            Difficulty.HARD -> 5
+            Difficulty.PRO_PLUS -> 5
+        }
+        val colors = TileColor.entries.toList().shuffled().take(numColors)
+        val goalCount = when (skill) {
+            Difficulty.EASY -> 5
+            Difficulty.MEDIUM -> 5
+            Difficulty.HARD -> 6
+            Difficulty.PRO_PLUS -> 6
+        }
+        val goals = pickMixedGoals(colors, goalCount, skill)
+        val tiles = generateRandomTiles(w, h, colors)
+        return Level(
+            id = ChallengeType.MIRROR.id,
+            world = 0,
+            name = ChallengeType.MIRROR.title,
+            boardWidth = w,
+            boardHeight = h,
+            maxMoves = 10,
+            initialTiles = tiles,
+            goals = goals,
+            starThresholds = StarThresholds(twoStar = 3, threeStar = 6)
+        )
+    }
+
+    // ── Decay Garden: 6×6, simpler goals, 16 moves ──
+
+    private fun generateDecay(skill: Difficulty): Level {
+        val w = 6; val h = 6
+        val numColors = when (skill) {
+            Difficulty.EASY -> 3
+            Difficulty.MEDIUM -> 3
+            Difficulty.HARD -> 4
+            Difficulty.PRO_PLUS -> 4
+        }
+        val colors = TileColor.entries.toList().shuffled().take(numColors)
+        val goalCount = 4
+        val goals = pickDecayGoals(colors, goalCount)
+        val tiles = generateRandomTiles(w, h, colors)
+        return Level(
+            id = ChallengeType.DECAY.id,
+            world = 0,
+            name = ChallengeType.DECAY.title,
+            boardWidth = w,
+            boardHeight = h,
+            maxMoves = 16,
+            initialTiles = tiles,
+            goals = goals,
+            starThresholds = StarThresholds(twoStar = 5, threeStar = 10)
+        )
+    }
+
     // ── Helpers ──
 
     private fun pickSimpleGoals(colors: List<TileColor>, count: Int): List<Goal> {
@@ -229,6 +364,26 @@ object ChallengeGenerator {
             val color = shuffled[i % shuffled.size]
             if (Math.random() < 0.25) Goal.Square(color) else Goal.Line(color, 3)
         }
+    }
+
+    private fun pickDecayGoals(colors: List<TileColor>, count: Int): List<Goal> {
+        val shuffled = colors.shuffled()
+        val simpleShapes = listOf(ShapeType.L_SHAPE, ShapeType.T_SHAPE)
+        val picked = mutableListOf<Goal>()
+        var colorIdx = 0
+        var retries = 0
+        while (picked.size < count && retries < count * 10) {
+            val color = shuffled[colorIdx % shuffled.size]
+            colorIdx++
+            val roll = Math.random()
+            val candidate = when {
+                roll < 0.45 -> Goal.Line(color, 3)
+                roll < 0.75 -> Goal.Square(color)
+                else -> Goal.Shape(color, simpleShapes.random())
+            }
+            if (candidate !in picked) picked.add(candidate) else retries++
+        }
+        return picked
     }
 
     private fun pickMixedGoals(colors: List<TileColor>, count: Int, skill: Difficulty): List<Goal> {

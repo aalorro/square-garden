@@ -42,6 +42,10 @@ class ProgressRepository(private val context: Context) {
         private val OVERGROWN_COMPLETIONS_KEY = intPreferencesKey("overgrown_completions")
         private val SHIFTING_COMPLETIONS_KEY = intPreferencesKey("shifting_completions")
         private val MEMORY_COMPLETIONS_KEY = intPreferencesKey("memory_completions")
+        private val FROZEN_WAVE_COMPLETIONS_KEY = intPreferencesKey("frozen_wave_completions")
+        private val ROTATION_COMPLETIONS_KEY = intPreferencesKey("rotation_completions")
+        private val MIRROR_COMPLETIONS_KEY = intPreferencesKey("mirror_completions")
+        private val DECAY_COMPLETIONS_KEY = intPreferencesKey("decay_completions")
         // Endgame tracking
         private val GAME_COMPLETED_KEY = booleanPreferencesKey("game_completed")
         private val GAME_COMPLETED_TIMESTAMP_KEY = longPreferencesKey("game_completed_timestamp")
@@ -455,6 +459,10 @@ class ProgressRepository(private val context: Context) {
             -2 -> OVERGROWN_COMPLETIONS_KEY
             -3 -> SHIFTING_COMPLETIONS_KEY
             -4 -> MEMORY_COMPLETIONS_KEY
+            -5 -> FROZEN_WAVE_COMPLETIONS_KEY
+            -6 -> ROTATION_COMPLETIONS_KEY
+            -7 -> MIRROR_COMPLETIONS_KEY
+            -8 -> DECAY_COMPLETIONS_KEY
             else -> return
         }
         context.dataStore.edit { prefs ->
@@ -535,7 +543,11 @@ class ProgressRepository(private val context: Context) {
             "blitz" to (prefs[BLITZ_COMPLETIONS_KEY] ?: 0),
             "overgrown" to (prefs[OVERGROWN_COMPLETIONS_KEY] ?: 0),
             "shifting" to (prefs[SHIFTING_COMPLETIONS_KEY] ?: 0),
-            "memory" to (prefs[MEMORY_COMPLETIONS_KEY] ?: 0)
+            "memory" to (prefs[MEMORY_COMPLETIONS_KEY] ?: 0),
+            "frozen_wave" to (prefs[FROZEN_WAVE_COMPLETIONS_KEY] ?: 0),
+            "rotation" to (prefs[ROTATION_COMPLETIONS_KEY] ?: 0),
+            "mirror" to (prefs[MIRROR_COMPLETIONS_KEY] ?: 0),
+            "decay" to (prefs[DECAY_COMPLETIONS_KEY] ?: 0)
         )
     }
 

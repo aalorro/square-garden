@@ -70,12 +70,17 @@ object MasterLevelGenerator {
         if (gamesPlayed < 5) return null
         val baseChance = 0.10 + (currentStreak * 0.02).coerceAtMost(0.15)
         if (Math.random() > baseChance) return null
-        // Weighted selection: Blitz 35%, Shifting 35%, Memory 15%, Overgrown 15%
+        // Weighted cumulative selection across 8 challenge types
+        val roll = Math.random()
         return when {
-            Math.random() < 0.35 -> ChallengeType.BLITZ
-            Math.random() < 0.54 -> ChallengeType.SHIFTING // 0.35 / 0.65 ≈ 0.54
-            Math.random() < 0.50 -> ChallengeType.MEMORY
-            else -> ChallengeType.OVERGROWN
+            roll < 0.15 -> ChallengeType.BLITZ
+            roll < 0.30 -> ChallengeType.SHIFTING
+            roll < 0.38 -> ChallengeType.MEMORY
+            roll < 0.46 -> ChallengeType.OVERGROWN
+            roll < 0.61 -> ChallengeType.FROZEN_WAVE
+            roll < 0.76 -> ChallengeType.ROTATION
+            roll < 0.88 -> ChallengeType.MIRROR
+            else -> ChallengeType.DECAY
         }
     }
 

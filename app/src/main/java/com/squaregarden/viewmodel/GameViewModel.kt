@@ -846,6 +846,10 @@ class GameViewModel(
                 ChallengeType.OVERGROWN -> ChallengeState(type = ChallengeType.OVERGROWN)
                 ChallengeType.SHIFTING -> ChallengeState(type = ChallengeType.SHIFTING)
                 ChallengeType.MEMORY -> ChallengeState(type = ChallengeType.MEMORY)
+                ChallengeType.FROZEN_WAVE -> ChallengeState(type = ChallengeType.FROZEN_WAVE)
+                ChallengeType.ROTATION -> ChallengeState(type = ChallengeType.ROTATION)
+                ChallengeType.MIRROR -> ChallengeState(type = ChallengeType.MIRROR)
+                ChallengeType.DECAY -> ChallengeState(type = ChallengeType.DECAY)
                 null -> null
             }
 
@@ -1324,7 +1328,24 @@ class GameViewModel(
                 delay(stepDelay)
             }
 
-            val newBoard = BoardEngine.executeSwap(current.board, from, to)
+            var newBoard = BoardEngine.executeSwap(current.board, from, to)
+
+            // Mirror Garden: apply mirrored swap across vertical center
+            if (current.challengeState?.type == ChallengeType.MIRROR) {
+                val w = current.board.width
+                val mirrorFrom = CellPos(from.row, w - 1 - from.col)
+                val mirrorTo = CellPos(to.row, w - 1 - to.col)
+                val primaryCells = setOf(from, to)
+                if (mirrorFrom !in primaryCells && mirrorTo !in primaryCells
+                    && newBoard.isValidCell(mirrorFrom.row, mirrorFrom.col)
+                    && newBoard.isValidCell(mirrorTo.row, mirrorTo.col)
+                    && !newBoard.tileAt(mirrorFrom.row, mirrorFrom.col).frozen
+                    && !newBoard.tileAt(mirrorTo.row, mirrorTo.col).frozen
+                ) {
+                    newBoard = BoardEngine.executeSwap(newBoard, mirrorFrom, mirrorTo)
+                }
+            }
+
             val newMoves = current.movesRemaining - 1
 
             var baseGoalIds = current.completedGoalIds
@@ -1440,13 +1461,7 @@ class GameViewModel(
                             pendingWinStars = finalStars
                             GamePhase.WON
                         } else {
-                            // Memory: 3x multiplier, Shifting: 2x multiplier
-                            val challengeMultiplier = when (cs.type) {
-                                ChallengeType.MEMORY -> 3
-                                ChallengeType.SHIFTING -> 2
-                                else -> 1
-                            }
-                            starsAwarded = (BoardEngine.calculateStars(newMoves, current.level.starThresholds) * challengeMultiplier).coerceAtLeast(1)
+                            starsAwarded = (BoardEngine.calculateStars(newMoves, current.level.starThresholds) * cs.type.starMultiplier).coerceAtLeast(1)
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
                             pendingWinStars = starsAwarded
@@ -1554,6 +1569,17 @@ class GameViewModel(
                     }
                     ChallengeType.SHIFTING -> cs.copy(movesSinceLastScramble = cs.movesSinceLastScramble + 1)
                     ChallengeType.MEMORY -> cs // reveal handled below
+                    ChallengeType.FROZEN_WAVE -> cs.copy(freezeMoveCounter = cs.freezeMoveCounter + 1)
+                    ChallengeType.ROTATION -> cs.copy(rotationMoveCounter = cs.rotationMoveCounter + 1)
+                    ChallengeType.MIRROR -> cs // stateless
+                    ChallengeType.DECAY -> {
+                        val newCounter = cs.decayMoveCounter + 1
+                        val updatedCompletions = cs.goalCompletionMoves.toMutableMap()
+                        for (goalId in newlyCompleted) {
+                            if (goalId !in updatedCompletions) updatedCompletions[goalId] = newCounter
+                        }
+                        cs.copy(decayMoveCounter = newCounter, goalCompletionMoves = updatedCompletions)
+                    }
                     else -> cs
                 }
             } else current.challengeState
@@ -1600,7 +1626,6 @@ class GameViewModel(
                     }
                     ChallengeType.MEMORY -> {
                         if (won) {
-                            // Reveal entire board before celebration
                             revealAllCells()
                             delay(3000)
                             _state.value = _state.value.copy(phase = GamePhase.WON)
@@ -1608,6 +1633,9 @@ class GameViewModel(
                             revealAroundSwap(from, to)
                         }
                     }
+                    ChallengeType.FROZEN_WAVE -> applyFrozenWaveEffect(cs)
+                    ChallengeType.ROTATION -> applyRotationEffect(cs)
+                    ChallengeType.DECAY -> applyDecayEffect(cs)
                     else -> {}
                 }
             }
@@ -1752,13 +1780,7 @@ class GameViewModel(
                             pendingWinStars = finalStars
                             GamePhase.WON
                         } else {
-                            // Memory: 3x multiplier, Shifting: 2x multiplier
-                            val challengeMultiplier = when (cs.type) {
-                                ChallengeType.MEMORY -> 3
-                                ChallengeType.SHIFTING -> 2
-                                else -> 1
-                            }
-                            starsAwarded = (BoardEngine.calculateStars(newMoves, current.level.starThresholds) * challengeMultiplier).coerceAtLeast(1)
+                            starsAwarded = (BoardEngine.calculateStars(newMoves, current.level.starThresholds) * cs.type.starMultiplier).coerceAtLeast(1)
                             winResultCommitted = false
                             pendingWinLevelId = current.level.id
                             pendingWinStars = starsAwarded
@@ -1865,6 +1887,17 @@ class GameViewModel(
                     }
                     ChallengeType.SHIFTING -> cs.copy(movesSinceLastScramble = cs.movesSinceLastScramble + 1)
                     ChallengeType.MEMORY -> cs
+                    ChallengeType.FROZEN_WAVE -> cs.copy(freezeMoveCounter = cs.freezeMoveCounter + 1)
+                    ChallengeType.ROTATION -> cs.copy(rotationMoveCounter = cs.rotationMoveCounter + 1)
+                    ChallengeType.MIRROR -> cs
+                    ChallengeType.DECAY -> {
+                        val newCounter = cs.decayMoveCounter + 1
+                        val updatedCompletions = cs.goalCompletionMoves.toMutableMap()
+                        for (goalId in newlyCompletedPt) {
+                            if (goalId !in updatedCompletions) updatedCompletions[goalId] = newCounter
+                        }
+                        cs.copy(decayMoveCounter = newCounter, goalCompletionMoves = updatedCompletions)
+                    }
                     else -> cs
                 }
             } else current.challengeState
@@ -1909,7 +1942,6 @@ class GameViewModel(
                     }
                     ChallengeType.MEMORY -> {
                         if (won) {
-                            // Reveal entire board before celebration
                             revealAllCells()
                             delay(3000)
                             _state.value = _state.value.copy(phase = GamePhase.WON)
@@ -1917,6 +1949,9 @@ class GameViewModel(
                             revealAroundSwap(from, landing)
                         }
                     }
+                    ChallengeType.FROZEN_WAVE -> applyFrozenWaveEffect(cs)
+                    ChallengeType.ROTATION -> applyRotationEffect(cs)
+                    ChallengeType.DECAY -> applyDecayEffect(cs)
                     else -> {}
                 }
             }
@@ -1928,6 +1963,72 @@ class GameViewModel(
                 else -> {}
             }
 
+        }
+    }
+
+    /** Frozen Wave: freeze a random non-frozen, non-void, non-goal tile and reset counter. */
+    private fun applyFrozenWaveEffect(cs: ChallengeState) {
+        if (cs.freezeMoveCounter < 2) return
+        val goalCells = allGoalCells()
+        val board = _state.value.board
+        val candidates = mutableListOf<CellPos>()
+        for (r in 0 until board.height) {
+            for (c in 0 until board.width) {
+                val pos = CellPos(r, c)
+                if (board.isValidCell(r, c) && !board.tileAt(r, c).frozen && pos !in goalCells) {
+                    candidates.add(pos)
+                }
+            }
+        }
+        if (candidates.isNotEmpty()) {
+            val target = candidates.random()
+            val updatedTiles = board.tiles.mapIndexed { r, row ->
+                row.mapIndexed { c, tile ->
+                    if (r == target.row && c == target.col) tile.copy(frozen = true) else tile
+                }
+            }
+            _state.value = _state.value.copy(
+                board = board.copy(tiles = updatedTiles),
+                challengeState = cs.copy(freezeMoveCounter = 0)
+            )
+            audioManager.playTokenCapture()
+        }
+    }
+
+    /** Rotation Garden: rotate the entire board 90° clockwise and reset counter. */
+    private fun applyRotationEffect(cs: ChallengeState) {
+        if (cs.rotationMoveCounter < 3) return
+        val s = _state.value
+        val board = s.board
+        val size = board.width
+        val rotatedTiles = List(size) { r -> List(size) { c -> board.tileAt(size - 1 - c, r) } }
+        val rotatedVoids = board.voids.map { pos -> CellPos(pos.col, size - 1 - pos.row) }.toSet()
+        val rotatedGoalCells = s.completedGoalCells.mapValues { (_, cells) ->
+            cells.map { pos -> CellPos(pos.col, size - 1 - pos.row) }.toSet()
+        }
+        val rotatedBoard = Board(size, size, rotatedTiles, rotatedVoids)
+        _state.value = s.copy(
+            board = rotatedBoard,
+            completedGoalCells = rotatedGoalCells,
+            challengeState = cs.copy(rotationMoveCounter = 0)
+        )
+        audioManager.playScramble()
+    }
+
+    /** Decay Garden: remove goals that were completed 5+ moves ago. */
+    private fun applyDecayEffect(cs: ChallengeState) {
+        val s = _state.value
+        val dcs = s.challengeState ?: cs
+        val currentMove = dcs.decayMoveCounter
+        val expiredGoals = dcs.goalCompletionMoves.filter { (_, moveNum) ->
+            currentMove - moveNum >= 5
+        }.keys
+        if (expiredGoals.isNotEmpty()) {
+            _state.value = s.copy(
+                completedGoalIds = s.completedGoalIds - expiredGoals,
+                completedGoalCells = s.completedGoalCells - expiredGoals,
+                challengeState = dcs.copy(goalCompletionMoves = dcs.goalCompletionMoves - expiredGoals)
+            )
         }
     }
 

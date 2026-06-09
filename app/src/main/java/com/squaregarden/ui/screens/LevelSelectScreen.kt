@@ -236,6 +236,10 @@ fun LevelSelectScreen(worldId: Int, navController: NavHostController) {
                                     ChallengeType.OVERGROWN -> "\uD83C\uDF3F"
                                     ChallengeType.SHIFTING -> "\uD83C\uDF0A"
                                     ChallengeType.MEMORY -> "\uD83E\uDDE0"
+                                    ChallengeType.FROZEN_WAVE -> "\u2744\uFE0F"
+                                    ChallengeType.ROTATION -> "\uD83D\uDD04"
+                                    ChallengeType.MIRROR -> "\uD83E\uDE9E"
+                                    ChallengeType.DECAY -> "\u23F3"
                                 },
                                 fontSize = 32.sp
                             )

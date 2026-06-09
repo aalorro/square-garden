@@ -383,6 +383,59 @@ fun GameScreen(
             }
         }
 
+        // New challenge type info bars
+        val chalType = state.challengeState?.type
+        if (chalType == ChallengeType.FROZEN_WAVE || chalType == ChallengeType.ROTATION
+            || chalType == ChallengeType.MIRROR || chalType == ChallengeType.DECAY) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val cs = state.challengeState!!
+                when (chalType) {
+                    ChallengeType.FROZEN_WAVE -> {
+                        Text(
+                            text = "\u2744\uFE0F Freeze in ${2 - cs.freezeMoveCounter}",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    ChallengeType.ROTATION -> {
+                        Text(
+                            text = "\uD83D\uDD04 Rotate in ${3 - cs.rotationMoveCounter}",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    ChallengeType.MIRROR -> {
+                        Text(
+                            text = "\uD83E\uDE9E Mirror Mode",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    ChallengeType.DECAY -> {
+                        val oldestGoal = cs.goalCompletionMoves.values.minOrNull()
+                        val movesUntilDecay = if (oldestGoal != null) 5 - (cs.decayMoveCounter - oldestGoal) else 5
+                        Text(
+                            text = "\u23F3 Decay in $movesUntilDecay",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (movesUntilDecay <= 2) MaterialTheme.colorScheme.error
+                                    else MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
+
         // Bottom bar — circular action buttons (hidden during challenges)
         if (!state.isChallenge) {
             Row(

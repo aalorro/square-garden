@@ -196,6 +196,33 @@ fun InstructionsScreen(navController: NavHostController) {
                 "\u2022 Memory Garden — Achieve a perfect game on World 5+ (complete all goals in a number of moves equal to or fewer than the goal count). Triggers immediately."
         )
 
+        InstructionSection(
+            title = "\uD83D\uDC51 Master Mode",
+            body = "Beat all 126 levels to unlock Master Mode \u2014 an infinite roguelike puzzle challenge.\n\n" +
+                "Each game is a procedurally generated board with random goals. " +
+                "Levels are drawn from 5 difficulty tiers:\n" +
+                "\u2022 Warming Up \u2014 small boards, simple goals\n" +
+                "\u2022 Getting Serious \u2014 medium boards, more goals\n" +
+                "\u2022 Skilled \u2014 larger boards with frozen tiles\n" +
+                "\u2022 Expert \u2014 big boards with complex shapes\n" +
+                "\u2022 Brutal \u2014 massive 9\u00D79 boards with advanced patterns\n\n" +
+                "Win consecutive games to build a streak. Every 3 wins your streak multiplier increases " +
+                "(1.5\u00D7, 2\u00D7, 2.5\u00D7... up to 5\u00D7). Losing resets your streak to zero.\n\n" +
+                "Stars earned = tier base \u00D7 game difficulty \u00D7 streak multiplier \u00D7 skill multiplier. " +
+                "Master stars are tracked separately and have their own leaderboard.\n\n" +
+                "After 5+ games, challenge rounds can appear between regular Master Mode games. " +
+                "In addition to the standard challenges (Blitz, Overgrown, Shifting, Memory), " +
+                "Master Mode features 4 exclusive challenge types:\n\n" +
+                "\u2744\uFE0F Frozen Wave \u2014 every 2 moves, a random tile freezes solid. " +
+                "Complete your goals before the board turns to ice! (2\u00D7 stars)\n\n" +
+                "\uD83D\uDD04 Rotation Garden \u2014 every 3 moves, the entire board rotates 90\u00B0 clockwise. " +
+                "Stay oriented as the layout shifts beneath you! (3\u00D7 stars)\n\n" +
+                "\uD83E\uDE9E Mirror Garden \u2014 every swap is mirrored across the board\u2019s center. " +
+                "One move, two swaps \u2014 powerful but tricky to plan. (3\u00D7 stars)\n\n" +
+                "\u23F3 Decay Garden \u2014 completed goals expire after 5 moves. " +
+                "Set up the board, then rapid-fire all goals before they decay! (3\u00D7 stars)"
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
