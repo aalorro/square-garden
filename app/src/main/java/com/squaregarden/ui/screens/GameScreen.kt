@@ -587,7 +587,13 @@ fun GameScreen(
             },
             isChallenge = state.isChallenge,
             challengeGoalsCleared = state.challengeState?.goalsCleared ?: 0,
-            onNext = if (!state.isChallenge && state.level.id < 126 && !state.proUpgradePrompt) {
+            onNext = if (state.isChallenge) {
+                {
+                    MusicManager.stopWinMusic()
+                    viewModel.commitWinResult()
+                    backToGame()
+                }
+            } else if (state.level.id < 126 && !state.proUpgradePrompt) {
                 {
                     MusicManager.stopWinMusic()
                     viewModel.commitWinResult()

@@ -836,6 +836,7 @@ class GameViewModel(
                 gameDifficulty = computeGameDifficulty(board),
                 initialBoard = board,
                 shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+                masterModeState = masterModeState, masterTier = masterTier,
                 phase = GamePhase.TUTORIAL_PAUSE
             )
             computeSolutionAsync(board)
@@ -911,6 +912,7 @@ class GameViewModel(
                 gameDifficulty = computeGameDifficulty(board),
                 initialBoard = board, hasSolution = solution != null,
                 shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+                masterModeState = masterModeState, masterTier = masterTier,
                 phase = GamePhase.SCRAMBLING,
                 challengeState = chalState
             )
@@ -1109,6 +1111,7 @@ class GameViewModel(
                     gameDifficulty = computeGameDifficulty(board),
                     initialBoard = board, hasSolution = solution != null,
                     shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+                    masterModeState = masterModeState, masterTier = masterTier,
                     phase = GamePhase.SCRAMBLING
                 )
                 computeSolutionAsync(board)
@@ -1152,6 +1155,7 @@ class GameViewModel(
             gameDifficulty = computeGameDifficulty(board),
             initialBoard = board, hasSolution = solution != null,
             shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+            masterModeState = masterModeState, masterTier = masterTier,
             phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )
         computeSolutionAsync(board)
@@ -2486,6 +2490,8 @@ class GameViewModel(
             unfreezeTokens = unfreezeTokens,
             redoTokens = redoTokens,
             diagonalTokens = diagonalTokens,
+            masterModeState = masterModeState,
+            masterTier = masterTier,
             phase = GamePhase.SCRAMBLING,
             challengeState = ChallengeState(
                 type = ChallengeType.OVERGROWN,

@@ -125,7 +125,7 @@ fun LeaderboardScreen(navController: NavHostController) {
         // Difficulty chips + Master tab
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Difficulty.entries.forEach { diff ->
                 FilterChip(
@@ -140,7 +140,7 @@ fun LeaderboardScreen(navController: NavHostController) {
                     label = {
                         Text(
                             diff.label,
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             fontWeight = if (selectedDifficulty == diff && !masterTabSelected) FontWeight.Bold else FontWeight.Normal,
                             maxLines = 1
                         )
@@ -159,7 +159,7 @@ fun LeaderboardScreen(navController: NavHostController) {
                     label = {
                         Text(
                             "Master",
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             fontWeight = if (masterTabSelected) FontWeight.Bold else FontWeight.Normal,
                             maxLines = 1
                         )

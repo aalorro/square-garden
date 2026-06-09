@@ -314,24 +314,20 @@ fun HomeScreen(navController: NavHostController) {
                     if (gamesPlayed > 0) {
                         OutlinedButton(
                             onClick = { navController.navigate(Screen.Stats.route) },
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(42.dp),
+                            modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("\uD83D\uDCCA  Stats", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                            Text("\uD83D\uDCCA Stats", fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1)
                         }
                     }
 
                     if (profile.leaderboardOptIn) {
                         OutlinedButton(
                             onClick = { navController.navigate(Screen.Leaderboard.route) },
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(42.dp),
+                            modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("\uD83C\uDFC6  Leaderboards", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                            Text("\uD83C\uDFC6 Ranks", fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 1)
                         }
                     }
                 }
