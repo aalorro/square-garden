@@ -105,7 +105,7 @@ Special reward events triggered by exceptional play. Challenges cost no lives an
 - Win streak tracking
 - Pro+ upgrade celebration after completing all 90 Pro levels
 - Global leaderboards via Firebase (opt-in)
-- Master Mode — infinite roguelike puzzles unlocked after beating all 126 levels, with 5 difficulty tiers and streak multipliers
+- Master Mode — infinite roguelike puzzles unlocked after beating all 126 levels, with 5 difficulty tiers, streak multipliers, and secret challenge rounds
 - Save & restore — game state persisted after every move; quit and resume exactly where you left off
 
 ## Tech Stack

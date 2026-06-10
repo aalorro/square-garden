@@ -212,15 +212,8 @@ fun InstructionsScreen(navController: NavHostController) {
                 "Master stars are tracked separately and have their own leaderboard.\n\n" +
                 "After 5+ games, challenge rounds can appear between regular Master Mode games. " +
                 "In addition to the standard challenges (Blitz, Overgrown, Shifting, Memory), " +
-                "Master Mode features 4 exclusive challenge types:\n\n" +
-                "\u2744\uFE0F Frozen Wave \u2014 every 2 moves, a random tile freezes solid. " +
-                "Complete your goals before the board turns to ice! (2\u00D7 stars)\n\n" +
-                "\uD83D\uDD04 Rotation Garden \u2014 every 3 moves, the entire board rotates 90\u00B0 clockwise. " +
-                "Stay oriented as the layout shifts beneath you! (3\u00D7 stars)\n\n" +
-                "\uD83E\uDE9E Mirror Garden \u2014 every swap is mirrored across the board\u2019s center. " +
-                "One move, two swaps \u2014 powerful but tricky to plan. (3\u00D7 stars)\n\n" +
-                "\u23F3 Decay Garden \u2014 completed goals expire after 5 moves. " +
-                "Set up the board, then rapid-fire all goals before they decay! (3\u00D7 stars)"
+                "Master Mode features 4 secret challenge types with unique twists and bonus star multipliers. " +
+                "Can you discover them all?"
         )
 
         Spacer(modifier = Modifier.height(16.dp))

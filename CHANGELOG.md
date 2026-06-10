@@ -2,6 +2,16 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.8.5] - 2026-06-10 (Build 23)
+
+### New Features
+- **4 Master Mode-exclusive challenge types** — Frozen Wave (tiles freeze every 2 moves), Rotation Garden (board rotates 90° every 3 moves), Mirror Garden (every swap is mirrored), and Decay Garden (completed goals expire after 5 moves). These challenge rounds trigger during Master Mode runs.
+- **In-app update detection** — The app now checks Google Play for available updates and prompts with a non-blocking download. A restart Snackbar appears when the download completes.
+
+### Fixes
+- **Master Mode challenge navigation** — "Next Game" after a Master Mode challenge round now correctly returns to Master Mode instead of navigating to the regular world.
+- **Master Mode challenge loss** — Losing a Master Mode challenge now returns to the Master Mode hub instead of the Home screen.
+
 ## [1.8.4] - 2026-06-08 (Build 22)
 
 ### New Features

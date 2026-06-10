@@ -46,6 +46,16 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.8.5 (What's New)
+
+What's new in 1.8.5:
+
+- 4 new Master Mode challenge types! Frozen Wave freezes a tile every 2 moves, Rotation Garden spins the board 90° every 3 moves, Mirror Garden mirrors every swap, and Decay Garden makes completed goals expire after 5 moves. These exclusive rounds trigger during Master Mode runs to keep things unpredictable.
+- The app now detects when a new version is available on Google Play and offers a seamless background download — no more manually checking for updates.
+- Fixed Master Mode challenge navigation — "Next Game" now correctly returns to Master Mode instead of dropping you into the regular world.
+
+Happy gardening!
+
 ## Release Notes — Version 1.8.4 (What's New)
 
 What's new in 1.8.4:
