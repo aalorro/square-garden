@@ -25,6 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.ui.window.Dialog
@@ -295,14 +298,68 @@ fun GameScreen(
                 label = "challengeGlow"
             )
             val isTablet = LocalConfiguration.current.screenWidthDp >= 600
-            Text(
-                text = "CHALLENGE ROUND",
-                fontSize = if (isTablet) 32.sp else 16.sp,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 2.sp,
-                color = TileYellow.copy(alpha = glowAlpha),
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
+            var showChallengeInfo by remember { mutableStateOf(false) }
+            Box {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "CHALLENGE ROUND",
+                        fontSize = if (isTablet) 32.sp else 16.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 2.sp,
+                        color = TileYellow.copy(alpha = glowAlpha)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "\u2139\uFE0F",
+                        fontSize = if (isTablet) 24.sp else 14.sp,
+                        modifier = Modifier.clickable { showChallengeInfo = true }
+                    )
+                }
+                if (showChallengeInfo) {
+                    val cs = state.challengeState
+                    Popup(
+                        alignment = Alignment.TopCenter,
+                        offset = IntOffset(0, if (isTablet) 120 else 80),
+                        onDismissRequest = { showChallengeInfo = false },
+                        properties = PopupProperties(focusable = true)
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(16.dp),
+                            color = MaterialTheme.colorScheme.surface,
+                            shadowElevation = 8.dp,
+                            modifier = Modifier.widthIn(max = 280.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = cs?.type?.title ?: "Challenge",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Text(
+                                        text = "\u2715",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                        modifier = Modifier.clickable { showChallengeInfo = false }
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = cs?.type?.description ?: "",
+                                    fontSize = 13.sp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // Game board — full width on phones & 7" tablets, padded on 10"+
@@ -634,7 +691,7 @@ fun GameScreen(
             onWorldUnlockSound = { viewModel.playWorldUnlockSound() },
             onChallengeCountUp = { viewModel.playMatchSound() },
             onChallengeMusic = {
-                viewModel.playChallengeMusic()
+                viewModel.playChallengeMusic(masterMode = isMasterModeGame)
                 challengeCelebrationReady = true
             },
             isChallenge = state.isChallenge,

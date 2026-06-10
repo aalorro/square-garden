@@ -1495,7 +1495,7 @@ class GameViewModel(
                             sessionStars = mState.sessionStars + starsAwarded,
                             totalMasterStars = mState.totalMasterStars + starsAwarded
                         )
-                        MusicManager.startWinMusic(context, perfectGame = false, loop = false)
+                        MusicManager.startWinMusic(context, perfectGame = false, masterMode = true)
                         audioManager.playWinClap(perfectGame = false)
                         vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 120, 80, 120), -1))
                         winResultCommitted = false
@@ -1814,7 +1814,7 @@ class GameViewModel(
                             sessionStars = mState.sessionStars + starsAwarded,
                             totalMasterStars = mState.totalMasterStars + starsAwarded
                         )
-                        MusicManager.startWinMusic(context, perfectGame = false, loop = false)
+                        MusicManager.startWinMusic(context, perfectGame = false, masterMode = true)
                         audioManager.playWinClap(perfectGame = false)
                         vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 120, 80, 120), -1))
                         winResultCommitted = false
@@ -2269,8 +2269,8 @@ class GameViewModel(
     fun playWinSound(stars: Int = 1) { audioManager.playWin(stars) }
     fun playPerfectGameSound() { audioManager.playPerfectGame() }
     fun playWorldUnlockSound() { audioManager.playWorldUnlock() }
-    fun playChallengeMusic() {
-        MusicManager.startWinMusic(context, perfectGame = true)
+    fun playChallengeMusic(masterMode: Boolean = false) {
+        MusicManager.startWinMusic(context, perfectGame = true, masterMode = masterMode)
         audioManager.playWinClap(perfectGame = true)
     }
 

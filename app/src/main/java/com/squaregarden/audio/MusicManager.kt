@@ -42,6 +42,11 @@ object MusicManager {
     // Huge win (perfect game) randomizes between dedicated celebratory clips.
     private val hugeWinClips = listOf(R.raw.huge_win_puzzle, R.raw.huge_win_bitcrush)
 
+    // Master Mode win: 4 segments from master_win_melody (~5 sec each)
+    private val masterWinSegments = listOf(15_000, 85_000, 165_000, 240_000)
+    private const val MASTER_WIN_PLAY_MS = 5000L
+    private const val MASTER_WIN_FADE_MS = 800L
+
     /**
      * Start gapless looping intro music (HomeScreen). No-op if already playing or music disabled.
      * Uses two MediaPlayer instances chained via setNextMediaPlayer() for truly gapless looping —
@@ -107,38 +112,52 @@ object MusicManager {
      * @param perfectGame true for huge-win/perfect-game (random celebratory clip, plays to end),
      *                    false for regular win (random segment of perfect_game_music, ~8 sec with fade-out).
      * @param loop true to loop the music indefinitely until [stopWinMusic] is called (game complete).
+     * @param masterMode true for Master Mode wins — plays a random ~5 sec clip from master_win_melody.
      */
-    fun startWinMusic(context: Context, perfectGame: Boolean, loop: Boolean = false) {
+    fun startWinMusic(context: Context, perfectGame: Boolean, loop: Boolean = false, masterMode: Boolean = false) {
         if (!musicEnabled) return
         stopWinMusic()
         try {
-            if (perfectGame) {
+            if (masterMode && !loop) {
+                // Master Mode win: random ~5 sec segment from master_win_melody.
+                winPlayer = MediaPlayer.create(context, R.raw.master_win_melody)?.apply {
+                    setVolume(0.7f, 0.7f)
+                    seekTo(masterWinSegments.random())
+                    start()
+                }
+                handler.postDelayed({ fadeOutWinMusic(MASTER_WIN_FADE_MS) }, MASTER_WIN_PLAY_MS - MASTER_WIN_FADE_MS)
+            } else if (loop) {
+                // Game complete (level 126): dedicated looping celebration track.
+                winPlayer = MediaPlayer.create(context, R.raw.pixel_loop)?.apply {
+                    setVolume(0.7f, 0.7f)
+                    isLooping = true
+                    start()
+                }
+            } else if (perfectGame) {
                 // Huge win: random celebratory clip, plays from start to end.
                 winPlayer = MediaPlayer.create(context, hugeWinClips.random())?.apply {
                     setVolume(0.7f, 0.7f)
-                    isLooping = loop
-                    if (!loop) setOnCompletionListener { stopWinMusic() }
+                    setOnCompletionListener { stopWinMusic() }
                     start()
                 }
             } else {
                 // Regular win: pick a random segment from the existing perfect_game_music track.
                 winPlayer = MediaPlayer.create(context, R.raw.perfect_game_music)?.apply {
                     setVolume(0.7f, 0.7f)
-                    isLooping = loop
                     seekTo(winSegments.random())
                     start()
                 }
             }
         } catch (_: Exception) {}
-        if (!perfectGame && !loop) {
+        if (!masterMode && !perfectGame && !loop) {
             handler.postDelayed({ fadeOutWinMusic() }, WIN_PLAY_MS - WIN_FADE_MS)
         }
     }
 
-    private fun fadeOutWinMusic() {
+    private fun fadeOutWinMusic(fadeMs: Long = WIN_FADE_MS) {
         val player = winPlayer ?: return
         val steps = 20
-        val intervalMs = WIN_FADE_MS / steps
+        val intervalMs = fadeMs / steps
         for (i in 1..steps) {
             handler.postDelayed({
                 try {
@@ -147,7 +166,7 @@ object MusicManager {
                 } catch (_: Exception) {}
             }, i * intervalMs)
         }
-        handler.postDelayed({ stopWinMusic() }, WIN_FADE_MS + 50)
+        handler.postDelayed({ stopWinMusic() }, fadeMs + 50)
     }
 
     fun stopWinMusic() {
