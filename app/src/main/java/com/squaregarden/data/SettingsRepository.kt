@@ -15,6 +15,7 @@ class SettingsRepository(private val context: Context) {
         val SOUND_ENABLED = booleanPreferencesKey("sound_enabled")
         val MUSIC_ENABLED = booleanPreferencesKey("music_enabled")
         val SHAPES_EXPLAINER_DISMISSED = booleanPreferencesKey("shapes_explainer_dismissed")
+        private val DISMISSED_UPDATE_VERSION = intPreferencesKey("dismissed_update_version")
     }
 
     val soundEnabled: Flow<Boolean> = context.settingsDataStore.data.map { it[SOUND_ENABLED] ?: true }
@@ -31,5 +32,11 @@ class SettingsRepository(private val context: Context) {
 
     suspend fun setShapesExplainerDismissed(dismissed: Boolean) {
         context.settingsDataStore.edit { it[SHAPES_EXPLAINER_DISMISSED] = dismissed }
+    }
+
+    val dismissedUpdateVersion: Flow<Int> = context.settingsDataStore.data.map { it[DISMISSED_UPDATE_VERSION] ?: 0 }
+
+    suspend fun setDismissedUpdateVersion(versionCode: Int) {
+        context.settingsDataStore.edit { it[DISMISSED_UPDATE_VERSION] = versionCode }
     }
 }
