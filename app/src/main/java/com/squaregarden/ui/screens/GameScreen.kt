@@ -71,8 +71,12 @@ fun GameScreen(
     // This way players resume their progress regardless of which level triggered
     // the challenge.
     val profileRepo = remember { ProfileRepository(context) }
+    // Use levelId (function parameter, immutable) to detect Master Mode — more
+    // reliable than state.isMasterMode which depends on masterModeState surviving
+    // all state transitions.
+    val isMasterModeGame = levelId == GameViewModel.MASTER_MODE_SIGNAL
     val backToGame: () -> Unit = {
-        if (state.isMasterMode) {
+        if (isMasterModeGame) {
             // Master Mode challenge: return to Master Mode for the next game
             navController.navigate(Screen.Game.create(GameViewModel.MASTER_MODE_SIGNAL)) {
                 popUpTo(Screen.Game.route) { inclusive = true }
@@ -635,10 +639,21 @@ fun GameScreen(
             isChallenge = state.isChallenge,
             challengeGoalsCleared = state.challengeState?.goalsCleared ?: 0,
             onNext = if (state.isChallenge) {
-                {
-                    MusicManager.stopWinMusic()
-                    viewModel.commitWinResult()
-                    backToGame()
+                if (isMasterModeGame) {
+                    // Master Mode challenge: navigate directly to next Master Mode game
+                    {
+                        MusicManager.stopWinMusic()
+                        viewModel.commitWinResult()
+                        navController.navigate(Screen.Game.create(GameViewModel.MASTER_MODE_SIGNAL)) {
+                            popUpTo(Screen.Game.route) { inclusive = true }
+                        }
+                    }
+                } else {
+                    {
+                        MusicManager.stopWinMusic()
+                        viewModel.commitWinResult()
+                        backToGame()
+                    }
                 }
             } else if (state.level.id < 126 && !state.proUpgradePrompt) {
                 {
@@ -874,13 +889,31 @@ fun GameScreen(
         val cs = state.challengeState
         if (cs?.type == ChallengeType.OVERGROWN) {
             // Overgrown: ask retry or take score
+            val overgrownBackToGame = if (isMasterModeGame) {
+                {
+                    navController.navigate(Screen.MasterMode.route) {
+                        popUpTo(Screen.Home.route) { inclusive = false }
+                    }
+                }
+            } else backToGame
             OvergrownRetryDialog(
                 triesRemaining = cs.triesRemaining - 1,
                 currentStars = cs.overgrownStarScore,
                 nextMultiplier = cs.overgrownTryMultiplier + 1,
                 onRetry = { viewModel.overgrownAcceptRetry() },
                 onTakeScore = { viewModel.overgrownDeclineRetry() },
-                onBackToGame = backToGame
+                onBackToGame = overgrownBackToGame
+            )
+        } else if (state.isChallenge && isMasterModeGame) {
+            // Master Mode challenge loss: return to Master Mode hub (no streak penalty)
+            LoseDialog(
+                onRetry = null,
+                onMenu = {
+                    navController.navigate(Screen.MasterMode.route) {
+                        popUpTo(Screen.Home.route) { inclusive = false }
+                    }
+                },
+                onShowSolution = null
             )
         } else if (state.isChallenge) {
             LoseDialog(
