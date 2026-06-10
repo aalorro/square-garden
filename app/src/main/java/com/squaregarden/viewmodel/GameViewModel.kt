@@ -262,9 +262,19 @@ class GameViewModel(
 
             val challengeType = ChallengeType.fromId(levelId)
             if (challengeType != null) {
+                // Master Mode-exclusive challenges auto-enter Master Mode context
+                if (challengeType.masterModeOnly) {
+                    val repo = MasterModeRepository(context)
+                    masterModeRepo = repo
+                    val mState = repo.loadState().copy(isChallengeRound = true)
+                    masterModeState = mState
+                }
                 level = ChallengeGenerator.generateLevel(challengeType, difficulty)
                 adjustedMaxMoves = level.maxMoves // No difficulty adjustment for challenges
                 initLevel(challengeType)
+                if (challengeType.masterModeOnly) {
+                    _state.value = _state.value.copy(masterModeState = masterModeState)
+                }
             } else {
                 val levels = LevelLoader.loadAllLevels(context)
                 baseLevel = levels.first { it.id == levelId }

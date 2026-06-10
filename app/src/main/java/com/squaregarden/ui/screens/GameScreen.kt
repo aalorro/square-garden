@@ -73,8 +73,9 @@ fun GameScreen(
     val profileRepo = remember { ProfileRepository(context) }
     // Use levelId (function parameter, immutable) to detect Master Mode — more
     // reliable than state.isMasterMode which depends on masterModeState surviving
-    // all state transitions.
+    // all state transitions. Master Mode-exclusive challenges also count.
     val isMasterModeGame = levelId == GameViewModel.MASTER_MODE_SIGNAL
+            || ChallengeType.fromId(levelId)?.masterModeOnly == true
     val backToGame: () -> Unit = {
         if (isMasterModeGame) {
             // Master Mode challenge: return to Master Mode for the next game
