@@ -9,20 +9,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.squaregarden.data.AvatarStorage
 import com.squaregarden.data.LeaderboardRepository
 import com.squaregarden.data.ProfileRepository
 import com.squaregarden.model.Difficulty
 import com.squaregarden.model.LeaderboardEntry
+import com.squaregarden.ui.components.BasReliefAvatar
 import com.squaregarden.ui.theme.DarkSage
 import com.squaregarden.ui.theme.DisplayFontFamily
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun LeaderboardScreen(navController: NavHostController) {
@@ -40,6 +46,8 @@ fun LeaderboardScreen(navController: NavHostController) {
     var lastRefreshed by remember { mutableLongStateOf(0L) }
     var showMasterTab by remember { mutableStateOf(false) }
     var masterTabSelected by remember { mutableStateOf(false) }
+    var playerAvatarBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    var playerMasteryBadge by remember { mutableStateOf(false) }
 
     val encouragingMessages = remember {
         listOf(
@@ -63,6 +71,12 @@ fun LeaderboardScreen(navController: NavHostController) {
         selectedDifficulty = diff
         playerDifficulty = diff
         showMasterTab = profile.masteryBadgeEarned
+        playerMasteryBadge = profile.masteryBadgeEarned
+        if (profile.hasCustomAvatar) {
+            playerAvatarBitmap = withContext(Dispatchers.IO) {
+                AvatarStorage.loadAvatar(profile.customAvatarPath)?.asImageBitmap()
+            }
+        }
     }
 
     // Fetch leaderboard when difficulty or tab changes (auto-retry once on failure)
@@ -277,7 +291,9 @@ fun LeaderboardScreen(navController: NavHostController) {
                                 LeaderboardRow(
                                     entry = entry,
                                     isCurrentPlayer = isPlayer,
-                                    isMaster = masterTabSelected
+                                    isMaster = masterTabSelected,
+                                    playerAvatarBitmap = if (isPlayer) playerAvatarBitmap else null,
+                                    playerMasteryBadge = isPlayer && playerMasteryBadge
                                 )
                             }
 
@@ -351,7 +367,13 @@ fun LeaderboardScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun LeaderboardRow(entry: LeaderboardEntry, isCurrentPlayer: Boolean, isMaster: Boolean = false) {
+private fun LeaderboardRow(
+    entry: LeaderboardEntry,
+    isCurrentPlayer: Boolean,
+    isMaster: Boolean = false,
+    playerAvatarBitmap: ImageBitmap? = null,
+    playerMasteryBadge: Boolean = false
+) {
     val bgColor = if (isCurrentPlayer)
         MaterialTheme.colorScheme.primaryContainer
     else
@@ -382,12 +404,24 @@ private fun LeaderboardRow(entry: LeaderboardEntry, isCurrentPlayer: Boolean, is
                 modifier = Modifier.width(40.dp)
             )
 
-            // Emoji avatar
-            Text(
-                text = entry.emoji.ifBlank { "\uD83C\uDF31" },
-                fontSize = 24.sp,
-                modifier = Modifier.padding(end = 10.dp)
-            )
+            // Avatar
+            if (isCurrentPlayer && playerAvatarBitmap != null) {
+                Box(modifier = Modifier.padding(end = 10.dp)) {
+                    BasReliefAvatar(
+                        emoji = "",
+                        size = 32.dp,
+                        imageBitmap = playerAvatarBitmap,
+                        masteryBadge = playerMasteryBadge,
+                        animate = false
+                    )
+                }
+            } else {
+                Text(
+                    text = entry.emoji.ifBlank { "\uD83C\uDF31" },
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(end = 10.dp)
+                )
+            }
 
             // Name
             Column(modifier = Modifier.weight(1f)) {

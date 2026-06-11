@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.first
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
@@ -117,6 +118,7 @@ fun HomeScreen(navController: NavHostController) {
             .padding(horizontal = 20.dp, vertical = 24.dp)
     ) {
         // Top greeting bar — end padding avoids PlayerBadge overlay
+        val isPhone = LocalConfiguration.current.screenWidthDp < 600
         Column(modifier = Modifier.padding(end = 100.dp)) {
             Text(
                 text = "Welcome back,",
@@ -127,7 +129,7 @@ fun HomeScreen(navController: NavHostController) {
             Text(
                 text = "${profile.username.ifBlank { "Gardener" }}!",
                 fontFamily = DisplayFontFamily,
-                fontSize = 36.sp,
+                fontSize = if (isPhone) 28.sp else 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1
