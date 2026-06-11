@@ -2,6 +2,13 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.9.0] - 2026-06-11 (Build 24)
+
+### New Features
+- **Challenge info popup** — An info icon next to "CHALLENGE ROUND" opens a popup showing the challenge name and description, dismissable via tap-outside or close button.
+- **Custom Master Mode win music** — Master Mode wins now play randomized clips from a dedicated victory melody with smooth fade-outs.
+- **Custom game complete music** — Beating level 126 now plays a unique looping pixel melody instead of the generic celebration track.
+
 ## [1.8.5] - 2026-06-10 (Build 23)
 
 ### New Features

@@ -89,6 +89,18 @@ Special reward events triggered by exceptional play. Challenges cost no lives an
 | **Shifting Sands** | Tiles scramble every 3 swaps | 2x | 5 consecutive wins without power-ups |
 | **Memory Garden** | Tiles hidden, revealed near swaps only | 3x | Every perfect game (immediate) |
 
+#### Master Mode-Exclusive Challenges
+Four secret challenge types appear only during Master Mode runs (after 5+ games, ~10-25% chance):
+
+| Challenge | Mechanic |
+|-----------|----------|
+| **Frozen Wave** | A tile freezes every 2 moves |
+| **Rotation Garden** | Board rotates 90° every 3 moves |
+| **Mirror Garden** | Every swap is mirrored symmetrically |
+| **Decay Garden** | Completed goals expire after 5 moves |
+
+An info icon next to "CHALLENGE ROUND" shows each challenge's rules in-game.
+
 ### Features
 - Difficulty-based starting worlds (skip easy content if you're experienced)
 - Skill upgrade anytime from Settings (upgrade only, no downgrade)
@@ -105,7 +117,7 @@ Special reward events triggered by exceptional play. Challenges cost no lives an
 - Win streak tracking
 - Pro+ upgrade celebration after completing all 90 Pro levels
 - Global leaderboards via Firebase (opt-in)
-- Master Mode — infinite roguelike puzzles unlocked after beating all 126 levels, with 5 difficulty tiers, streak multipliers, and secret challenge rounds
+- Master Mode — infinite roguelike puzzles unlocked after beating all 126 levels, with 5 difficulty tiers, streak multipliers, and 4 exclusive challenge types
 - Save & restore — game state persisted after every move; quit and resume exactly where you left off
 
 ## Tech Stack

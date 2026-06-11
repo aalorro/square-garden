@@ -46,6 +46,16 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.9.0 (What's New)
+
+What's new in 1.9.0:
+
+- Challenge info popup — tap the info icon next to "CHALLENGE ROUND" to see what each challenge type does. Great for learning the rules of Frozen Wave, Rotation, Mirror, and Decay without leaving the game.
+- Custom Master Mode victory music — wins in Master Mode now play randomized clips from a dedicated melody instead of the regular celebration track.
+- New game complete music — beating level 126 now plays a unique looping pixel melody for the ultimate celebration.
+
+Happy gardening!
+
 ## Release Notes — Version 1.8.5 (What's New)
 
 What's new in 1.8.5:
