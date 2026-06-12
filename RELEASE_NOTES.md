@@ -46,6 +46,17 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.9.1 (What's New)
+
+What's new in 1.9.1:
+
+- New Undo power-up! Revert your last swap if you make a mistake or change your mind. Available for Pro, Pro+, and Master Mode players on World 6+. Look for the left-arrow token on the board — capture it by completing a goal containing it.
+- Fixed avatar upload on phones — crop dialog buttons are no longer cut off.
+- Custom avatars now show correctly in the leaderboard.
+- Username display fix — long usernames no longer wrap on the welcome screen.
+
+Happy gardening!
+
 ## Release Notes — Version 1.9.0 (What's New)
 
 What's new in 1.9.0:

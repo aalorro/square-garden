@@ -130,6 +130,10 @@ fun InstructionsScreen(navController: NavHostController) {
                 "\u21BB Redo — restart the level with a fresh board and full moves, no life lost. " +
                 "Earn tokens by capturing redo tiles (marked with a \u21BB symbol) that appear on World 4+ boards. " +
                 "Complete a goal that includes a redo tile to collect the token.\n\n" +
+                "\u21A9\uFE0F Undo (Pro / Pro+ / Master Mode, World 6+) — reverts your last swap, " +
+                "restoring the board, moves, and any goals that changed. " +
+                "One-shot — only the very last swap can be undone. " +
+                "Earn tokens by capturing undo tiles (marked with a \u21A9\uFE0F symbol) that appear on World 6+ boards.\n\n" +
                 "\u2197\uFE0F Diagonal Movement (Pro+ / World 11+) — your next swap can be with any of the 8 neighbors " +
                 "(up, down, left, right, or any diagonal), skipping over frozen tiles. " +
                 "One-shot — consumed on the first diagonal swap. " +

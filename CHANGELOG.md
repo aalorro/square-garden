@@ -2,6 +2,16 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.9.1] - 2026-06-12 (Build 25)
+
+### New Features
+- **Undo power-up** — New token that reverts the last swap, restoring board state, moves, and completed goals. Available for Pro, Pro+, and Master Mode players on World 6+. Spawns at ~12.5% probability (half of other tokens). Awarded on perfect games, challenge wins, and Master Mode challenge wins.
+
+### Fixes
+- **Avatar upload on phones** — Fixed crop dialog buttons being cut off on mobile phones.
+- **Leaderboard avatar** — Custom uploaded avatars now display correctly in the leaderboard.
+- **Username wrapping** — Reduced welcome screen username font on phones to prevent 15-character names from wrapping.
+
 ## [1.9.0] - 2026-06-11 (Build 24)
 
 ### New Features
