@@ -64,7 +64,8 @@ fun AvatarCropDialog(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .padding(top = 48.dp, bottom = 56.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header
@@ -72,7 +73,7 @@ fun AvatarCropDialog(
                 text = "Crop Avatar",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(top = 48.dp, bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
             // Crop area

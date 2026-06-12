@@ -10,22 +10,39 @@ import java.io.File
 
 object AvatarStorage {
     private const val AVATAR_DIR = "avatars"
-    private const val AVATAR_FILE = "custom_avatar.png"
     private const val MAX_SIZE = 512
     private const val MAX_FILE_BYTES = 10L * 1024 * 1024 // 10 MB
 
-    /** Returns true if the file at the given URI is within the max size limit. */
-    fun isFileSizeOk(context: Context, uri: Uri): Boolean {
-        val size = try {
-            context.contentResolver.openInputStream(uri)?.use { it.available().toLong() } ?: 0L
-        } catch (_: Exception) { 0L }
-        return size in 1..MAX_FILE_BYTES
+    /**
+     * Copies the content URI to a local temp file and returns it.
+     * Returns null if the URI can't be read or the file exceeds the size limit.
+     * The caller should delete the temp file when done.
+     */
+    fun copyToTempFile(context: Context, uri: Uri): File? {
+        val tempFile = File(context.cacheDir, "avatar_pick_${System.currentTimeMillis()}.tmp")
+        try {
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                tempFile.outputStream().use { output -> input.copyTo(output) }
+            } ?: return null
+        } catch (_: Exception) {
+            tempFile.delete()
+            return null
+        }
+        if (tempFile.length() !in 1..MAX_FILE_BYTES) {
+            tempFile.delete()
+            return null
+        }
+        return tempFile
     }
 
     fun saveCroppedAvatar(context: Context, bitmap: Bitmap): String {
         val dir = File(context.filesDir, AVATAR_DIR)
         if (!dir.exists()) dir.mkdirs()
-        val file = File(dir, AVATAR_FILE)
+        // Delete any existing avatar files before saving
+        dir.listFiles()?.forEach { it.delete() }
+        // Use unique filename so the path changes on each upload,
+        // which triggers LaunchedEffect re-fire in MainActivity
+        val file = File(dir, "avatar_${System.currentTimeMillis()}.png")
 
         val scaled = if (bitmap.width > MAX_SIZE || bitmap.height > MAX_SIZE) {
             val scale = MAX_SIZE.toFloat() / maxOf(bitmap.width, bitmap.height)
@@ -49,30 +66,26 @@ object AvatarStorage {
         return BitmapFactory.decodeFile(path)
     }
 
-    fun decodeSampledBitmap(context: Context, uri: Uri, reqSize: Int = 1024): Bitmap? {
+    fun decodeSampledBitmapFromFile(file: File, reqSize: Int = 1024): Bitmap? {
+        val path = file.absolutePath
+
         // Decode bounds first
         val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        context.contentResolver.openInputStream(uri)?.use {
-            BitmapFactory.decodeStream(it, null, options)
-        }
+        BitmapFactory.decodeFile(path, options)
         options.inSampleSize = calculateInSampleSize(options, reqSize, reqSize)
         options.inJustDecodeBounds = false
 
-        val bitmap = context.contentResolver.openInputStream(uri)?.use {
-            BitmapFactory.decodeStream(it, null, options)
-        } ?: return null
+        val bitmap = BitmapFactory.decodeFile(path, options) ?: return null
 
         // Apply EXIF rotation
         val rotation = try {
-            context.contentResolver.openInputStream(uri)?.use { stream ->
-                val exif = ExifInterface(stream)
-                when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
-                    ExifInterface.ORIENTATION_ROTATE_90 -> 90f
-                    ExifInterface.ORIENTATION_ROTATE_180 -> 180f
-                    ExifInterface.ORIENTATION_ROTATE_270 -> 270f
-                    else -> 0f
-                }
-            } ?: 0f
+            val exif = ExifInterface(path)
+            when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+                ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+                ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+                else -> 0f
+            }
         } catch (_: Exception) { 0f }
 
         return if (rotation != 0f) {
@@ -82,8 +95,8 @@ object AvatarStorage {
     }
 
     fun deleteAvatar(context: Context) {
-        val file = File(context.filesDir, "$AVATAR_DIR/$AVATAR_FILE")
-        if (file.exists()) file.delete()
+        val dir = File(context.filesDir, AVATAR_DIR)
+        dir.listFiles()?.forEach { it.delete() }
     }
 
     private fun calculateInSampleSize(

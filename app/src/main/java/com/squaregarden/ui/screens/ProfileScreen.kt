@@ -81,13 +81,16 @@ fun ProfileScreen(navController: NavHostController, isFirstTime: Boolean = false
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         uri?.let {
-            if (!AvatarStorage.isFileSizeOk(context, it)) {
-                Toast.makeText(context, "Image too large (max 10 MB)", Toast.LENGTH_SHORT).show()
-                return@rememberLauncherForActivityResult
-            }
             scope.launch {
                 val bmp = withContext(Dispatchers.IO) {
-                    AvatarStorage.decodeSampledBitmap(context, it)
+                    // Copy URI to local temp file immediately (avoids URI permission loss
+                    // after Activity recreation and unreliable InputStream.available())
+                    val tempFile = AvatarStorage.copyToTempFile(context, it) ?: return@withContext null
+                    try {
+                        AvatarStorage.decodeSampledBitmapFromFile(tempFile)
+                    } finally {
+                        tempFile.delete()
+                    }
                 }
                 if (bmp != null) {
                     sourceBitmapForCrop = bmp.asImageBitmap()

@@ -129,7 +129,7 @@ fun HomeScreen(navController: NavHostController) {
             Text(
                 text = "${profile.username.ifBlank { "Gardener" }}!",
                 fontFamily = DisplayFontFamily,
-                fontSize = if (isPhone) 28.sp else 36.sp,
+                fontSize = if (isPhone) 22.sp else 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1
