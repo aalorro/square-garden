@@ -11,7 +11,8 @@ data class Tile(
     val shuffleToken: Boolean = false,
     val passthroughToken: Boolean = false,
     val unfreezeToken: Boolean = false,
-    val diagonalToken: Boolean = false
+    val diagonalToken: Boolean = false,
+    val undoToken: Boolean = false
 )
 
 data class CellPos(val row: Int, val col: Int)

@@ -20,6 +20,7 @@ data class SavedGameData(
     val unfreezeTokens: Int,
     val redoTokens: Int,
     val diagonalTokens: Int,
+    val undoTokens: Int,
     val passthroughActive: Boolean,
     val unfreezeMode: Boolean,
     val diagonalMode: Boolean,
@@ -52,6 +53,7 @@ object GameStateSerializer {
         unfreezeTokens: Int,
         redoTokens: Int,
         diagonalTokens: Int,
+        undoTokens: Int,
         passthroughActive: Boolean,
         unfreezeMode: Boolean,
         diagonalMode: Boolean,
@@ -78,6 +80,7 @@ object GameStateSerializer {
         json.put("unfreezeTokens", unfreezeTokens)
         json.put("redoTokens", redoTokens)
         json.put("diagonalTokens", diagonalTokens)
+        json.put("undoTokens", undoTokens)
         json.put("passthroughActive", passthroughActive)
         json.put("unfreezeMode", unfreezeMode)
         json.put("diagonalMode", diagonalMode)
@@ -106,6 +109,7 @@ object GameStateSerializer {
             unfreezeTokens = json.getInt("unfreezeTokens"),
             redoTokens = json.getInt("redoTokens"),
             diagonalTokens = json.getInt("diagonalTokens"),
+            undoTokens = json.optInt("undoTokens", 0),
             passthroughActive = json.optBoolean("passthroughActive", false),
             unfreezeMode = json.optBoolean("unfreezeMode", false),
             diagonalMode = json.optBoolean("diagonalMode", false),
@@ -162,6 +166,7 @@ object GameStateSerializer {
         if (tile.passthroughToken) json.put("pt", true)
         if (tile.unfreezeToken) json.put("ut", true)
         if (tile.diagonalToken) json.put("dt", true)
+        if (tile.undoToken) json.put("nt", true)
         return json
     }
 
@@ -173,7 +178,8 @@ object GameStateSerializer {
             shuffleToken = json.optBoolean("st", false),
             passthroughToken = json.optBoolean("pt", false),
             unfreezeToken = json.optBoolean("ut", false),
-            diagonalToken = json.optBoolean("dt", false)
+            diagonalToken = json.optBoolean("dt", false),
+            undoToken = json.optBoolean("nt", false)
         )
     }
 

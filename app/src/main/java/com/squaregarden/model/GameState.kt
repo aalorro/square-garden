@@ -34,6 +34,9 @@ data class GameState(
     val diagonalTokens: Int = 0,
     val diagonalTokenAwarded: Boolean = false,
     val diagonalMode: Boolean = false,
+    val undoTokens: Int = 0,
+    val undoTokenAwarded: Boolean = false,
+    val undoSnapshot: UndoSnapshot? = null,
     val perfectGame: Boolean = false,
     val challengeState: ChallengeState? = null,
     val pendingChallenge: ChallengeType? = null,
@@ -46,6 +49,14 @@ data class GameState(
     val isChallenge: Boolean get() = challengeState != null
     val isMasterMode: Boolean get() = masterModeState != null
 }
+
+data class UndoSnapshot(
+    val tiles: List<List<Tile>>,
+    val movesRemaining: Int,
+    val completedGoalIds: Set<String>,
+    val completedGoalCells: Map<String, Set<CellPos>>,
+    val diagonalMode: Boolean
+)
 
 enum class GameDifficulty(val label: String, val starMultiplier: Float) {
     EASY("Easy", 0.75f),

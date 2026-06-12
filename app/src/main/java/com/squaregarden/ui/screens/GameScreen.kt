@@ -546,6 +546,17 @@ fun GameScreen(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 )
+                // Undo power-up: Pro/Pro+/Master only (World 6+ or Master Mode)
+                if ((state.level.world >= 6 || state.isMasterMode) && (state.difficulty == Difficulty.HARD || state.difficulty == Difficulty.PRO_PLUS || state.isMasterMode)) {
+                    ActionCircle(
+                        icon = "\u21A9\uFE0F",
+                        label = "\u00D7${state.undoTokens}",
+                        onClick = { viewModel.performUndo() },
+                        enabled = state.undoTokens > 0 && state.undoSnapshot != null && state.phase == GamePhase.PLAYING,
+                        containerColor = TileOrange.copy(alpha = 0.85f),
+                        contentColor = Color.White
+                    )
+                }
                 // Diagonal swap power-up: Pro+ only (World 11+ or Master Mode)
                 if (state.level.world >= 11 || state.isMasterMode) {
                     ActionCircle(
@@ -566,16 +577,20 @@ fun GameScreen(
     // Token captured celebrations (mid-game) — splash icon then cascading trail
     if (state.phase == GamePhase.PLAYING) {
         // Compute target X fractions based on button count (SpaceEvenly positions)
+        val hasUndo = (state.level.world >= 6 || state.isMasterMode) && (state.difficulty == Difficulty.HARD || state.difficulty == Difficulty.PRO_PLUS || state.isMasterMode)
         val hasDiagonal = state.level.world >= 11 || state.isMasterMode
-        val buttonCount = if (hasDiagonal) 6 else 5
+        val buttonCount = 5 + (if (hasUndo) 1 else 0) + (if (hasDiagonal) 1 else 0)
         fun buttonX(index: Int) = (2f * index + 1f) / (2f * buttonCount)
-        // Button order: Hint(0), Shuffle(1), Passthrough(2), Unfreeze(3), Redo(4), Diagonal(5)
+        // Button order: Hint(0), Shuffle(1), Passthrough(2), Unfreeze(3), Redo(4), [Undo(5)], [Diagonal(5 or 6)]
+        val undoIdx = 5
+        val diagIdx = if (hasUndo) 6 else 5
         val captured = listOfNotNull(
             if (state.shuffleTokenAwarded) AwardedToken("\uD83D\uDD00", "Shuffle Token Earned!", TileYellow, buttonX(1)) else null,
             if (state.passthroughTokenAwarded) AwardedToken("\uD83D\uDEE1\uFE0F", "Passthrough Token Earned!", Sage, buttonX(2)) else null,
             if (state.unfreezeTokenAwarded) AwardedToken("\u2744\uFE0F", "Unfreeze Token Earned!", TileBlue, buttonX(3)) else null,
             if (state.redoTokenAwarded) AwardedToken("\u21BB", "Redo Token Earned!", TileGreen, buttonX(4)) else null,
-            if (state.diagonalTokenAwarded) AwardedToken("\u2197\uFE0F", "Diagonal Token Earned!", TileViolet, buttonX(5)) else null
+            if (state.undoTokenAwarded) AwardedToken("\u21A9\uFE0F", "Undo Token Earned!", TileOrange, buttonX(undoIdx)) else null,
+            if (state.diagonalTokenAwarded) AwardedToken("\u2197\uFE0F", "Diagonal Token Earned!", TileViolet, buttonX(diagIdx)) else null
         )
         captured.forEachIndexed { index, tok ->
             val splashScale = remember(tok.icon) { Animatable(0f) }
@@ -684,6 +699,7 @@ fun GameScreen(
             unfreezeTokenAwarded = state.unfreezeTokenAwarded,
             redoTokenAwarded = state.redoTokenAwarded,
             diagonalTokenAwarded = state.diagonalTokenAwarded,
+            undoTokenAwarded = state.undoTokenAwarded,
             perfectGame = state.perfectGame,
             onStarLanded = { viewModel.playStarCollect() },
             onAllStarsLanded = { viewModel.commitWinResult() },
@@ -1116,7 +1132,7 @@ fun GameScreen(
 private data class AwardedToken(val icon: String, val label: String, val accent: Color, val targetX: Float = 0.5f)
 
 @Composable
-private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, diagonalTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onChallengeCountUp: () -> Unit = {}, onChallengeMusic: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
+private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String? = null, shuffleTokenAwarded: Boolean = false, passthroughTokenAwarded: Boolean = false, unfreezeTokenAwarded: Boolean = false, redoTokenAwarded: Boolean = false, diagonalTokenAwarded: Boolean = false, undoTokenAwarded: Boolean = false, perfectGame: Boolean = false, isChallenge: Boolean = false, challengeGoalsCleared: Int = 0, onStarLanded: () -> Unit = {}, onAllStarsLanded: () -> Unit = {}, onPerfectGameSound: () -> Unit = {}, onWorldUnlockSound: () -> Unit = {}, onChallengeCountUp: () -> Unit = {}, onChallengeMusic: () -> Unit = {}, onNext: (() -> Unit)?, onMenu: () -> Unit) {
     // Pulsing scale animation for the star display
     val infiniteTransition = rememberInfiniteTransition(label = "starPulse")
     val starScale by infiniteTransition.animateFloat(
@@ -1423,13 +1439,14 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                 // Power-up tokens awarded — compact icon chips with tap-for-label
                 val awardedTokens = remember(
                     shuffleTokenAwarded, passthroughTokenAwarded, unfreezeTokenAwarded,
-                    redoTokenAwarded, diagonalTokenAwarded
+                    redoTokenAwarded, diagonalTokenAwarded, undoTokenAwarded
                 ) {
                     listOfNotNull(
                         if (shuffleTokenAwarded) AwardedToken("\uD83D\uDD00", "Shuffle Token Earned!", TileYellow) else null,
                         if (passthroughTokenAwarded) AwardedToken("\uD83D\uDEE1\uFE0F", "Passthrough Token Earned!", Sage) else null,
                         if (unfreezeTokenAwarded) AwardedToken("\u2744\uFE0F", "Unfreeze Token Earned!", TileBlue) else null,
                         if (redoTokenAwarded) AwardedToken("\u21BB", "Redo Token Earned!", TileGreen) else null,
+                        if (undoTokenAwarded) AwardedToken("\u21A9\uFE0F", "Undo Token Earned!", TileOrange) else null,
                         if (diagonalTokenAwarded) AwardedToken("\u2197\uFE0F", "Diagonal Token Earned!", TileViolet) else null
                     )
                 }
@@ -1496,7 +1513,7 @@ private fun WinOverlay(stars: Int, levelName: String, unlockedWorldName: String?
                 if (perfectGame) {
                     val pgScale = remember { Animatable(0f) }
                     LaunchedEffect(Unit) {
-                        val prior = listOf(shuffleTokenAwarded, passthroughTokenAwarded, unfreezeTokenAwarded, redoTokenAwarded, diagonalTokenAwarded).count { it }
+                        val prior = listOf(shuffleTokenAwarded, passthroughTokenAwarded, unfreezeTokenAwarded, redoTokenAwarded, undoTokenAwarded, diagonalTokenAwarded).count { it }
                         delay(800L + prior * 800L)
                         pgScale.animateTo(1f, animationSpec = spring(dampingRatio = 0.4f, stiffness = 250f))
                     }

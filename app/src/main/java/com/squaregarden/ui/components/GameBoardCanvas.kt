@@ -179,7 +179,8 @@ fun GameBoardCanvas(
                     if (tile.shuffleToken) "shuffle" else null,
                     if (tile.passthroughToken) "passthrough" else null,
                     if (tile.unfreezeToken) "unfreeze" else null,
-                    if (tile.diagonalToken) "diagonal" else null
+                    if (tile.diagonalToken) "diagonal" else null,
+                    if (tile.undoToken) "undo" else null
                 )
                 if (tokenFlags.isNotEmpty()) {
                     val tileCx = x + cs / 2f
@@ -190,7 +191,8 @@ fun GameBoardCanvas(
                         1 -> listOf(Offset(0f, 0f))
                         2 -> listOf(Offset(-cs * 0.14f, 0f), Offset(cs * 0.14f, 0f))
                         3 -> listOf(Offset(-cs * 0.14f, -cs * 0.1f), Offset(cs * 0.14f, -cs * 0.1f), Offset(0f, cs * 0.14f))
-                        else -> listOf(Offset(-cs * 0.14f, -cs * 0.1f), Offset(cs * 0.14f, -cs * 0.1f), Offset(-cs * 0.14f, cs * 0.14f), Offset(cs * 0.14f, cs * 0.14f))
+                        4 -> listOf(Offset(-cs * 0.14f, -cs * 0.1f), Offset(cs * 0.14f, -cs * 0.1f), Offset(-cs * 0.14f, cs * 0.14f), Offset(cs * 0.14f, cs * 0.14f))
+                        else -> listOf(Offset(-cs * 0.14f, -cs * 0.14f), Offset(0f, -cs * 0.14f), Offset(cs * 0.14f, -cs * 0.14f), Offset(-cs * 0.14f, cs * 0.14f), Offset(0f, cs * 0.14f), Offset(cs * 0.14f, cs * 0.14f))
                     }
                     val scale = if (single) 1f else 0.6f
                     tokenFlags.forEachIndexed { i, token ->
@@ -248,6 +250,14 @@ fun GameBoardCanvas(
                                 // Arrowhead at bottom-left
                                 drawLine(Color.White, Offset(cx - s, cy + s), Offset(cx - s + a, cy + s), strokeWidth = sw)
                                 drawLine(Color.White, Offset(cx - s, cy + s), Offset(cx - s, cy + s - a), strokeWidth = sw)
+                            }
+                            "undo" -> {
+                                // Left-curving arrow (mirror of redo)
+                                drawArc(Color.White, -90f, -270f, false,
+                                    Offset(cx - radius, cy - radius), Size(radius * 2, radius * 2), style = Stroke(sw))
+                                val a = cs * 0.08f * scale
+                                drawLine(Color.White, Offset(cx + radius, cy), Offset(cx + radius - a, cy - a), strokeWidth = sw)
+                                drawLine(Color.White, Offset(cx + radius, cy), Offset(cx + radius - a, cy + a), strokeWidth = sw)
                             }
                         }
                     }

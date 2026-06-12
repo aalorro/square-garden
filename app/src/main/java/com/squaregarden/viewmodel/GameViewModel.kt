@@ -67,6 +67,7 @@ class GameViewModel(
     private var unfreezeTokens: Int = 0
     private var redoTokens: Int = 0
     private var diagonalTokens: Int = 0
+    private var undoTokens: Int = 0
     private val progressRepo = ProgressRepository(context)
     private val profileRepo = ProfileRepository(context)
     private val audioManager = AudioManager(context)
@@ -111,6 +112,7 @@ class GameViewModel(
             unfreezeTokens = progressRepo.unfreezeTokensFlow.first()
             redoTokens = progressRepo.redoTokensFlow.first()
             diagonalTokens = progressRepo.diagonalTokensFlow.first()
+            undoTokens = progressRepo.undoTokensFlow.first()
 
             // Check for saved in-progress game to restore
             val savedJson = savedGameRepo.loadGame()
@@ -203,7 +205,7 @@ class GameViewModel(
                             completedGoalCells = completedCells,
                             shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens,
                             unfreezeTokens = unfreezeTokens, redoTokens = redoTokens,
-                            diagonalTokens = diagonalTokens,
+                            diagonalTokens = diagonalTokens, undoTokens = undoTokens,
                             phase = GamePhase.PLAYING
                         )
                         adjustedMaxMoves = 4
@@ -310,6 +312,7 @@ class GameViewModel(
         unfreezeTokens = saved.unfreezeTokens
         redoTokens = saved.redoTokens
         diagonalTokens = saved.diagonalTokens
+        undoTokens = saved.undoTokens
 
         if (saved.masterModeState != null) {
             val repo = MasterModeRepository(context)
@@ -332,6 +335,7 @@ class GameViewModel(
             unfreezeTokens = saved.unfreezeTokens,
             redoTokens = saved.redoTokens,
             diagonalTokens = saved.diagonalTokens,
+            undoTokens = saved.undoTokens,
             passthroughActive = saved.passthroughActive,
             unfreezeMode = saved.unfreezeMode,
             diagonalMode = saved.diagonalMode,
@@ -375,6 +379,7 @@ class GameViewModel(
                 unfreezeTokens = unfreezeTokens,
                 redoTokens = redoTokens,
                 diagonalTokens = diagonalTokens,
+                undoTokens = undoTokens,
                 passthroughActive = s.passthroughActive,
                 unfreezeMode = s.unfreezeMode,
                 diagonalMode = s.diagonalMode,
@@ -726,8 +731,12 @@ class GameViewModel(
             }
             val count = (minTokens..maxTokens).random().coerceAtMost(candidates.size)
             val chosen = candidates.shuffled().take(count)
-            // All 5 token types available on worlds 13-14
-            val tokenTypes = listOf("redo", "shuffle", "passthrough", "unfreeze", "diagonal")
+            // All token types available on worlds 13-14; undo requires Pro/Pro+/Master
+            val isUndoEligible = difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS || level.world == MasterLevelGenerator.MASTER_WORLD
+            val tokenTypes = buildList {
+                addAll(listOf("redo", "shuffle", "passthrough", "unfreeze", "diagonal"))
+                if (isUndoEligible) add("undo")
+            }
             val assignments = chosen.map { it to tokenTypes.random() }
             val assignMap = assignments.toMap()
             val newTiles = board.tiles.mapIndexed { r, row ->
@@ -738,7 +747,8 @@ class GameViewModel(
                         shuffleToken = tile.shuffleToken || type == "shuffle",
                         passthroughToken = tile.passthroughToken || type == "passthrough",
                         unfreezeToken = tile.unfreezeToken || type == "unfreeze",
-                        diagonalToken = tile.diagonalToken || type == "diagonal"
+                        diagonalToken = tile.diagonalToken || type == "diagonal",
+                        undoToken = tile.undoToken || type == "undo"
                     ) else tile
                 }
             }
@@ -752,6 +762,10 @@ class GameViewModel(
         val ufPos = if ((1..4).random() == 1) candidates.random() else null
         // Diagonal token: spawns on World 11+ or Master Mode
         val diagPos = if ((level.world >= 11 || level.world == MasterLevelGenerator.MASTER_WORLD) && (1..4).random() == 1) candidates.random() else null
+        // Undo token: World 6+, Pro/Pro+/Master only, ~12.5% chance
+        val undoPos = if (level.world >= 6
+            && (difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS || level.world == MasterLevelGenerator.MASTER_WORLD)
+            && (1..8).random() == 1) candidates.random() else null
 
         val newTiles = board.tiles.mapIndexed { r, row ->
             row.mapIndexed { c, tile ->
@@ -761,7 +775,8 @@ class GameViewModel(
                     shuffleToken = tile.shuffleToken || pos == shufflePos,
                     passthroughToken = tile.passthroughToken || pos == ptPos,
                     unfreezeToken = tile.unfreezeToken || pos == ufPos,
-                    diagonalToken = tile.diagonalToken || pos == diagPos
+                    diagonalToken = tile.diagonalToken || pos == diagPos,
+                    undoToken = tile.undoToken || pos == undoPos
                 )
             }
         }
@@ -845,7 +860,7 @@ class GameViewModel(
                 movesRemaining = adjustedMaxMoves, difficulty = difficulty,
                 gameDifficulty = computeGameDifficulty(board),
                 initialBoard = board,
-                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens, undoTokens = undoTokens,
                 masterModeState = masterModeState, masterTier = masterTier,
                 phase = GamePhase.TUTORIAL_PAUSE
             )
@@ -925,7 +940,7 @@ class GameViewModel(
                 movesRemaining = adjustedMaxMoves, difficulty = difficulty,
                 gameDifficulty = computeGameDifficulty(board),
                 initialBoard = board, hasSolution = solution != null,
-                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens, undoTokens = undoTokens,
                 masterModeState = masterModeState, masterTier = masterTier,
                 phase = GamePhase.SCRAMBLING,
                 challengeState = chalState
@@ -1124,7 +1139,7 @@ class GameViewModel(
                     movesRemaining = moves, difficulty = difficulty,
                     gameDifficulty = computeGameDifficulty(board),
                     initialBoard = board, hasSolution = solution != null,
-                    shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+                    shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens, undoTokens = undoTokens,
                     masterModeState = masterModeState, masterTier = masterTier,
                     phase = GamePhase.SCRAMBLING
                 )
@@ -1168,7 +1183,7 @@ class GameViewModel(
             movesRemaining = moves, difficulty = difficulty,
             gameDifficulty = computeGameDifficulty(board),
             initialBoard = board, hasSolution = solution != null,
-            shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+            shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens, undoTokens = undoTokens,
             masterModeState = masterModeState, masterTier = masterTier,
             phase = if (hasTutorial) GamePhase.TUTORIAL_PAUSE else GamePhase.PLAYING
         )
@@ -1315,10 +1330,19 @@ class GameViewModel(
         }
 
         hasMovedSinceReset = true
+        // Capture undo snapshot before the swap so we can revert
+        val snapshot = UndoSnapshot(
+            tiles = current.board.tiles,
+            movesRemaining = current.movesRemaining,
+            completedGoalIds = current.completedGoalIds,
+            completedGoalCells = current.completedGoalCells,
+            diagonalMode = current.diagonalMode
+        )
         _state.value = current.copy(
             phase = GamePhase.ANIMATING, selectedCell = null,
             hintCells = emptySet(), swapAnim = SwapAnimation(from, to, 0f),
-            diagonalMode = if (isDiagonalSwap) false else current.diagonalMode
+            diagonalMode = if (isDiagonalSwap) false else current.diagonalMode,
+            undoSnapshot = snapshot
         )
 
         viewModelScope.launch {
@@ -1408,12 +1432,14 @@ class GameViewModel(
             var ptCaptured = false
             var ufCaptured = false
             var diagCaptured = false
+            var undoCaptured = false
             // Snapshot counts before incrementing — UI shows old count until trail lands
             val preShuffleTokens = shuffleTokens
             val prePassthroughTokens = passthroughTokens
             val preUnfreezeTokens = unfreezeTokens
             val preRedoTokens = redoTokens
             val preDiagonalTokens = diagonalTokens
+            val preUndoTokens = undoTokens
             val newlyCompleted = newCompleted - current.completedGoalIds
             if (newlyCompleted.isNotEmpty()) {
                 val newCells = newlyCompleted.flatMap { id -> newGoalCells[id] ?: emptySet() }
@@ -1424,14 +1450,15 @@ class GameViewModel(
                     if (t.passthroughToken) { progressRepo.addPassthroughToken(); passthroughTokens++; ptCaptured = true }
                     if (t.unfreezeToken) { progressRepo.addUnfreezeToken(); unfreezeTokens++; ufCaptured = true }
                     if (t.diagonalToken) { progressRepo.addDiagonalToken(); diagonalTokens++; diagCaptured = true }
+                    if (t.undoToken) { progressRepo.addUndoToken(); undoTokens++; undoCaptured = true }
                 }
-                if (redoCaptured || shuffleCaptured || ptCaptured || ufCaptured || diagCaptured) {
+                if (redoCaptured || shuffleCaptured || ptCaptured || ufCaptured || diagCaptured || undoCaptured) {
                     val updatedTiles = boardAfterCapture.tiles.mapIndexed { r, row ->
                         row.mapIndexed { c, tile ->
                             if (CellPos(r, c) in newCells) tile.copy(
                                 redo = false, shuffleToken = false,
                                 passthroughToken = false, unfreezeToken = false,
-                                diagonalToken = false
+                                diagonalToken = false, undoToken = false
                             ) else tile
                         }
                     }
@@ -1610,6 +1637,8 @@ class GameViewModel(
                 redoTokenAwarded = redoCaptured,
                 diagonalTokens = if (diagCaptured) preDiagonalTokens else diagonalTokens,
                 diagonalTokenAwarded = diagCaptured,
+                undoTokens = if (undoCaptured) preUndoTokens else undoTokens,
+                undoTokenAwarded = undoCaptured,
                 perfectGame = isPerfect,
                 challengeState = updatedChalState
             )
@@ -1665,9 +1694,17 @@ class GameViewModel(
         val current = _state.value
 
         hasMovedSinceReset = true
+        val snapshot = UndoSnapshot(
+            tiles = current.board.tiles,
+            movesRemaining = current.movesRemaining,
+            completedGoalIds = current.completedGoalIds,
+            completedGoalCells = current.completedGoalCells,
+            diagonalMode = current.diagonalMode
+        )
         _state.value = current.copy(
             phase = GamePhase.ANIMATING, selectedCell = null,
-            hintCells = emptySet(), swapAnim = SwapAnimation(from, landing, 0f)
+            hintCells = emptySet(), swapAnim = SwapAnimation(from, landing, 0f),
+            undoSnapshot = snapshot
         )
 
         viewModelScope.launch {
@@ -1729,11 +1766,13 @@ class GameViewModel(
             var ptCaptured = false
             var ufCaptured = false
             var diagCaptured = false
+            var undoCaptured = false
             val preShuffleTokensPt = shuffleTokens
             val prePassthroughTokensPt = passthroughTokens
             val preUnfreezeTokensPt = unfreezeTokens
             val preRedoTokensPt = redoTokens
             val preDiagonalTokensPt = diagonalTokens
+            val preUndoTokensPt = undoTokens
             val newlyCompletedPt = newCompleted - current.completedGoalIds
             if (newlyCompletedPt.isNotEmpty()) {
                 val newCells = newlyCompletedPt.flatMap { id -> newGoalCells[id] ?: emptySet() }
@@ -1744,14 +1783,15 @@ class GameViewModel(
                     if (t.passthroughToken) { progressRepo.addPassthroughToken(); passthroughTokens++; ptCaptured = true }
                     if (t.unfreezeToken) { progressRepo.addUnfreezeToken(); unfreezeTokens++; ufCaptured = true }
                     if (t.diagonalToken) { progressRepo.addDiagonalToken(); diagonalTokens++; diagCaptured = true }
+                    if (t.undoToken) { progressRepo.addUndoToken(); undoTokens++; undoCaptured = true }
                 }
-                if (redoCaptured || shuffleCaptured || ptCaptured || ufCaptured || diagCaptured) {
+                if (redoCaptured || shuffleCaptured || ptCaptured || ufCaptured || diagCaptured || undoCaptured) {
                     val updatedTiles = boardAfterCapture.tiles.mapIndexed { r, row ->
                         row.mapIndexed { c, tile ->
                             if (CellPos(r, c) in newCells) tile.copy(
                                 redo = false, shuffleToken = false,
                                 passthroughToken = false, unfreezeToken = false,
-                                diagonalToken = false
+                                diagonalToken = false, undoToken = false
                             ) else tile
                         }
                     }
@@ -1929,6 +1969,8 @@ class GameViewModel(
                 redoTokenAwarded = redoCaptured,
                 diagonalTokens = if (diagCaptured) preDiagonalTokensPt else diagonalTokens,
                 diagonalTokenAwarded = diagCaptured,
+                undoTokens = if (undoCaptured) preUndoTokensPt else undoTokens,
+                undoTokenAwarded = undoCaptured,
                 perfectGame = isPerfect,
                 challengeState = updatedChalStatePt
             )
@@ -2095,7 +2137,7 @@ class GameViewModel(
             audioManager.playShuffle()
             _state.value = current.copy(
                 board = shuffled, shuffleReady = false,
-                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens,
+                shuffleTokens = shuffleTokens, passthroughTokens = passthroughTokens, unfreezeTokens = unfreezeTokens, redoTokens = redoTokens, diagonalTokens = diagonalTokens, undoTokens = undoTokens,
                 gameDifficulty = computeGameDifficulty(shuffled),
                 hintCells = emptySet(),
                 selectedCell = null
@@ -2247,6 +2289,32 @@ class GameViewModel(
         }
     }
 
+    fun performUndo() {
+        val current = _state.value
+        if (current.phase != GamePhase.PLAYING) return
+        val snap = current.undoSnapshot ?: return
+        if (undoTokens <= 0) return
+        viewModelScope.launch {
+            progressRepo.useUndoToken()
+            progressRepo.recordTokenUsed()
+            undoTokens--
+            usedPowerUpThisGame = true
+            audioManager.playSwap()
+            _state.value = current.copy(
+                board = current.board.copy(tiles = snap.tiles),
+                movesRemaining = snap.movesRemaining,
+                completedGoalIds = snap.completedGoalIds,
+                completedGoalCells = snap.completedGoalCells,
+                diagonalMode = snap.diagonalMode,
+                undoTokens = undoTokens,
+                undoSnapshot = null,
+                selectedCell = null,
+                hintCells = emptySet()
+            )
+            autoSaveGame()
+        }
+    }
+
     /** Called by UI after the token trail animation lands — bumps the displayed count. */
     fun commitTokenCapture(icon: String) {
         val current = _state.value
@@ -2256,6 +2324,7 @@ class GameViewModel(
             "\u2744\uFE0F" -> current.copy(unfreezeTokens = unfreezeTokens, unfreezeTokenAwarded = false)
             "\u21BB" -> current.copy(redoTokens = redoTokens, redoTokenAwarded = false)
             "\u2197\uFE0F" -> current.copy(diagonalTokens = diagonalTokens, diagonalTokenAwarded = false)
+            "\u21A9\uFE0F" -> current.copy(undoTokens = undoTokens, undoTokenAwarded = false)
             else -> current
         }
     }
@@ -2357,11 +2426,13 @@ class GameViewModel(
                     progressRepo.addPassthroughToken(); passthroughTokens++
                     progressRepo.addUnfreezeToken(); unfreezeTokens++
                     progressRepo.addRedoToken(); redoTokens++
+                    progressRepo.addUndoToken(); undoTokens++
                     _state.value = _state.value.copy(
                         shuffleTokenAwarded = true,
                         passthroughTokenAwarded = true,
                         unfreezeTokenAwarded = true,
-                        redoTokenAwarded = true
+                        redoTokenAwarded = true,
+                        undoTokenAwarded = true
                     )
                 }
                 // Submit to Firebase leaderboard
@@ -2386,11 +2457,13 @@ class GameViewModel(
                 progressRepo.addPassthroughToken(); passthroughTokens++
                 progressRepo.addUnfreezeToken(); unfreezeTokens++
                 progressRepo.addRedoToken(); redoTokens++
+                progressRepo.addUndoToken(); undoTokens++
                 _state.value = _state.value.copy(
                     shuffleTokenAwarded = true,
                     passthroughTokenAwarded = true,
                     unfreezeTokenAwarded = true,
-                    redoTokenAwarded = true
+                    redoTokenAwarded = true,
+                    undoTokenAwarded = true
                 )
                 return@withContext
             }
@@ -2439,6 +2512,11 @@ class GameViewModel(
                 progressRepo.addPassthroughToken(); passthroughTokens++
                 progressRepo.addUnfreezeToken(); unfreezeTokens++
                 progressRepo.addRedoToken(); redoTokens++
+                // Undo token only on perfect games for Pro/Pro+ (world 6+)
+                if (_state.value.level.world >= 6 && (difficulty == Difficulty.HARD || difficulty == Difficulty.PRO_PLUS)) {
+                    progressRepo.addUndoToken(); undoTokens++
+                    _state.value = _state.value.copy(undoTokenAwarded = true)
+                }
                 _state.value = _state.value.copy(
                     shuffleTokenAwarded = true,
                     passthroughTokenAwarded = true,
@@ -2601,6 +2679,7 @@ class GameViewModel(
             unfreezeTokens = unfreezeTokens,
             redoTokens = redoTokens,
             diagonalTokens = diagonalTokens,
+            undoTokens = undoTokens,
             masterModeState = masterModeState,
             masterTier = masterTier,
             phase = GamePhase.SCRAMBLING,

@@ -30,6 +30,7 @@ class ProgressRepository(private val context: Context) {
         private val UNFREEZE_STREAK_KEY = intPreferencesKey("unfreeze_win_streak")
         private val REDO_TOKENS_KEY = intPreferencesKey("redo_tokens")
         private val DIAGONAL_TOKENS_KEY = intPreferencesKey("diagonal_tokens")
+        private val UNDO_TOKENS_KEY = intPreferencesKey("undo_tokens")
         private val PERFECT_GAMES_KEY = intPreferencesKey("perfect_games")
         private const val LEVEL_FAVORITE_PREFIX = "level_favorite_"
         private const val TUTORIAL_SEEN_PREFIX = "tutorial_seen_"
@@ -353,6 +354,28 @@ class ProgressRepository(private val context: Context) {
             val current = prefs[DIAGONAL_TOKENS_KEY] ?: 0
             if (current > 0) {
                 prefs[DIAGONAL_TOKENS_KEY] = current - 1
+                success = true
+            }
+        }
+        return success
+    }
+
+    val undoTokensFlow: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[UNDO_TOKENS_KEY] ?: 0
+    }
+
+    suspend fun addUndoToken() {
+        context.dataStore.edit { prefs ->
+            prefs[UNDO_TOKENS_KEY] = (prefs[UNDO_TOKENS_KEY] ?: 0) + 1
+        }
+    }
+
+    suspend fun useUndoToken(): Boolean {
+        var success = false
+        context.dataStore.edit { prefs ->
+            val current = prefs[UNDO_TOKENS_KEY] ?: 0
+            if (current > 0) {
+                prefs[UNDO_TOKENS_KEY] = current - 1
                 success = true
             }
         }
