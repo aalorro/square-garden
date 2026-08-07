@@ -46,6 +46,14 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.9.2 (What's New)
+
+What's new in 1.9.2:
+
+- Now targeting Android 16 (API level 36) for the latest platform compatibility.
+
+Happy gardening!
+
 ## Release Notes — Version 1.9.1 (What's New)
 
 What's new in 1.9.1:

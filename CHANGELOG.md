@@ -2,6 +2,11 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.9.2] - 2026-08-07 (Build 26)
+
+### Changes
+- Target Android 16 (API level 36)
+
 ## [1.9.1] - 2026-06-12 (Build 25)
 
 ### New Features

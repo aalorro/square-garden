@@ -13,8 +13,8 @@ android {
         applicationId = "com.squaregarden"
         minSdk = 26
         targetSdk = 36
-        versionCode = 25
-        versionName = "1.9.1"
+        versionCode = 26
+        versionName = "1.9.2"
     }
 
     buildTypes {
