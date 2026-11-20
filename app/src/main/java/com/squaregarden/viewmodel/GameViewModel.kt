@@ -2487,6 +2487,14 @@ class GameViewModel(
                 _state.value = _state.value.copy(proUpgradePrompt = true)
             }
 
+            // ── Casual upgrade suggestion (after 5 World 1 wins) ──
+            if (difficulty == Difficulty.EASY && pendingWinLevelId in 1..9) {
+                val profile = profileRepo.loadProfile()
+                if (!profile.casualUpgradeDismissed && progressRepo.countWorld1Completions() >= 5) {
+                    _state.value = _state.value.copy(casualUpgradeSuggestion = true)
+                }
+            }
+
             val result = progressRepo.recordWin(difficulty.ordinal, pendingWinLevelId)
             profileRepo.incrementPlayerLevel()
             val playerLevel = profileRepo.loadProfile().playerLevel

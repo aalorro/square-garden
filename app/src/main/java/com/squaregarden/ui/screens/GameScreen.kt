@@ -729,7 +729,7 @@ fun GameScreen(
                         backToGame()
                     }
                 }
-            } else if (state.level.id < 126 && !state.proUpgradePrompt) {
+            } else if (state.level.id < 126 && !state.proUpgradePrompt && !state.casualUpgradeSuggestion) {
                 {
                     MusicManager.stopWinMusic()
                     viewModel.commitWinResult()
@@ -798,6 +798,44 @@ fun GameScreen(
                     val randomLevel = (37..90).random()
                     navController.navigate(Screen.Game.create(randomLevel)) {
                         popUpTo(Screen.Game.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+    }
+
+    // Casual upgrade suggestion (after 5 World 1 wins)
+    if (state.phase == GamePhase.WON && state.casualUpgradeSuggestion) {
+        var showSuggestion by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) {
+            delay(3000)
+            showSuggestion = true
+        }
+        if (showSuggestion) {
+            val suggestProfileRepo = remember { ProfileRepository(context) }
+            AlertDialog(
+                onDismissRequest = {},
+                title = { Text("Ready for More?") },
+                text = {
+                    Text(
+                        "Finding these levels too easy? Upgrade to Standard or Pro " +
+                        "for more stars and a bigger challenge." +
+                        "\n\nJust tap your avatar \u2192 Settings \u2192 Upgrade Skill."
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            scope.launch { suggestProfileRepo.dismissCasualUpgrade() }
+                            MusicManager.stopWinMusic()
+                            viewModel.commitWinResult()
+                            val nextId = (state.level.id + 1).coerceAtMost(9)
+                            navController.navigate(Screen.Game.create(nextId)) {
+                                popUpTo(Screen.Game.route) { inclusive = true }
+                            }
+                        }
+                    ) {
+                        Text("Got it", fontWeight = FontWeight.Bold)
                     }
                 }
             )

@@ -464,6 +464,14 @@ class ProgressRepository(private val context: Context) {
         return true
     }
 
+    suspend fun countWorld1Completions(): Int {
+        val prefs = context.dataStore.data.first()
+        return (1..9).count { id ->
+            val key = intPreferencesKey("$LEVEL_STARS_PREFIX$id")
+            (prefs[key] ?: 0) > 0
+        }
+    }
+
     suspend fun hasOvergrownTriggered(worldId: Int): Boolean {
         val prefs = context.dataStore.data.first()
         val key = booleanPreferencesKey("$OVERGROWN_TRIGGERED_PREFIX$worldId")

@@ -147,7 +147,6 @@ class MainActivity : ComponentActivity() {
                         PlayerBadge(
                             avatarEmoji = avatar.emoji,
                             avatarImageBitmap = customAvatarBitmap,
-                            playerLevel = profile.playerLevel,
                             totalStars = if (inMasterMode) masterStars else totalStars,
                             gamesPlayed = gamesPlayed,
                             lives = lives,

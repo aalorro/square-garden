@@ -2,6 +2,13 @@
 
 All notable changes to Square Garden are documented in this file.
 
+## [1.9.3] - 2026-11-20 (Build 27)
+
+### Changes
+- Casual upgrade suggestion — after 5 World 1 wins, Casual players see a one-time tip to upgrade to Standard or Pro for more stars
+- Removed player level label from the player badge to make stars more visible
+- Reverted compileSdk/targetSdk from 36 to 35 for AGP 8.7.3 compatibility
+
 ## [1.9.2] - 2026-08-07 (Build 26)
 
 ### Changes

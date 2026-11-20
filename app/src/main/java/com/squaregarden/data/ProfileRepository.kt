@@ -28,6 +28,7 @@ class ProfileRepository(private val context: Context) {
         private val PERFECT_GAME_SPLASH_SHOWN = booleanPreferencesKey("perfect_game_splash_shown")
         private val MASTERY_BADGE_EARNED = booleanPreferencesKey("mastery_badge_earned")
         private val PRO_UPGRADE_DECLINED = booleanPreferencesKey("pro_upgrade_declined")
+        private val CASUAL_UPGRADE_DISMISSED = booleanPreferencesKey("casual_upgrade_dismissed")
     }
 
     val profileFlow: Flow<UserProfile> = context.profileDataStore.data.map { prefs ->
@@ -44,7 +45,8 @@ class ProfileRepository(private val context: Context) {
             overrideStartingLevel = prefs[OVERRIDE_STARTING_LEVEL] ?: 0,
             perfectGameSplashShown = prefs[PERFECT_GAME_SPLASH_SHOWN] ?: false,
             masteryBadgeEarned = prefs[MASTERY_BADGE_EARNED] ?: false,
-            proUpgradeDeclined = prefs[PRO_UPGRADE_DECLINED] ?: false
+            proUpgradeDeclined = prefs[PRO_UPGRADE_DECLINED] ?: false,
+            casualUpgradeDismissed = prefs[CASUAL_UPGRADE_DISMISSED] ?: false
         )
     }
 
@@ -97,6 +99,12 @@ class ProfileRepository(private val context: Context) {
     suspend fun markProUpgradeDeclined() {
         context.profileDataStore.edit { prefs ->
             prefs[PRO_UPGRADE_DECLINED] = true
+        }
+    }
+
+    suspend fun dismissCasualUpgrade() {
+        context.profileDataStore.edit { prefs ->
+            prefs[CASUAL_UPGRADE_DISMISSED] = true
         }
     }
 

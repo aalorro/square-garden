@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "com.squaregarden"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.squaregarden"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 26
-        versionName = "1.9.2"
+        targetSdk = 35
+        versionCode = 27
+        versionName = "1.9.3"
     }
 
     buildTypes {

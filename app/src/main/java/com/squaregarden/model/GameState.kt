@@ -43,6 +43,7 @@ data class GameState(
     val boardGenerating: Boolean = false,
     val gameCompleted: Boolean = false,
     val proUpgradePrompt: Boolean = false,
+    val casualUpgradeSuggestion: Boolean = false,
     val masterModeState: MasterModeState? = null,
     val masterTier: MasterTier? = null
 ) {

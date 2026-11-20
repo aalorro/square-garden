@@ -46,6 +46,15 @@ FEATURES
 
 ---
 
+## Release Notes — Version 1.9.3 (What's New)
+
+What's new in 1.9.3:
+
+- Casual players now get a friendly nudge after 5 World 1 wins suggesting they try Standard or Pro for more stars and a bigger challenge.
+- Cleaner player badge — removed the level number so your star count is front and center.
+
+Happy gardening!
+
 ## Release Notes — Version 1.9.2 (What's New)
 
 What's new in 1.9.2:

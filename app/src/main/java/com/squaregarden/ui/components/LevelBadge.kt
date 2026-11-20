@@ -29,7 +29,6 @@ import kotlinx.coroutines.delay
 fun PlayerBadge(
     avatarEmoji: String,
     avatarImageBitmap: ImageBitmap? = null,
-    playerLevel: Int,
     totalStars: Int,
     gamesPlayed: Int,
     lives: Int,
@@ -70,7 +69,6 @@ fun PlayerBadge(
     val hPad = if (isCompact) 5.dp else 10.dp
     val vPad = if (isCompact) 3.dp else 8.dp
     val gap = if (isCompact) 4.dp else 8.dp
-    val levelFontSize = if (isCompact) 13.sp else 26.sp
     val starFontSize = if (isCompact) 12.sp else 23.sp
     val smallFontSize = if (isCompact) 10.sp else 18.sp
 
@@ -117,14 +115,6 @@ fun PlayerBadge(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(gap)
                 ) {
-                    // Level
-                    Text(
-                        text = "Lv$playerLevel",
-                        fontSize = levelFontSize,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
                     // Stars (with position tracking) — crown icon in Master Mode
                     Text(
                         text = if (masterMode) "\uD83D\uDC51$displayedStars" else "$displayedStars\u2605",
